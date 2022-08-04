@@ -1,0 +1,7 @@
+/TestRootCertificate.pfx
+/TestRootCertificate.srl
+
+/ClientCert.cer
+/ClientCert.pvk
+
+/localhost.csr
