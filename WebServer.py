@@ -8,7 +8,7 @@ def ParseCertSequence(cert):
     entries = []
     for entry in cert:
         elm = entry[0]
-        entries.append("("+elm[0]+': '+elm[1] + ")")
+        entries.append("("+elm[0]+': '+elm[1]+")")
     return '; '.join(entries)
 
 class MyServer(http.server.BaseHTTPRequestHandler):
