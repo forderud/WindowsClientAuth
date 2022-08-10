@@ -1,10 +1,11 @@
 :: Based on https://stackoverflow.com/questions/11031200/how-do-i-create-client-certificates-for-local-testing-of-two-way-authentication
+:: Must be run from a developer program prompt
 
 :: Generate root certificate
 makecert.exe -r -n "CN=TestRootCertificate" -pe -sv TestRootCertificate.pvk -a sha256 -len 2048 -b 01/01/2022 -e 01/01/2023 -cy authority TestRootCertificate.cer
 :: Bundle to .pfx
 pvk2pfx.exe -pvk TestRootCertificate.pvk -spc TestRootCertificate.cer -pfx TestRootCertificate.pfx
-:: Convert PFX to PEM for web-server consumption
+:: Convert PFX to PEM for OpenSSL compatibility
 "C:\Program Files\Git\usr\bin\openssl.exe" pkcs12 -in TestRootCertificate.pfx -out TestRootCertificate.pem -nodes
 
 
@@ -15,11 +16,11 @@ pvk2pfx.exe -pvk ClientCert.pvk -spc ClientCert.cer -pfx ClientCert.pfx
 
 
 :: Generate web server certificate from root certificate
-:: Use OpenSSL instead of makecert to enable subjectAltName extension
+:: Use OpenSSL instead of makecert since we need the "subjectAltName" extension
 ::
 :: Create certificate signing request (CSR)
 :: Doc: https://www.openssl.org/docs/manmaster/man1/openssl-req.html
 "C:\Program Files\Git\usr\bin\openssl.exe" req -newkey rsa:2048 -subj "/CN=localhost" -keyout localhost.key -out localhost.csr -nodes
-:: Sign certificate with CA
+:: Sign certificate with root certificate
 :: Doc: https://www.openssl.org/docs/manmaster/man1/openssl-x509.html
 "C:\Program Files\Git\usr\bin\openssl.exe" x509 -req -extfile openssl.ini -extensions MyCustomExtensions -CA TestRootCertificate.pem -CAcreateserial -in localhost.csr -out localhost.crt -days 365
