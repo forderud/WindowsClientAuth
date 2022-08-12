@@ -6,7 +6,7 @@ Example of how to use client certificates for web authentication. The examples a
 Prerequisites:
 * Windows computer
 * [Visual Studio](https://visualstudio.microsoft.com/) - for certificate generation command-line tools
-* [Git](https://git-scm.com/) for Windows - for OpenSSL that is required for certificate generation
+* [Git](https://git-scm.com/) for Windows - for OpenSSL that is required for server certificate generation
 * [Python](https://www.python.org/) - to run the test web server
 
 ### Generate certificates for testing (optional)
