@@ -19,7 +19,7 @@ This step will remove the "Not secure" warning when testing from a web browser.
 
 Install the root certificate:
 * Either: From an admin command prompt: `certutil –addstore –f "root" TestRootCertificate.cer`
-* Or: Double-click on `TestRootCertificate.cer`, select "Install Certificate", select "Local Machine" as store location, then "Trusted Root Certificate Authorities" as store location. 
+* Or: Double-click on `TestRootCertificate.cer`, select "Install Certificate", select "Local Machine" as store location, then "Trusted Root Certificate Authorities" as certificate store.
 
 The root certificate will now show up in the Windows "Manage computer certificates" window:
 
@@ -75,7 +75,7 @@ How to sign a binary:
 It's also possible to use the client certificate for filesystem-based file encryption if the certificate is (also)  installed to the "Trusted People" folder in certificate manager.
 
 Steps:
-* Install `ClientCert.pfx` to the "Current User" " Trusted People" certificate store.
+* Install `ClientCert.pfx` to the "Current User" " Trusted People" certificate store with default settings.
 * Right-click on the desired file, select "Properties", then click on the "Advanced" button.
 * Check the "Encrypt content to secure data" checkbox. Then click "OK" to encrypt the file.
 
