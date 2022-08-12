@@ -57,7 +57,7 @@ Steps:
 
 ### Testing from Python script
 Steps:
-* From a command prompt, run on `python WebClient.py` to perform a programatic HTTPS request
+* From a command prompt, run `python WebClient.py` to perform a programmatic HTTPS request
 * Observe successful client certificate authentication in the response:
 ```
 <html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p>
