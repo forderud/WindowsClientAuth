@@ -63,3 +63,9 @@ Steps:
 <html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p>
 <p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
 ```
+
+## Code signing
+Is't also possible to use the client certificate for code signing.
+
+How to sign a binary:
+* From a developer command prompt, run `signtool sign /a <FileName>.exe`
