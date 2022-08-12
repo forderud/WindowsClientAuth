@@ -30,7 +30,8 @@ The root certificate will now show up in the Windows "Manage computer certificat
 This step will enable the web browser to use the client certificate for authentication against the server.
 
 Install the client certificate:
-* From web browser "Manage certificates" menu: Import `ClientCert.pfx` into "Personal" certificate store with default settings.
+* Either: Double-click on `ClientCert.pfx`, select "Install Certificate", select "Current User" as store location, then install with default settings.
+* Or: From the web browser "Manage certificates" menu: Import `ClientCert.pfx` into "Personal" certificate store with default settings.
 
 The client certificate will now show up in the Windows "Manage user certificates" window:
 
