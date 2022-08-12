@@ -13,6 +13,7 @@ openssl.exe pkcs12 -in TestRootCertificate.pfx -out TestRootCertificate.pem -nod
 
 
 :: Generate client certificate from root certificate
+:: The enhanced key usage (EKU) OID for clientAuth is 1.3.6.1.5.5.7.3.2
 makecert.exe -ic TestRootCertificate.cer -iv TestRootCertificate.pvk -pe -sv ClientCert.pvk -a sha256 -n "CN=ClientCert" -len 2048 -b 01/01/2022 -e 01/01/2023 -sky exchange ClientCert.cer -eku 1.3.6.1.5.5.7.3.2
 :: Bundle to .pfx
 pvk2pfx.exe -pvk ClientCert.pvk -spc ClientCert.cer -pfx ClientCert.pfx
