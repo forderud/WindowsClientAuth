@@ -41,9 +41,11 @@ It will also show up in the web browser certificate dialogs:
 ![Browser Cert Install](figures/BrowserCertInstall.png) 
 
 
-### Run the web server
+## Web server testing
+Double-click on `WebServer.py` to start the test web server.
+
+### Testing from web browser
 Steps:
-* Double-click on `WebServer.py` to start the test web server.
 * Open https://localhost:4443/ in a web browser.
 * Select `ClientCert` in the certificate selection menu.
 
@@ -52,3 +54,12 @@ Steps:
 * Observe that the selected certificate is listed in the generated webpage.
 
 ![Browser Webpage](figures/BrowserWebpage.png)
+
+### Testing from Python script
+Steps:
+* From a command prompt, run on `python WebClient.py` to perform a programatic HTTPS request
+* Observe successful client certificate authentication in the response:
+```
+<html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p>
+<p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
+```
