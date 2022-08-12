@@ -76,6 +76,9 @@ It's also possible to use the client certificate for filesystem-based file encry
 
 Steps:
 * Install `ClientCert.pfx` to the "Current User" " Trusted People" certificate store with default settings.
+
+![Cert Mgr Encrypt](figures/CertMgrEncrypt.png)
+
 * Right-click on the desired file, select "Properties", then click on the "Advanced" button.
 * Check the "Encrypt content to secure data" checkbox. Then click "OK" to encrypt the file.
 
