@@ -70,3 +70,17 @@ Is't also possible to use the client certificate for code signing.
 
 How to sign a binary:
 * From a developer command prompt, run `signtool sign /a <FileName>.exe`
+
+## NTFS file encryption
+It's also possible to use the client certificate for filesystem-based file encryption if the certificate is (also)  installed to the "Trusted People" folder in certificate manager.
+
+Steps:
+* Install `ClientCert.pfx` to the "Current User" " Trusted People" certificate store.
+* Right-click on the desired file, select "Properties", then click on the "Advanced" button.
+* Check the "Encrypt content to secure data" checkbox. Then click "OK" to encrypt the file.
+
+![Explorer Encrypt Advanced](figures/ExplorerEncryptAdvanced.png)
+
+* Reopen the "Advanced" dialog and click "Details", then click on "Add" to add "ClientCert" as certificate used for encryption.
+
+![Explorer Encrypt Details](figures/ExplorerEncryptDetails.png)
