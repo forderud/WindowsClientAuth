@@ -8,7 +8,7 @@ set "PATH=%PATH%;C:\Program Files\Git\usr\bin"
 makecert.exe -r -n "CN=TestRootCertificate" -pe -sv TestRootCertificate.pvk -a sha256 -len 2048 -b 01/01/2022 -e 01/01/2023 -cy authority TestRootCertificate.cer
 :: Bundle to .pfx
 pvk2pfx.exe -pvk TestRootCertificate.pvk -spc TestRootCertificate.cer -pfx TestRootCertificate.pfx
-:: Convert PFX to PEM for OpenSSL compatibility
+:: Convert to PEM for OpenSSL compatibility
 openssl.exe pkcs12 -in TestRootCertificate.pfx -out TestRootCertificate.pem -nodes
 
 
@@ -16,6 +16,8 @@ openssl.exe pkcs12 -in TestRootCertificate.pfx -out TestRootCertificate.pem -nod
 makecert.exe -ic TestRootCertificate.cer -iv TestRootCertificate.pvk -pe -sv ClientCert.pvk -a sha256 -n "CN=ClientCert" -len 2048 -b 01/01/2022 -e 01/01/2023 -sky exchange ClientCert.cer -eku 1.3.6.1.5.5.7.3.2
 :: Bundle to .pfx
 pvk2pfx.exe -pvk ClientCert.pvk -spc ClientCert.cer -pfx ClientCert.pfx
+:: Convert to PEM for OpenSSL compatibility
+openssl.exe pkcs12 -in ClientCert.pfx -out ClientCert.pem -nodes
 
 
 :: Generate web server certificate from root certificate
