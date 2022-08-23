@@ -24,7 +24,7 @@ openssl.exe pkcs12 -in ClientCert.pfx -out ClientCert.pem -nodes
 
 
 :: Generate web server certificate from root certificate
-:: Use OpenSSL instead of makecert since we need the "subjectAltName" extension
+:: Use OpenSSL instead of makecert since we need the "subjectAltName" extension to avoid "Not secure" warnings in web browsers
 ::
 :: Create certificate signing request (CSR)
 :: Doc: https://www.openssl.org/docs/manmaster/man1/openssl-req.html
