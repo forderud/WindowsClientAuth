@@ -1,4 +1,4 @@
-Example of how to use client certificates for web authentication. The examples are geared towards Windows, but all principles also apply to other operating systems.
+Example of how to use certificates for client authentication in web and TLS socket scenarios. The examples are geared towards Windows, but all principles also apply to other operating systems.
 
 
 ## Getting started instructions
