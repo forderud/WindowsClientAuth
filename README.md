@@ -44,6 +44,7 @@ It will also show up in the web browser certificate dialogs:
 
 
 ## Client authentication
+The `clientAuth` OID (1.3.6.1.5.5.7.3.2) EKU field in the client certificate enables it to be used for client authentication.
 Double-click on `WebServer.py` to start the test web server to be used for testing of client authentication.
 
 ### Testing from web browser
@@ -77,13 +78,13 @@ My client certificates:
 ```
 
 ## Code signing
-Is't also possible to use the client certificate for code signing.
+The `codeSigning` OID (1.3.6.1.5.5.7.3.3) EKU field in the client certificate enables it to be used for code signing.
 
 How to sign a binary:
 * From a developer command prompt, run `signtool sign /a <FileName>.exe`
 
 ## NTFS file encryption
-It's also possible to use the client certificate for filesystem-based file encryption if the certificate is (also)  installed to the "Trusted People" folder in certificate manager.
+The `Encrypting File System` OID (1.3.6.1.4.1.311.10.3.4) EKU field in the client certificate enables it to be used for filesystem-based file encryption if the certificate is (also)  installed to the "Trusted People" folder in certificate manager.
 
 Steps:
 * Install `ClientCert.pfx` to the "Current User" " Trusted People" certificate store with default settings.
