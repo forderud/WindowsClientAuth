@@ -4,6 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 
 bool IsClientAuthCertificate(X509Certificate2 cert)
 {
+    // based on sample code on https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509enhancedkeyusageextension
     foreach (X509Extension ext in cert.Extensions)
     {
         if (ext.Oid == null)
