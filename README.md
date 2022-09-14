@@ -43,8 +43,8 @@ It will also show up in the web browser certificate dialogs:
 ![Browser Cert Install](figures/BrowserCertInstall.png) 
 
 
-## Web server testing
-Double-click on `WebServer.py` to start the test web server.
+## Client authentication
+Double-click on `WebServer.py` to start the test web server to be used for testing of client authentication.
 
 ### Testing from web browser
 Steps:
@@ -57,7 +57,7 @@ Steps:
 
 ![Browser Webpage](figures/BrowserWebpage.png)
 
-### Testing from Python script
+### Testing from Python
 Steps:
 * From a command prompt, run `python WebClient.py` to perform a programmatic HTTPS request
 * Observe successful client certificate authentication in the response:
@@ -66,7 +66,7 @@ Steps:
 <p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
 ```
 
-### Testing from a C# project
+### Testing from C#
 Steps:
 * Open and build the `WebClientNet` C# project in Visual Studio.
 * Run the application and observe successful client certificate authentication in the response:
