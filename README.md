@@ -77,6 +77,16 @@ My client certificates:
 <html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p><p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
 ```
 
+### Testing from C++
+Steps:
+* Open and build the `WebClientCpp` C++ project in Visual Studio.
+* Run the application and observe successful client certificate authentication in the response:
+```
+Client certificate: ClientCert
+
+<html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p><p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
+```
+
 ## Code signing
 The `codeSigning` OID (1.3.6.1.5.5.7.3.3) EKU field in the client certificate enables it to be used for code signing.
 
