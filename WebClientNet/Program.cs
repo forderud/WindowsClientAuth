@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 
 // open personal certificate store
@@ -8,11 +9,31 @@ X509Certificate2Collection GetClientCertificates()
     {
         store.Open(OpenFlags.ReadOnly);
 
-        Console.WriteLine("My store certificates:");
-        foreach (X509Certificate cert in store.Certificates)
-            Console.WriteLine("* Certificate: " + cert.Subject);
+        Console.WriteLine("My client certificates:");
+        var clientCerts = new X509Certificate2Collection();
 
-        return store.Certificates;
+        foreach (X509Certificate2 cert in store.Certificates)
+        {
+            foreach (X509Extension ext in cert.Extensions)
+            {
+                if (ext.Oid.FriendlyName == "Enhanced Key Usage")
+                {
+                    X509EnhancedKeyUsageExtension ext2 = (X509EnhancedKeyUsageExtension)ext;
+                    foreach (Oid oid in ext2.EnhancedKeyUsages)
+                    {
+                        if (oid.Value == "1.3.6.1.5.5.7.3.2") // clientAuth OID
+                        {
+                            Console.WriteLine("* Certificate: " + cert.Subject);
+                            clientCerts.Add(cert);
+                        }
+                    }
+                }
+
+            }
+        }
+        Console.WriteLine();
+
+        return clientCerts;
     }
 }
 
