@@ -2,6 +2,30 @@
 using System.Security.Cryptography.X509Certificates;
 
 
+bool IsClientAuthCertificate(X509Certificate2 cert)
+{
+    foreach (X509Extension ext in cert.Extensions)
+    {
+        if (ext.Oid == null)
+            continue;
+
+        if (ext.Oid.FriendlyName == "Enhanced Key Usage")
+        {
+            X509EnhancedKeyUsageExtension ext2 = (X509EnhancedKeyUsageExtension)ext;
+            foreach (Oid oid in ext2.EnhancedKeyUsages)
+            {
+                if (oid.Value == "1.3.6.1.5.5.7.3.2") // clientAuth OID
+                {
+                    //Console.WriteLine("Certificate: " + cert.Subject);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
 // open personal certificate store
 X509Certificate2Collection GetClientCertificates()
 {
@@ -14,21 +38,10 @@ X509Certificate2Collection GetClientCertificates()
 
         foreach (X509Certificate2 cert in store.Certificates)
         {
-            foreach (X509Extension ext in cert.Extensions)
+            if (IsClientAuthCertificate(cert))
             {
-                if (ext.Oid.FriendlyName == "Enhanced Key Usage")
-                {
-                    X509EnhancedKeyUsageExtension ext2 = (X509EnhancedKeyUsageExtension)ext;
-                    foreach (Oid oid in ext2.EnhancedKeyUsages)
-                    {
-                        if (oid.Value == "1.3.6.1.5.5.7.3.2") // clientAuth OID
-                        {
-                            Console.WriteLine("* Certificate: " + cert.Subject);
-                            clientCerts.Add(cert);
-                        }
-                    }
-                }
-
+                Console.WriteLine("* Certificate: " + cert.Subject);
+                clientCerts.Add(cert);
             }
         }
         Console.WriteLine();
