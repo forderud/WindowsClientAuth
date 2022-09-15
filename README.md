@@ -72,8 +72,8 @@ Steps:
 * Open and build the `WebClientNet` C# project in Visual Studio.
 * Run the application and observe successful client certificate authentication in the response:
 ```
-My client certificates:
-* Certificate: CN=ClientCert
+Client certificate: CN=ClientCert
+
 <html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p><p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
 ```
 

@@ -16,10 +16,7 @@ bool IsClientAuthCertificate(X509Certificate2 cert)
             foreach (Oid oid in ext2.EnhancedKeyUsages)
             {
                 if (oid.Value == "1.3.6.1.5.5.7.3.2") // clientAuth OID
-                {
-                    //Console.WriteLine("Certificate: " + cert.Subject);
                     return true;
-                }
             }
         }
     }
@@ -27,28 +24,24 @@ bool IsClientAuthCertificate(X509Certificate2 cert)
 }
 
 
-// open personal certificate store
-X509Certificate2Collection GetClientCertificates()
+X509Certificate2 GetClientCertificate()
 {
+    // open personal certificate store
     using (X509Store store = new X509Store(StoreName.My))
     {
         store.Open(OpenFlags.ReadOnly);
-
-        Console.WriteLine("My client certificates:");
-        var clientCerts = new X509Certificate2Collection();
 
         foreach (X509Certificate2 cert in store.Certificates)
         {
             if (IsClientAuthCertificate(cert))
             {
-                Console.WriteLine("* Certificate: " + cert.Subject);
-                clientCerts.Add(cert);
+                Console.WriteLine("Client certificate: " + cert.Subject + "\n");
+                return cert;
             }
         }
-        Console.WriteLine();
-
-        return clientCerts;
     }
+
+    throw new ApplicationException("no clientAuth cert found");
 }
 
 
@@ -57,8 +50,7 @@ using (HttpClientHandler handler = new HttpClientHandler())
     handler.UseDefaultCredentials = true;
 
     // populate handler.ClientCertificates list
-    foreach (X509Certificate cert in GetClientCertificates())
-        handler.ClientCertificates.Add(cert);
+    handler.ClientCertificates.Add(GetClientCertificate());
 
     // perform HTTP request with client authentication
     using (HttpClient client = new HttpClient(handler))
@@ -71,7 +63,7 @@ using (HttpClientHandler handler = new HttpClientHandler())
             string responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine(responseBody);
         }
-        catch (HttpRequestException e)
+        catch (Exception e)
         {
             Console.WriteLine("ERROR:{0} ", e.Message);
         }
