@@ -1,6 +1,6 @@
 import os, http.server, ssl, sys
 
-hostname = ("localhost", 4443) # default
+hostname = ("localhost", 443) # default
 if len(sys.argv) > 1:
     host_port = sys.argv[1].split(":")
     hostname = (host_port[0], int(host_port[1]))

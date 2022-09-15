@@ -31,7 +31,7 @@ static Certificate FindClientAuthCert() {
 int wmain(int argc, wchar_t* argv[]) {
     init_apartment();
 
-    std::wstring hostname = L"localhost:4443"; // default
+    std::wstring hostname = L"localhost:443"; // default
     if (argc > 1)
         hostname = argv[1];
 

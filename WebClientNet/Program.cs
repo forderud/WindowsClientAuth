@@ -44,7 +44,7 @@ X509Certificate2 GetClientCertificate()
     throw new ApplicationException("no clientAuth cert found");
 }
 
-string hostname = "localhost:4443"; // default
+string hostname = "localhost:443"; // default
 if (args.Length > 0)
     hostname = args[0];
 

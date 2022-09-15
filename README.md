@@ -49,7 +49,7 @@ Double-click on `WebServer.py` to start the test web server to be used for testi
 
 ### Testing from web browser
 Steps:
-* Open https://localhost:4443/ in a web browser.
+* Open https://localhost:443/ in a web browser.
 * Select `ClientCert` in the certificate selection menu.
 
 ![Browser Cert Select](figures/BrowserCertSelect.png)
