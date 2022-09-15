@@ -28,8 +28,12 @@ static Certificate FindClientAuthCert() {
 }
 
 
-int main() {
+int wmain(int argc, wchar_t* argv[]) {
     init_apartment();
+
+    std::wstring hostname = L"localhost:4443"; // default
+    if (argc > 1)
+        hostname = argv[1];
 
     try {
         Filters::HttpBaseProtocolFilter filter;
@@ -38,7 +42,7 @@ int main() {
         HttpClient client(filter);
 
         // async GET request
-        HttpResponseMessage response = client.GetAsync(Uri(L"https://localhost:4443/")).get();
+        HttpResponseMessage response = client.GetAsync(Uri(L"https://" + hostname)).get();
         response.EnsureSuccessStatusCode();
 
         hstring message(response.Content().ReadAsStringAsync().get());

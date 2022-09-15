@@ -44,6 +44,9 @@ X509Certificate2 GetClientCertificate()
     throw new ApplicationException("no clientAuth cert found");
 }
 
+string hostname = "localhost:4443"; // default
+if (args.Length > 0)
+    hostname = args[0];
 
 using (HttpClientHandler handler = new HttpClientHandler())
 {
@@ -57,7 +60,7 @@ using (HttpClientHandler handler = new HttpClientHandler())
     {
         try
         {
-            HttpResponseMessage response = await client.GetAsync("https://localhost:4443/");
+            HttpResponseMessage response = await client.GetAsync("https://"+hostname);
             response.EnsureSuccessStatusCode();
 
             string responseBody = await response.Content.ReadAsStringAsync();

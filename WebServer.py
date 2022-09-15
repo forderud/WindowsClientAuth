@@ -1,4 +1,9 @@
-import os, http.server, ssl
+import os, http.server, ssl, sys
+
+hostname = ("localhost", 4443) # default
+if len(sys.argv) > 1:
+    host_port = sys.argv[1].split(":")
+    hostname = (host_port[0], int(host_port[1]))
 
 # file paths relative to this script
 CERT_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\localhost.crt')
@@ -30,11 +35,8 @@ class MyServer(http.server.BaseHTTPRequestHandler):
         self.wfile.write(bytes("<p>Validated <b>client certificate</b>: {}, issued by {}.</p>".format(client_cert, client_cert_issuer), "utf-8"))
         self.wfile.write(bytes("</body></html>", "utf-8"))
 
-
-server_address = ('localhost', 4443) # open https://localhost:4443/ in web browser to test
-
-with http.server.HTTPServer(server_address, MyServer) as httpd:
-    print("serving at " + str(server_address))
+with http.server.HTTPServer(hostname, MyServer) as httpd:
+    print("serving at " + str(hostname))
     
     # DOC: https://docs.python.org/3/library/ssl.html
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
