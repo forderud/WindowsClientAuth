@@ -12,6 +12,7 @@ using namespace Windows::Security::Cryptography::Certificates;
 using namespace Windows::Web::Http;
 
 static Certificate FindClientAuthCert() {
+    // open personal certificate store
     Collections::IVectorView<Certificate> certs = CertificateStores::FindAllAsync().get();
 
     // search for cetificate with clientAuth EKU
