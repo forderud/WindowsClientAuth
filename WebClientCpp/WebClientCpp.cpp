@@ -15,7 +15,7 @@ static Certificate FindClientAuthCert() {
     // open personal certificate store
     Collections::IVectorView<Certificate> certs = CertificateStores::FindAllAsync().get();
 
-    // search for cetificate with clientAuth EKU
+    // search for certificate with clientAuth EKU
     for (Certificate cert : certs) {
         for (hstring eku : cert.EnhancedKeyUsages()) {
             if (std::wstring(eku) == L"1.3.6.1.5.5.7.3.2") { // clientAuth OID
