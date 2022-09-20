@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebClientCpp", "WebClientCpp\WebClientCpp.vcxproj", "{1023FEBE-3B9E-488B-88A4-AB9AEEEA2540}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebClientNet", "WebClientNet\WebClientNet.csproj", "{75578968-7B27-4275-9D85-4573EDAACD2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1023FEBE-3B9E-488B-88A4-AB9AEEEA2540}.Debug|x64.ActiveCfg = Debug|x64
+		{1023FEBE-3B9E-488B-88A4-AB9AEEEA2540}.Debug|x64.Build.0 = Debug|x64
+		{1023FEBE-3B9E-488B-88A4-AB9AEEEA2540}.Release|x64.ActiveCfg = Release|x64
+		{1023FEBE-3B9E-488B-88A4-AB9AEEEA2540}.Release|x64.Build.0 = Release|x64
+		{75578968-7B27-4275-9D85-4573EDAACD2B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{75578968-7B27-4275-9D85-4573EDAACD2B}.Debug|x64.Build.0 = Debug|Any CPU
+		{75578968-7B27-4275-9D85-4573EDAACD2B}.Release|x64.ActiveCfg = Release|Any CPU
+		{75578968-7B27-4275-9D85-4573EDAACD2B}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCF3D5ED-B841-4D84-999C-BC1EA8D85C3B}
+	EndGlobalSection
+EndGlobal
