@@ -12,17 +12,19 @@ using namespace Windows::Security::Cryptography::Certificates;
 using namespace Windows::Web::Http;
 
 static Certificate FindClientAuthCert() {
-    // open personal certificate store
-    Collections::IVectorView<Certificate> certs = CertificateStores::FindAllAsync().get();
+    CertificateQuery query;
+    {
+        Collections::IVector<hstring> eku = query.EnhancedKeyUsages();
+        eku.Append(L"1.3.6.1.5.5.7.3.2"); // clientAuth OID
 
-    // search for certificate with clientAuth EKU
+        query.StoreName(L"My"); // personal certificate store for the current user (default)
+    }
+
+    // search for first matching certificate
+    Collections::IVectorView<Certificate> certs = CertificateStores::FindAllAsync(query).get();
     for (Certificate cert : certs) {
-        for (hstring eku : cert.EnhancedKeyUsages()) {
-            if (std::wstring(eku) == L"1.3.6.1.5.5.7.3.2") { // clientAuth OID
-                std::wcout << L"Client certificate: " << std::wstring(cert.Subject()) << L"\n\n";
-                return cert;
-            }
-        }
+        std::wcout << L"Client certificate: " << std::wstring(cert.Subject()) << L"\n\n";
+        return cert;
     }
 
     throw hresult_error(winrt::impl::error_fail, L"no clientAuth cert found");
