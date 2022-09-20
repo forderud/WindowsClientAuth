@@ -27,7 +27,7 @@ bool IsClientAuthCertificate(X509Certificate2 cert)
 X509Certificate2 GetClientCertificate()
 {
     // open personal certificate store
-    using (X509Store store = new X509Store(StoreName.My))
+    using (X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
     {
         store.Open(OpenFlags.ReadOnly);
 
