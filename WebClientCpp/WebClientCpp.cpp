@@ -17,7 +17,7 @@ static Certificate FindClientAuthCert() {
         Collections::IVector<hstring> eku = query.EnhancedKeyUsages();
         eku.Append(L"1.3.6.1.5.5.7.3.2"); // clientAuth OID
 
-        query.StoreName(L"My"); // personal certificate store for the current user (default)
+        query.StoreName(StandardCertificateStoreNames::Personal()); // "MY" store for current user (default)
     }
 
     // search for first matching certificate
