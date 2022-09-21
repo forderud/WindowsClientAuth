@@ -7,7 +7,7 @@ if len(sys.argv) > 1:
 
 # file paths relative to this script
 # TODO: Load certificate from Windows certificate store instead of file (see https://stackoverflow.com/questions/55229786/loading-certificates-into-ssl-with-certs-store-not-file-path-with-python)
-CERT_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\ClientCert.pem')
+CERT_FILE = os.path.join(os.path.dirname(__file__), '..\\TestCertificates\\ClientCert.pem')
 
 # configure client certificate
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
