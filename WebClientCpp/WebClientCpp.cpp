@@ -23,6 +23,9 @@ static Certificate FindClientAuthCert() {
     // search for first matching certificate
     Collections::IVectorView<Certificate> certs = CertificateStores::FindAllAsync(query).get();
     for (Certificate cert : certs) {
+        if (!cert.HasPrivateKey())
+            continue;
+
         std::wcout << L"Client certificate: " << std::wstring(cert.Subject()) << L"\n\n";
         return cert;
     }

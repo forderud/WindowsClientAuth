@@ -33,6 +33,9 @@ X509Certificate2 GetClientCertificate()
 
         foreach (X509Certificate2 cert in store.Certificates)
         {
+            if (!cert.HasPrivateKey)
+                continue;
+
             if (IsClientAuthCertificate(cert))
             {
                 Console.WriteLine("Client certificate: " + cert.Subject + "\n");
