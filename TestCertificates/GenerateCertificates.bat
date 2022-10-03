@@ -5,7 +5,7 @@
 set "PATH=%PATH%;C:\Program Files\Git\usr\bin"
 
 :: Generate root certificate
-makecert.exe -r -n "CN=TestRootCertificate" -pe -sv TestRootCertificate.pvk -a sha256 -len 2048 -b 01/01/2022 -e 01/01/2032 -cy authority TestRootCertificate.cer
+makecert.exe -r -n "CN=TestRootCertificate" -pe -sv TestRootCertificate.pvk -a sha256 -len 2048 -m 120 -cy authority TestRootCertificate.cer
 :: Bundle to .pfx
 pvk2pfx.exe -pvk TestRootCertificate.pvk -spc TestRootCertificate.cer -pfx TestRootCertificate.pfx
 :: Convert to PEM for OpenSSL compatibility
@@ -16,7 +16,7 @@ openssl.exe pkcs12 -in TestRootCertificate.pfx -out TestRootCertificate.pem -nod
 :: The enhanced key usage (EKU) OID for clientAuth is 1.3.6.1.5.5.7.3.2
 :: The enhanced key usage (EKU) OID for codeSigning is 1.3.6.1.5.5.7.3.3
 :: The enhanced key usage (EKU) OID for Encrypting File System is 1.3.6.1.4.1.311.10.3.4
-makecert.exe -ic TestRootCertificate.cer -iv TestRootCertificate.pvk -sv ClientCert.pvk -a sha256 -n "CN=ClientCert" -len 2048 -b 01/01/2022 -e 01/01/2032 ClientCert.cer -eku 1.3.6.1.5.5.7.3.2,1.3.6.1.5.5.7.3.3,1.3.6.1.4.1.311.10.3.4
+makecert.exe -ic TestRootCertificate.cer -iv TestRootCertificate.pvk -sv ClientCert.pvk -a sha256 -n "CN=ClientCert" -len 2048 -m 120 ClientCert.cer -eku 1.3.6.1.5.5.7.3.2,1.3.6.1.5.5.7.3.3,1.3.6.1.4.1.311.10.3.4
 :: Bundle to .pfx
 pvk2pfx.exe -pvk ClientCert.pvk -spc ClientCert.cer -pfx ClientCert.pfx
 :: Convert to PEM for OpenSSL compatibility
