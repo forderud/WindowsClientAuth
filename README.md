@@ -31,7 +31,7 @@ This step will enable the web browser to use the client certificate for authenti
 
 Install the client certificate:
 * Either: From a command prompt: `certutil -user –importpfx ClientCert.pfx NoRoot,NoExport` (empty password)
-* Or: Double-click on `ClientCert.pfx`, select "Install Certificate", select "Current User" as store location, then install with default settings.
+* Or: Double-click on `ClientCert.pfx`, select "Install Certificate", select "Current User" as store location, enable "Protect private key... (Non-exportable)", then install with default settings.
 * Or: From the web browser "Manage certificates" menu: Import `ClientCert.pfx` into "Personal" certificate store with default settings.
 
 The client certificate will now show up in the Windows "Manage user certificates" window:
