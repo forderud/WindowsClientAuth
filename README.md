@@ -43,6 +43,14 @@ It will also show up in the web browser certificate dialogs:
 ![Browser Cert Install](figures/BrowserCertInstall.png) 
 
 
+### TPM storage of private key
+Installed certificates will by default have their private key managed by the SW-based "Microsoft Software Key Storage Provider" when importing non-exportable. It's also possible to store the private key in the TPM chip for enhanced HW-enforced security.
+
+This should in principle by possible with `certutil -user -csp TPM -p "" -importpfx ClientCert.pfx NoExport`. However, that doesn't seem to work as expected, and instead leads to a `NTE_INVALID_PARAMETER` error. This appears to be a known issue, and one can use the [TPMImport](https://github.com/glueckkanja-pki/TPMImport) tool as work-around. The certificate can then be imported to the TPM with `TPMImport.exe -user -v ClientCert.pfx ""`.
+
+One can verify the actual key storage with `certutil -user -store My ClientCert`. You'll then get `Provider = Microsoft Platform Crypto Provider` if the private key is actually stored in the TPM.
+
+
 ## Client authentication
 The `clientAuth` OID (1.3.6.1.5.5.7.3.2) EKU field in the client certificate enables it to be used for client authentication.
 Double-click on `WebServer.py` to start the test web server to be used for testing of client authentication.
