@@ -6,7 +6,7 @@ if len(sys.argv) > 1:
     hostname = (host_port[0], int(host_port[1]))
 
 # file paths relative to this script
-CERT_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\localhost.crt')
+CERT_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\localhost.cer')
 KEY_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\localhost.key')
 
 def ParseCertSequence(cert):

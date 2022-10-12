@@ -31,4 +31,4 @@ openssl.exe pkcs12 -in ClientCert.pfx -out ClientCert.pem -nodes
 openssl.exe req -newkey rsa:2048 -subj "/CN=localhost" -keyout localhost.key -out localhost.csr -nodes
 :: Sign certificate with root certificate
 :: Doc: https://www.openssl.org/docs/manmaster/man1/openssl-x509.html
-openssl.exe x509 -req -extfile localhost.ini -extensions MyCustomExtensions -CA TestRootCertificate.pem -CAcreateserial -in localhost.csr -out localhost.crt -days 3650
+openssl.exe x509 -req -extfile localhost.ini -extensions MyCustomExtensions -CA TestRootCertificate.pem -CAcreateserial -in localhost.csr -out localhost.cer -days 3650
