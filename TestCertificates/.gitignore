@@ -3,5 +3,5 @@
 
 /ClientCert.cer
 /ClientCert.pvk
-
+/localhost.cer
 /localhost.csr

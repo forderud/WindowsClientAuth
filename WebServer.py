@@ -6,7 +6,6 @@ if len(sys.argv) > 1:
     hostname = (host_port[0], int(host_port[1]))
 
 # file paths relative to this script
-CERT_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\localhost.cer')
 KEY_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\localhost.key')
 
 def ParseCertSequence(cert):
@@ -42,7 +41,7 @@ with http.server.HTTPServer(hostname, MyServer) as httpd:
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.verify_mode = ssl.CERT_OPTIONAL # or ssl.CERT_REQUIRED
     context.load_default_certs(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain(CERT_FILE, KEY_FILE) # server identity
+    context.load_cert_chain(KEY_FILE) # server identity
     httpd.socket = context.wrap_socket(sock=httpd.socket, server_side=True)
 
     try:
