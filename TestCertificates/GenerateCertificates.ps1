@@ -15,7 +15,7 @@ Export-PfxCertificate -Cert $root -Password $pwd -FilePath "TestRootCertificate.
 # Generate client certificate from root certificate
 # The enhanced key usage (EKU) OID for clientAuth is 1.3.6.1.5.5.7.3.2
 # The enhanced key usage (EKU) OID for codeSigning is 1.3.6.1.5.5.7.3.3
-$client = New-SelfSignedCertificate -CertStoreLocation "Cert:\CurrentUser\My" -Type Custom -Subject "CN=ClientCert" -KeyUsageProperty All -KeyUsage None -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2,1.3.6.1.5.5.7.3.3") -KeyExportPolicy Exportable -KeyAlgorithm RSA -KeyLength 2048 -Signer $root -NotAfter(Get-Date).AddMonths(120)
+$client = New-SelfSignedCertificate -CertStoreLocation "Cert:\CurrentUser\My" -Type Custom -Subject "CN=ClientCert" -KeyUsageProperty All -KeyUsage None -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2,1.3.6.1.5.5.7.3.3") -KeyExportPolicy Exportable -KeyAlgorithm RSA -KeyLength 4096 -Signer $root -NotAfter(Get-Date).AddMonths(120)
 Export-PfxCertificate -Cert $client -Password $pwd -FilePath "ClientCert.pfx"
 #$client = Import-PfxCertificate -CertStoreLocation "Cert:\CurrentUser\My" -Password $pwd -FilePath "ClientCert.pfx"
 # Convert to PEM for Python client compatibility
@@ -24,7 +24,7 @@ Export-PfxCertificate -Cert $client -Password $pwd -FilePath "ClientCert.pfx"
 
 # Generate web server certificate from root certificate
 # The enhanced key usage (EKU) OID for serverAuth is 1.3.6.1.5.5.7.3.1
-$localhost = New-SelfSignedCertificate -CertStoreLocation "Cert:\CurrentUser\My" -Type SSLServerAuthentication -DnsName "localhost" -KeyUsage None -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.1") -KeyExportPolicy Exportable -KeyAlgorithm RSA -KeyLength 2048 -Signer $root -NotAfter(Get-Date).AddMonths(120)
+$localhost = New-SelfSignedCertificate -CertStoreLocation "Cert:\CurrentUser\My" -Type SSLServerAuthentication -DnsName "localhost" -KeyUsage None -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.1") -KeyExportPolicy Exportable -KeyAlgorithm RSA -KeyLength 4096 -Signer $root -NotAfter(Get-Date).AddMonths(120)
 Export-PfxCertificate -Cert $localhost -Password $pwd -FilePath "localhost.pfx"
 # Convert to PEM for Python server compatibility
 & "C:\Program Files\Git\usr\bin\openssl.exe" pkcs12 -in localhost.pfx -out localhost.key -nodes -password pass:1234
