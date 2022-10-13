@@ -5,8 +5,8 @@ Examples of how to use certificates for client authentication in web and TLS soc
 
 Prerequisites:
 * Windows computer
-* [Visual Studio](https://visualstudio.microsoft.com/) - for certificate generation command-line tools
-* [Git](https://git-scm.com/) for Windows - for OpenSSL that is required for server certificate generation
+* [Visual Studio](https://visualstudio.microsoft.com/) - for buiding the C++ and C# sample projects
+* [Git](https://git-scm.com/) for Windows - for OpenSSL that's required for the Python projects
 * [Python](https://www.python.org/) - to run the test web server
 
 ### Generate certificates for testing (optional)
