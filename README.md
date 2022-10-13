@@ -100,20 +100,3 @@ The `codeSigning` OID (1.3.6.1.5.5.7.3.3) EKU field in the client certificate en
 
 How to sign a binary:
 * From a developer command prompt, run `signtool sign /a <FileName>.exe`
-
-## NTFS file encryption
-The `Encrypting File System` OID (1.3.6.1.4.1.311.10.3.4) EKU field in the client certificate enables it to be used for filesystem-based file encryption if the certificate is (also)  installed to the "Trusted People" folder in certificate manager.
-
-Steps:
-* Install `ClientCert.pfx` to the "Current User" " Trusted People" certificate store with default settings.
-
-![Cert Mgr Encrypt](figures/CertMgrEncrypt.png)
-
-* Right-click on the desired file, select "Properties", then click on the "Advanced" button.
-* Check the "Encrypt content to secure data" checkbox. Then click "OK" to encrypt the file.
-
-![Explorer Encrypt Advanced](figures/ExplorerEncryptAdvanced.png)
-
-* Reopen the "Advanced" dialog and click "Details", then click on "Add" to add "ClientCert" as certificate used for encryption.
-
-![Explorer Encrypt Details](figures/ExplorerEncryptDetails.png)
