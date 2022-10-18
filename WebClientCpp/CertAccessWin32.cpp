@@ -8,7 +8,7 @@
 
 void OpenCNGKey(const wchar_t* providername, const wchar_t* keyname, DWORD legacyKeySpec) {
     NCRYPT_PROV_HANDLE provider = 0;
-    SECURITY_STATUS status = NCryptOpenStorageProvider(&provider, providername, 0); // or MS_PLATFORM_CRYPTO_PROVIDER for TPM
+    SECURITY_STATUS status = NCryptOpenStorageProvider(&provider, providername, 0);
     if (status != ERROR_SUCCESS)
         abort();
 
@@ -18,6 +18,8 @@ void OpenCNGKey(const wchar_t* providername, const wchar_t* keyname, DWORD legac
         abort();
     if (status != ERROR_SUCCESS)
         abort();
+
+    std::wcout << L"  CNG key access succeeded\n";
 
 #if 0
     DWORD size = 0;
@@ -66,8 +68,8 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
         }
 
         CRYPT_KEY_PROV_INFO* provider = (CRYPT_KEY_PROV_INFO*)prov_buf.data();
-        std::wcout << L"  Container: " << provider->pwszContainerName << L'\n';
         std::wcout << L"  Provider: " << provider->pwszProvName << L'\n';
+        std::wcout << L"  Container: " << provider->pwszContainerName << L'\n';
 
         if (provider->dwProvType != 0) {
             std::wcout << L"  Not a CNG type key\n";
