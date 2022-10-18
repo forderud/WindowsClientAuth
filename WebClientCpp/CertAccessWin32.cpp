@@ -13,10 +13,31 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
 
     const CERT_CONTEXT * cert = nullptr;
     while ((cert = CertEnumCertificatesInStore(store, cert)) != NULL) {
+        // print certificate name
         wchar_t buffer[1024] = {};
         DWORD len = CertNameToStrW(cert->dwCertEncodingType, &cert->pCertInfo->Subject, CERT_SIMPLE_NAME_STR, buffer, (DWORD)std::size(buffer));
         assert(len > 0);
         std::wcout << L"Cert: " << buffer << L'\n';
+
+        // CERT_NCRYPT_KEY_HANDLE_TRANSFER_PROP_ID
+        len = 0;
+        if (!CertGetCertificateContextProperty(cert, CERT_KEY_PROV_INFO_PROP_ID, nullptr, &len)) {
+            DWORD err = GetLastError();
+            if (err == CRYPT_E_NOT_FOUND)
+                continue;
+
+            abort();
+        }
+        std::vector<BYTE> prov_buf(len, 0);
+        if (!CertGetCertificateContextProperty(cert, CERT_KEY_PROV_INFO_PROP_ID, prov_buf.data(), &len)) {
+            DWORD err = GetLastError();
+            err;
+            abort();
+        }
+
+        CRYPT_KEY_PROV_INFO* provider = (CRYPT_KEY_PROV_INFO*)prov_buf.data();
+        std::wcout << L"  Container: " << provider->pwszContainerName << L'\n';
+        std::wcout << L"  Provider: " << provider->pwszProvName << L'\n';
     }
 
     CertCloseStore(store, 0);
