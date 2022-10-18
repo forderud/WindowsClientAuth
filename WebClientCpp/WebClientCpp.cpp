@@ -6,6 +6,8 @@
 
 #pragma comment(lib, "windowsapp.lib")
 
+void CertAccessWin32();
+
 using namespace winrt;
 using namespace Windows::Foundation;
 using namespace Windows::Security::Cryptography::Certificates;
@@ -35,6 +37,9 @@ static Certificate FindClientAuthCert() {
 
 
 int wmain(int argc, wchar_t* argv[]) {
+#ifdef ENABLE_LOW_LEVEL_IMPL
+    CertAccessWin32();
+#else
     init_apartment();
 
     std::wstring hostname = L"localhost:443"; // default
@@ -58,4 +63,5 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     return 0;
+#endif
 }
