@@ -6,6 +6,37 @@
 #include <cassert>
 
 
+void OpenCNGKey(const wchar_t* providername, const wchar_t* keyname, DWORD legacyKeySpec) {
+    NCRYPT_PROV_HANDLE provider = 0;
+    SECURITY_STATUS status = NCryptOpenStorageProvider(&provider, providername, 0); // or MS_PLATFORM_CRYPTO_PROVIDER for TPM
+    if (status != ERROR_SUCCESS)
+        abort();
+
+    NCRYPT_KEY_HANDLE key = 0;
+    status = NCryptOpenKey(provider, &key, keyname, legacyKeySpec, NCRYPT_SILENT_FLAG);
+    if (status == NTE_BAD_KEYSET)
+        abort();
+    if (status != ERROR_SUCCESS)
+        abort();
+
+#if 0
+    DWORD size = 0;
+    status = NCryptGetProperty(key, NCRYPT_NAME_PROPERTY, nullptr, 0, &size, 0);
+    if (status == NTE_NOT_FOUND)
+        continue;
+    if (status != ERROR_SUCCESS)
+        abort();
+    std::vector<BYTE> cert;
+    cert.resize(size);
+    NCryptGetProperty(key, NCRYPT_NAME_PROPERTY, &cert[0], size, &size, 0);
+#endif
+
+    NCryptFreeObject(key);
+
+    NCryptFreeObject(provider);
+}
+
+
 void OpenCertStore(const wchar_t storename[], bool perUser) {
     HCERTSTORE store = CertOpenStore(CERT_STORE_PROV_SYSTEM, 0, NULL, perUser ? CERT_SYSTEM_STORE_CURRENT_USER : CERT_SYSTEM_STORE_LOCAL_MACHINE, storename);
     if (store == NULL)
@@ -38,56 +69,17 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
         CRYPT_KEY_PROV_INFO* provider = (CRYPT_KEY_PROV_INFO*)prov_buf.data();
         std::wcout << L"  Container: " << provider->pwszContainerName << L'\n';
         std::wcout << L"  Provider: " << provider->pwszProvName << L'\n';
+
+        if (provider->dwProvType != 0)
+            continue; // not a CNG key
+
+        OpenCNGKey(provider->pwszProvName, provider->pwszContainerName, provider->dwKeySpec);
     }
 
     CertCloseStore(store, 0);
 }
 
 
-/** Low-level CNG key access.
-    NOTICE: Cetificate access not yet impl. */
-void EnumCNGKeys () {
-    NCRYPT_PROV_HANDLE provider = 0;
-    SECURITY_STATUS status = NCryptOpenStorageProvider(&provider, MS_KEY_STORAGE_PROVIDER, 0); // or MS_PLATFORM_CRYPTO_PROVIDER for TPM
-    if (status != ERROR_SUCCESS)
-        abort();
-
-    NCryptKeyName* keyname = nullptr; // CNG key entry
-    PVOID pos = nullptr;
-    while (NCryptEnumKeys(provider, NULL, &keyname, &pos, NCRYPT_SILENT_FLAG) == ERROR_SUCCESS) {
-        std::wcout << L"Key: " << keyname->pszName << L'\n';
-
-        NCRYPT_KEY_HANDLE key = 0;
-        status = NCryptOpenKey(provider, &key, keyname->pszName, keyname->dwLegacyKeySpec, NCRYPT_SILENT_FLAG);
-        if (status == NTE_BAD_KEYSET)
-            abort();
-        if (status != ERROR_SUCCESS)
-            abort();
-
-#if 0
-        DWORD size = 0;
-        status = NCryptGetProperty(key, NCRYPT_NAME_PROPERTY, nullptr, 0, &size, 0);
-        if (status == NTE_NOT_FOUND)
-            continue;
-        if (status != ERROR_SUCCESS)
-            abort();
-        std::vector<BYTE> cert;
-        cert.resize(size);
-        NCryptGetProperty(key, NCRYPT_NAME_PROPERTY, &cert[0], size, &size, 0);
-#endif
-
-        NCryptFreeObject(key);
-
-        NCryptFreeBuffer(keyname);
-        keyname = nullptr;
-    }
-    NCryptFreeBuffer(pos);
-
-    NCryptFreeObject(provider);
-}
-
-
 void CertAccessWin32() {
     OpenCertStore(L"My", true);
-    EnumCNGKeys();
 }
