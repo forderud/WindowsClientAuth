@@ -50,7 +50,6 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
         assert(len > 0);
         std::wcout << L"Cert: " << buffer << L'\n';
 
-        // CERT_NCRYPT_KEY_HANDLE_TRANSFER_PROP_ID
         len = 0;
         if (!CertGetCertificateContextProperty(cert, CERT_KEY_PROV_INFO_PROP_ID, nullptr, &len)) {
             DWORD err = GetLastError();
@@ -70,8 +69,10 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
         std::wcout << L"  Container: " << provider->pwszContainerName << L'\n';
         std::wcout << L"  Provider: " << provider->pwszProvName << L'\n';
 
-        if (provider->dwProvType != 0)
-            continue; // not a CNG key
+        if (provider->dwProvType != 0) {
+            std::wcout << L"  Not a CNG type key\n";
+            continue;
+        }
 
         OpenCNGKey(provider->pwszProvName, provider->pwszContainerName, provider->dwKeySpec);
     }
