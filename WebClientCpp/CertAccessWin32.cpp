@@ -3,6 +3,24 @@
 
 #include <functional>
 #include <iostream>
+#include <cassert>
+
+
+void OpenCertStore(const wchar_t storename[], bool perUser) {
+    HCERTSTORE store = CertOpenStore(CERT_STORE_PROV_SYSTEM, 0, NULL, perUser ? CERT_SYSTEM_STORE_CURRENT_USER : CERT_SYSTEM_STORE_LOCAL_MACHINE, storename);
+    if (store == NULL)
+        abort();
+
+    const CERT_CONTEXT * cert = nullptr;
+    while ((cert = CertEnumCertificatesInStore(store, cert)) != NULL) {
+        wchar_t buffer[1024] = {};
+        DWORD len = CertNameToStrW(cert->dwCertEncodingType, &cert->pCertInfo->Subject, CERT_SIMPLE_NAME_STR, buffer, (DWORD)std::size(buffer));
+        assert(len > 0);
+        std::wcout << L"Cert: " << buffer << L'\n';
+    }
+
+    CertCloseStore(store, 0);
+}
 
 
 /** Low-level CNG key access.
@@ -49,5 +67,6 @@ void EnumCNGKeys () {
 
 
 void CertAccessWin32() {
+    OpenCertStore(L"My", true);
     EnumCNGKeys();
 }
