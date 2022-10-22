@@ -12,7 +12,7 @@ bool IsClientAuthCertificate(X509Certificate2 cert)
 
         if (ext.Oid.FriendlyName == "Enhanced Key Usage")
         {
-            X509EnhancedKeyUsageExtension ext2 = (X509EnhancedKeyUsageExtension)ext;
+            var ext2 = (X509EnhancedKeyUsageExtension)ext;
             foreach (Oid oid in ext2.EnhancedKeyUsages)
             {
                 if (oid.Value == "1.3.6.1.5.5.7.3.2") // clientAuth OID
