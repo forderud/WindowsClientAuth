@@ -51,9 +51,9 @@ int wmain(int argc, wchar_t* argv[]) {
         Filters::HttpBaseProtocolFilter filter;
         filter.ClientCertificate(GetFirstClientAuthCert());
 
+        // perform HTTP request with client authentication
         HttpClient client(filter);
 
-        // async GET request
         HttpResponseMessage response = client.GetAsync(Uri(L"https://" + hostname)).get();
         response.EnsureSuccessStatusCode();
 
