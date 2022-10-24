@@ -6,7 +6,7 @@ if len(sys.argv) > 1:
     hostname = (host_port[0], int(host_port[1]))
 
 # file paths relative to this script
-# TODO: Load certificate from Windows certificate store instead of file (see https://stackoverflow.com/questions/55229786/loading-certificates-into-ssl-with-certs-store-not-file-path-with-python)
+# TODO: Figure out how to load client cert from Windows cert store (CNG) instead of file
 CERT_FILE = os.path.join(os.path.dirname(__file__), '..\\TestCertificates\\ClientCert.pem')
 
 # configure client certificate

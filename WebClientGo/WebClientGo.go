@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-    // TODO: Load client cert from CNG instead of file
+    // TODO: Figure out how to load client cert from Windows cert store (CNG) instead of file
     certificate, err := tls.LoadX509KeyPair("../TestCertificates/ClientCert.pem", "../TestCertificates/ClientCert.pem")
     if err != nil {
         log.Fatalf("could not load certificate: %v", err)
