@@ -23,8 +23,8 @@ bool IsClientAuthCertificate(X509Certificate2 cert)
     return false;
 }
 
-
-X509Certificate2 GetClientCertificate()
+/** Returns the first clientAuth certificate with private key found in the Windows cert. store. */
+X509Certificate2 GetFirstClientAuthCert()
 {
     // open personal certificate store
     using X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
@@ -53,7 +53,7 @@ if (args.Length > 0)
     using HttpClientHandler handler = new HttpClientHandler();
     handler.UseDefaultCredentials = true;
     // populate handler.ClientCertificates list
-    handler.ClientCertificates.Add(GetClientCertificate());
+    handler.ClientCertificates.Add(GetFirstClientAuthCert());
 
     // perform HTTP request with client authentication
     using HttpClient client = new HttpClient(handler);

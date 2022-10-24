@@ -13,7 +13,8 @@ using namespace Windows::Foundation;
 using namespace Windows::Security::Cryptography::Certificates;
 using namespace Windows::Web::Http;
 
-static Certificate FindClientAuthCert() {
+/** Returns the first clientAuth certificate with private key found in the Windows cert. store. */
+static Certificate GetFirstClientAuthCert() {
     CertificateQuery query;
     {
         Collections::IVector<hstring> eku = query.EnhancedKeyUsages();
@@ -48,7 +49,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     try {
         Filters::HttpBaseProtocolFilter filter;
-        filter.ClientCertificate(FindClientAuthCert());
+        filter.ClientCertificate(GetFirstClientAuthCert());
 
         HttpClient client(filter);
 
