@@ -70,11 +70,11 @@ Steps:
 
 | Language | Secure certificate store support                          | Sample code               |
 |----------|----------------------------------------------------------|---------------------------|
-| C++      |Can use [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) or [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See [WebClientCpp](WebClientCpp/) folder |
-| C#/.Net  |Can use [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See [WebClientNet](WebClientNet/) folder |
-| Java     | Can probably use [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | Not yet tested |
-| Python   |No support (see [#10](../../issues/10)) | See [WebClientPy](WebClientPy/) folder (uses file-based certificate handling)|
-| Go       |No support (see [#17](../../issues/17)) | See [WebClientGo](WebClientGo/) folder (uses file-based certificate handling)|
+| C++      | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) or [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See [WebClientCpp](WebClientCpp/) |
+| C#/.Net  | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See [WebClientNet](WebClientNet/) |
+| Java     | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | Not yet tested |
+| Python   |No known support (see [#10](../../issues/10)) | See [WebClientPy](WebClientPy/) (uses file-based certificate handling)|
+| Go       |No known support (see [#17](../../issues/17)) | See [WebClientGo](WebClientGo/) (uses file-based certificate handling)|
 
 All the language samples are command-line applications that tries to authenticate against `https://localhost:443/` using the client certificate. The applications can be run without any arguments and will output the following on success:
 ```
