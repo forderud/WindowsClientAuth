@@ -68,7 +68,7 @@ Steps:
 
 ### Testing from code
 
-| Language | Secure cerificate store support                          | Sample code               |
+| Language | Secure certificate store support                          | Sample code               |
 |----------|----------------------------------------------------------|---------------------------|
 | C++      |Can use [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) or [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See [WebClientCpp](WebClientCpp/) folder |
 | C#/.Net  |Can use [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See [WebClientNet](WebClientNet/) folder |
