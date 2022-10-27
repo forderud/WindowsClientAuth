@@ -72,8 +72,8 @@ Steps:
 |----------|----------------------------------------------------------|---------------------------|
 | C++      |Can use [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) or [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See [WebClientCpp](WebClientCpp/) folder.|
 | C#/.Net  |Can use [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See [WebClientNet](WebClientNet/) folder.|
-| Python   |No support (see #10) | See [WebClientPy](WebClientPy/) folder.|
-| Go       |No support (see #17) | See [WebClientGo](WebClientGo/) folder.|
+| Python   |No support (see [#10](../../issues/10)) | See [WebClientPy](WebClientPy/) folder.|
+| Go       |No support (see [#17](../../issues/17)) | See [WebClientGo](WebClientGo/) folder.|
 
 All the language samples are command-line applications that tries to authenticate against `https://localhost:443/` using the client certificate. The applications can be run without any arguments and will output the following on success:
 ```
