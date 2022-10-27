@@ -66,29 +66,16 @@ Steps:
 
 ![Browser Webpage](figures/BrowserWebpage.png)
 
-### Testing from Python
-Steps:
-* From a command prompt, run `python WebClient.py` to perform a programmatic HTTPS request
-* Observe successful client certificate authentication in the response:
-```
-<html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p>
-<p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
-```
+### Testing from code
 
-### Testing from C#
-Steps:
-* Open and build the `WebClientNet` C# project in Visual Studio.
-* Run the application and observe successful client certificate authentication in the response:
-```
-Client certificate: CN=ClientCert
+| Language | Secure cerificate store support                          | Sample code               |
+|----------|----------------------------------------------------------|---------------------------|
+| C++      |Can use [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) or [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See `WebClientCpp` folder.|
+| C#/.Net  |Can use [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates) | See `WebClientNet` folder.|
+| Python   |No support (see #10) | See `WebClientPy` folder.|
+| Go       |No support (see #17) | See `WebClientGo` folder.|
 
-<html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p><p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
-```
-
-### Testing from C++
-Steps:
-* Open and build the `WebClientCpp` C++ project in Visual Studio.
-* Run the application and observe successful client certificate authentication in the response:
+All the language samples are command-line applications that tries to authenticate against `https://localhost:443/` using the client certificate. The applications can be run without any arguments and will output the following on success:
 ```
 Client certificate: ClientCert
 
