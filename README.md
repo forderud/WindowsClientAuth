@@ -71,7 +71,7 @@ Steps:
 | Language | Secure cerificate store support                          | Sample code               |
 |----------|----------------------------------------------------------|---------------------------|
 | C++      |Can use [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) or [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See `WebClientCpp` folder.|
-| C#/.Net  |Can use [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates) | See `WebClientNet` folder.|
+| C#/.Net  |Can use [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See `WebClientNet` folder.|
 | Python   |No support (see #10) | See `WebClientPy` folder.|
 | Go       |No support (see #17) | See `WebClientGo` folder.|
 
