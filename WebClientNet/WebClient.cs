@@ -51,7 +51,6 @@ if (args.Length > 0)
 
 {
     using HttpClientHandler handler = new HttpClientHandler();
-    handler.UseDefaultCredentials = true;
     handler.ClientCertificates.Add(GetFirstClientAuthCert());
 
     // perform HTTP request with client authentication
