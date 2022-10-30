@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="WebClient.cpp" />
+    <ClCompile Include="WebClientWinRT.cpp" />
     <ClCompile Include="CertAccessWin32.cpp" />
     <ClCompile Include="WebClientMSXML.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
 </Project>

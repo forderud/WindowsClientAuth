@@ -75,7 +75,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CertAccessWin32.cpp" />
-    <ClCompile Include="WebClient.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="WebClientWinRT.cpp" />
     <ClCompile Include="WebClientMSXML.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
