@@ -38,18 +38,19 @@ static Certificate GetFirstClientAuthCert() {
 
 
 int wmain(int argc, wchar_t* argv[]) {
+    init_apartment();
+
 #ifdef ENABLE_LOW_LEVEL_IMPL
     CertAccessWin32();
 #else
-    init_apartment();
-
     std::wstring hostname = L"localhost:443"; // default
     if (argc > 1)
         hostname = argv[1];
 
     try {
+        auto clientCert = GetFirstClientAuthCert();
         Filters::HttpBaseProtocolFilter filter;
-        filter.ClientCertificate(GetFirstClientAuthCert());
+        filter.ClientCertificate(clientCert);
 
         // perform HTTP request with client authentication
         HttpClient client(filter);
@@ -62,7 +63,6 @@ int wmain(int argc, wchar_t* argv[]) {
     } catch (hresult_error const& ex) {
         std::wcerr << L"ERROR: " << std::wstring(ex.message()) << std::endl;
     }
-
-    return 0;
 #endif
+    return 0;
 }
