@@ -55,6 +55,7 @@ public:
     }
 
     HRESULT OnError(IXMLHTTPRequest2* pXHR, HRESULT hrError) override {
+        m_hr = hrError;
         SetEvent(m_event); // signal completion
         return S_OK;
     }
@@ -68,11 +69,13 @@ public:
     }
 
     /** Block until completion. */
-    void Wait() {
+    HRESULT Wait() {
         WaitForSingleObject(m_event, INFINITE);
+        return m_hr;
     }
 
 private:
+    HRESULT m_hr = S_OK;
     HANDLE m_event = nullptr;
 };
 
@@ -100,5 +103,7 @@ void HttpGetMSXML6(std::wstring url, std::vector<uint8_t> certHash) {
     if (FAILED(hr))
         throw winrt::hresult_error(hr);
 
-    cb->Wait();
+    hr = cb->Wait();
+    if (FAILED(hr))
+        throw winrt::hresult_error(hr);
 }
