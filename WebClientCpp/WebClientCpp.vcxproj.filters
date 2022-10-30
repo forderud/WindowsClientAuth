@@ -3,5 +3,6 @@
   <ItemGroup>
     <ClCompile Include="WebClient.cpp" />
     <ClCompile Include="CertAccessWin32.cpp" />
+    <ClCompile Include="WebClientMSXML.cpp" />
   </ItemGroup>
 </Project>

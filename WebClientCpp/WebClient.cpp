@@ -7,6 +7,7 @@
 #pragma comment(lib, "windowsapp.lib")
 
 void CertAccessWin32();
+void HttpGetMSXML6(std::wstring url, std::vector<uint8_t> certHash);
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -49,6 +50,13 @@ int wmain(int argc, wchar_t* argv[]) {
 
     try {
         auto clientCert = GetFirstClientAuthCert();
+#ifndef ENABLE_WINRT_IMPL
+        com_array<uint8_t> hash = clientCert.GetHashValue();
+        std::vector<uint8_t> certHash(hash.size(), 0);
+        for (uint32_t i = 0; i < hash.size(); ++i)
+            certHash[i] = hash[i];
+        HttpGetMSXML6(L"https://" + hostname, certHash);
+#else
         Filters::HttpBaseProtocolFilter filter;
         filter.ClientCertificate(clientCert);
 
@@ -60,6 +68,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
         hstring message(response.Content().ReadAsStringAsync().get());
         std::wcout << std::wstring(message);
+#endif
     } catch (hresult_error const& ex) {
         std::wcerr << L"ERROR: " << std::wstring(ex.message()) << std::endl;
     }
