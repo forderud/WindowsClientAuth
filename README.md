@@ -70,7 +70,7 @@ Steps:
 
 | Language | Secure certificate store support                          | Sample code               |
 |----------|----------------------------------------------------------|---------------------------|
-| C++      | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) or [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See [WebClientCpp](WebClientCpp/) |
+| C++      | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) or [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See [WebClientCpp](WebClientCpp/) (both using UWP and MSXML APIs) |
 | C#/.Net  | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See [WebClientNet](WebClientNet/) |
 | Java     | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | Not yet tested |
 | Python   |No known support (see [#10](../../issues/10)) | See [WebClientPy](WebClientPy/) (uses file-based certificate handling)|
