@@ -9,9 +9,8 @@
 #pragma comment(lib, "msxml6.lib")
 
 using namespace winrt;
-using namespace Microsoft::WRL;
 
-class HttpRequest3Callback : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IXMLHTTPRequest3Callback> {
+class HttpRequest3Callback : public implements<HttpRequest3Callback, IXMLHTTPRequest3Callback> {
 public:
     HttpRequest3Callback() {
         m_event = CreateEventEx(NULL, NULL, CREATE_EVENT_MANUAL_RESET, EVENT_ALL_ACCESS);
@@ -82,17 +81,14 @@ private:
 
 
 void HttpGetMSXML6(std::wstring url, std::vector<uint8_t> certHash) {
-    ComPtr<IXMLHTTPRequest3> http;
-    HRESULT hr = CoCreateInstance(CLSID_FreeThreadedXMLHTTP60, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&http));
-    if (FAILED(hr))
-        throw winrt::hresult_error(hr);
+    com_ptr<IXMLHTTPRequest3> http;
+    check_hresult(CoCreateInstance(CLSID_FreeThreadedXMLHTTP60, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(http.put())));
 
     check_hresult(http->SetClientCertificate((DWORD)certHash.size(), certHash.data(), NULL));
 
-    ComPtr<HttpRequest3Callback> cb;
-    check_hresult(MakeAndInitialize<HttpRequest3Callback>(&cb));
+    com_ptr<HttpRequest3Callback> cb = make_self<HttpRequest3Callback>();
 
-    check_hresult(http->Open(L"GET", url.c_str(), cb.Get(), NULL, NULL, NULL, NULL));
+    check_hresult(http->Open(L"GET", url.c_str(), cb.get(), NULL, NULL, NULL, NULL));
 
     check_hresult(http->Send(NULL, 0));
 
