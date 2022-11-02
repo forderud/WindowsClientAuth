@@ -8,6 +8,7 @@
 
 #pragma comment(lib, "msxml6.lib")
 
+using namespace winrt;
 using namespace Microsoft::WRL;
 
 class HttpRequest3Callback : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IXMLHTTPRequest3Callback> {
@@ -86,24 +87,14 @@ void HttpGetMSXML6(std::wstring url, std::vector<uint8_t> certHash) {
     if (FAILED(hr))
         throw winrt::hresult_error(hr);
 
-    hr = http->SetClientCertificate((DWORD)certHash.size(), certHash.data(), NULL);
-    if (FAILED(hr))
-        throw winrt::hresult_error(hr);
+    check_hresult(http->SetClientCertificate((DWORD)certHash.size(), certHash.data(), NULL));
 
     ComPtr<HttpRequest3Callback> cb;
-    hr = MakeAndInitialize<HttpRequest3Callback>(&cb);
-    if (FAILED(hr))
-        throw winrt::hresult_error(hr);
+    check_hresult(MakeAndInitialize<HttpRequest3Callback>(&cb));
 
-    hr = http->Open(L"GET", url.c_str(), cb.Get(), NULL, NULL, NULL, NULL);
-    if (FAILED(hr))
-        throw winrt::hresult_error(hr);
+    check_hresult(http->Open(L"GET", url.c_str(), cb.Get(), NULL, NULL, NULL, NULL));
 
-    hr = http->Send(NULL, 0);
-    if (FAILED(hr))
-        throw winrt::hresult_error(hr);
+    check_hresult(http->Send(NULL, 0));
 
-    hr = cb->Wait();
-    if (FAILED(hr))
-        throw winrt::hresult_error(hr);
+    check_hresult(cb->Wait());
 }
