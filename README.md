@@ -70,9 +70,9 @@ Steps:
 
 | Language  | Secure certificate store support                          | Sample code              | Limitations |
 |-----------|----------------------------------------------------------|---------------------------|-------------|
-| C++ Win32 | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) | See [WebClientCpp](WebClientCpp/) (MSXML part) | None known |
+| C++ Win32 | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) | See [WebClientCpp](WebClientCpp/) (MSXML part) | None discovered |
 | C++/C# UWP| [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See [WebClientCpp](WebClientCpp/) (UWP part) | Unable to access certificates in ["Local Computer\Personal" store](https://github.com/MicrosoftDocs/winrt-api/issues/2288) |
-| C#/.Net   | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See [WebClientNet](WebClientNet/) | None known |
+| C#/.Net   | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See [WebClientNet](WebClientNet/) | None discovered |
 | Java      | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | Not yet tested | TBD |
 | Python    |No known support (see [#10](../../issues/10)) | See [WebClientPy](WebClientPy/) (file-based certificate handling)| [Unable to use certificate store for mTLS](https://github.com/sethmlarson/truststore/issues/78) |
 | Go        |No known support (see [#17](../../issues/17)) | See [WebClientGo](WebClientGo/) (file-based certificate handling)| [How to access certificates in Windows system store?](https://groups.google.com/g/certtostore-discuss/c/UFkMHzoW6MA) |
