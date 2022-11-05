@@ -38,9 +38,9 @@ void OpenCNGKey(const wchar_t* providername, const wchar_t* keyname, DWORD legac
     NCryptFreeObject(provider);
 }
 
-static std::vector<BYTE> CertContextProperty(const CERT_CONTEXT* cert) {
+static std::vector<BYTE> CertContextProperty(const CERT_CONTEXT& cert, DWORD prop) {
     DWORD len = 0;
-    if (!CertGetCertificateContextProperty(cert, CERT_KEY_PROV_INFO_PROP_ID, nullptr, &len)) {
+    if (!CertGetCertificateContextProperty(&cert, prop, nullptr, &len)) {
         DWORD err = GetLastError();
         if (err == CRYPT_E_NOT_FOUND)
             return {};
@@ -48,7 +48,7 @@ static std::vector<BYTE> CertContextProperty(const CERT_CONTEXT* cert) {
         abort();
     }
     std::vector<BYTE> prov_buf(len, 0);
-    if (!CertGetCertificateContextProperty(cert, CERT_KEY_PROV_INFO_PROP_ID, prov_buf.data(), &len)) {
+    if (!CertGetCertificateContextProperty(&cert, prop, prov_buf.data(), &len)) {
         DWORD err = GetLastError();
         err;
         abort();
@@ -91,7 +91,7 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
             continue;
         }
 
-        std::vector<BYTE> prov_buf = CertContextProperty(cert);
+        std::vector<BYTE> prov_buf = CertContextProperty(*cert, CERT_KEY_PROV_INFO_PROP_ID);
         if (prov_buf.empty())
             continue;
         CRYPT_KEY_PROV_INFO* provider = (CRYPT_KEY_PROV_INFO*)prov_buf.data();
