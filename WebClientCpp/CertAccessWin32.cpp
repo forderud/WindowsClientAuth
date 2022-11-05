@@ -57,6 +57,21 @@ static std::vector<BYTE> CertContextProperty(const CERT_CONTEXT* cert) {
     return prov_buf;
 }
 
+/** Check if a certificate will expire within the next "X" days. */
+static bool CertWillExpireInDays(CERT_INFO & cert_info, int days) {
+     // get current time in UTC
+    FILETIME currentTime = {};
+    GetSystemTimePreciseAsFileTime(&currentTime);
+
+    // move current time "X" days forward
+    static constexpr uint64_t SECOND = 10000000L; // 100-nanosecond scale
+    (uint64_t&)currentTime += days*24*60*60*SECOND;
+
+    // check if certificate will then have expired
+    LONG diff = CompareFileTime(&cert_info.NotAfter, &currentTime);
+    return diff < 0;
+}
+
 
 void OpenCertStore(const wchar_t storename[], bool perUser) {
     HCERTSTORE store = CertOpenStore(CERT_STORE_PROV_SYSTEM, 0, NULL, perUser ? CERT_SYSTEM_STORE_CURRENT_USER : CERT_SYSTEM_STORE_LOCAL_MACHINE, storename);
@@ -70,6 +85,11 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
         DWORD len = CertNameToStrW(cert->dwCertEncodingType, &cert->pCertInfo->Subject, CERT_SIMPLE_NAME_STR, buffer, (DWORD)std::size(buffer));
         assert(len > 0);
         std::wcout << L"Cert: " << buffer << L'\n';
+
+        if (CertWillExpireInDays(*cert->pCertInfo, 31)) {
+            std::wcout << L"  Cert will expire within a month.\n";
+            continue;
+        }
 
         std::vector<BYTE> prov_buf = CertContextProperty(cert);
         if (prov_buf.empty())
