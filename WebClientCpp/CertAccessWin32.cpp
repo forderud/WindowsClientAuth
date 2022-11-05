@@ -92,10 +92,13 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
         }
 
         std::vector<BYTE> thumbprint = CertContextProperty(*cert, CERT_HASH_PROP_ID);
-        std::wcout << L"  Thumbprint: " << std::hex; //TODO: Fix missing leading zeros
-        for (BYTE elm : thumbprint)
-            std::wcout << elm;
-        std::wcout << L'\n' << std::dec;
+        std::wcout << L"  Thumbprint: ";
+        for (BYTE elm : thumbprint) {
+            wchar_t buffer[3] = {};
+            swprintf(buffer, std::size(buffer), L"%02x", elm);
+            std::wcout << buffer;
+        }
+        std::wcout << L'\n';
 
         std::vector<BYTE> prov_buf = CertContextProperty(*cert, CERT_KEY_PROV_INFO_PROP_ID);
         if (prov_buf.empty())
