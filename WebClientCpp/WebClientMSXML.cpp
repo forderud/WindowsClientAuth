@@ -80,11 +80,11 @@ private:
 };
 
 
-void HttpGetMSXML6(std::wstring url, std::vector<uint8_t> certHash) {
+void HttpGetMSXML6(std::wstring url, std::vector<uint8_t> thumbprint) {
     com_ptr<IXMLHTTPRequest3> http;
     check_hresult(CoCreateInstance(CLSID_FreeThreadedXMLHTTP60, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(http.put())));
 
-    check_hresult(http->SetClientCertificate((DWORD)certHash.size(), certHash.data(), NULL));
+    check_hresult(http->SetClientCertificate((DWORD)thumbprint.size(), thumbprint.data(), NULL));
 
     com_ptr<HttpRequest3Callback> cb = make_self<HttpRequest3Callback>();
 

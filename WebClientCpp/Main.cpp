@@ -4,7 +4,7 @@ using namespace winrt;
 using namespace Windows::Security::Cryptography::Certificates;
 
 void CertAccessWin32();
-void HttpGetMSXML6(std::wstring url, std::vector<uint8_t> certHash);
+void HttpGetMSXML6(std::wstring url, std::vector<uint8_t> thumbprint);
 Certificate GetFirstClientAuthCert();
 void HttpGetWinRT(std::wstring url, Certificate clientCert);
 
@@ -33,8 +33,8 @@ int wmain(int argc, wchar_t* argv[]) {
         auto clientCert = GetFirstClientAuthCert();
 
         std::wcout << "HTTP request using MSXML6:\n";
-        com_array<uint8_t> hash = clientCert.GetHashValue();
-        HttpGetMSXML6(url, ToVector(hash));
+        com_array<uint8_t> thumbprint = clientCert.GetHashValue(); // shown as "Thumbprint" in Windows cert. manager
+        HttpGetMSXML6(url, ToVector(thumbprint));
         
         std::wcout << "\n\nHTTP request using WinRT HttpClient:\n";
         HttpGetWinRT(url, clientCert);
