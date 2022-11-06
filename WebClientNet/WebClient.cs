@@ -30,6 +30,7 @@ X509Certificate2 GetFirstClientAuthCert()
     using X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
     store.Open(OpenFlags.ReadOnly);
 
+    // expired certs. are included in the enumeration
     foreach (X509Certificate2 cert in store.Certificates)
     {
         if (!cert.HasPrivateKey)

@@ -14,6 +14,8 @@ using namespace Windows::Web::Http;
 Certificate GetFirstClientAuthCert() {
     CertificateQuery query;
     {
+        query.IncludeExpiredCertificates(false);
+
         Collections::IVector<hstring> eku = query.EnhancedKeyUsages();
         eku.Append(L"1.3.6.1.5.5.7.3.2"); // clientAuth OID
 
