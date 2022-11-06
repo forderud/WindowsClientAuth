@@ -28,3 +28,8 @@ $localhost = New-SelfSignedCertificate -CertStoreLocation "Cert:\CurrentUser\My"
 Export-PfxCertificate -Cert $localhost -Password $pwd -FilePath "localhost.pfx"
 # Convert to PEM for Python server compatibility
 & "C:\Program Files\Git\usr\bin\openssl.exe" pkcs12 -in localhost.pfx -out localhost.key -nodes -password pass:1234
+
+
+# Generate expired certificate for test purposes
+$expired = New-SelfSignedCertificate -CertStoreLocation "Cert:\CurrentUser\My" -Type Custom -Subject "CN=ExpiredCert" -KeyUsageProperty All -KeyUsage None -KeyExportPolicy Exportable -KeyAlgorithm RSA -KeyLength 2048 -NotBefore(Get-Date).AddMonths(-13) -NotAfter(Get-Date).AddMonths(-1)
+Export-PfxCertificate -Cert $expired -Password $pwd -FilePath "ExpiredCert.pfx"
