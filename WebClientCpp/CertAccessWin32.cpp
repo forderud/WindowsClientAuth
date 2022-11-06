@@ -101,6 +101,17 @@ public:
         return buffer;
     }
 
+    /** Returns SHA-1 thumbprint as hex-encoded string. */
+    std::wstring ThumbPrintHex() const {
+        std::vector<BYTE> thumbprint = ContextProperty(CERT_HASH_PROP_ID);
+
+        std::wstring result(2*thumbprint.size(), L'\0');
+        for (size_t i = 0; i < thumbprint.size(); ++i)
+            swprintf(result.data() + 2*i, 2+1, L"%02x", thumbprint[i]);
+
+        return result;
+    }
+
     /** CertGetEnhancedKeyUsage convenience wrapper. Returns empty string if no EKU fields are found. */
     std::vector<std::string> EnhancedKeyUsage(DWORD flags) const {
         DWORD len = 0;
@@ -162,14 +173,7 @@ void CertAccessWin32() {
             continue;
         }
 
-        std::vector<BYTE> thumbprint = cert.ContextProperty(CERT_HASH_PROP_ID);
-        std::wcout << L"  Thumbprint: ";
-        for (BYTE elm : thumbprint) {
-            wchar_t buffer[3] = {};
-            swprintf(buffer, std::size(buffer), L"%02x", elm);
-            std::wcout << buffer;
-        }
-        std::wcout << L'\n';
+        std::wcout << L"  Thumbprint: " << cert.ThumbPrintHex() << L'\n';
 
         std::vector<std::string> ekus = cert.EnhancedKeyUsage(0);
         for (auto eku : ekus)
