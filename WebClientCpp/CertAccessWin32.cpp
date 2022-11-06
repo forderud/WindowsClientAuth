@@ -26,7 +26,7 @@ public:
         NCryptFreeObject(m_provider);
     }
 
-    std::vector<BYTE> GetProperty(const wchar_t * prop) {
+    std::vector<BYTE> Property(const wchar_t * prop) const {
         DWORD size = 0;
         SECURITY_STATUS status = NCryptGetProperty(m_key, prop, nullptr, 0, &size, 0);
         if (status == NTE_NOT_FOUND)
@@ -48,15 +48,10 @@ private:
 class Certificate {
 public:
     Certificate(const CERT_CONTEXT* cert) : m_cert(cert) {
-    }
-
-    operator bool() const {
-        return m_cert;
+        assert(m_cert);
     }
 
     std::wstring Name(DWORD type) const {
-        assert(m_cert);
-
         DWORD len = CertNameToStrW(m_cert->dwCertEncodingType, &m_cert->pCertInfo->Subject, type, nullptr, 0); // length, including null-termination
         if (!len)
             return L"";
@@ -69,8 +64,7 @@ public:
     }
 
     /** Check if a certificate will expire within the next "X" days. */
-    bool WillExpireInDays(int days) {
-        assert(m_cert);
+    bool WillExpireInDays(int days) const {
         assert(m_cert->pCertInfo);
 
         // get current time in UTC
@@ -88,9 +82,7 @@ public:
 
     /** CertGetCertificateContextProperty convenience wrapper.
         Expects the query to either succeed or fail with CRYPT_E_NOT_FOUND. */
-    std::vector<BYTE> ContextProperty(DWORD prop) {
-        assert(m_cert);
-
+    std::vector<BYTE> ContextProperty(DWORD prop) const {
         DWORD buffer_len = 0;
         if (!CertGetCertificateContextProperty(m_cert, prop, nullptr, &buffer_len)) {
             DWORD err = GetLastError();
@@ -110,9 +102,7 @@ public:
     }
 
     /** CertGetEnhancedKeyUsage convenience wrapper. Returns empty string if no EKU fields are found. */
-    std::vector<std::string> EnhancedKeyUsage(DWORD flags) {
-        assert(m_cert);
-
+    std::vector<std::string> EnhancedKeyUsage(DWORD flags) const {
         DWORD len = 0;
         BOOL ok = CertGetEnhancedKeyUsage(m_cert, flags, nullptr, &len);
         if (!ok || (len == 0))
@@ -163,7 +153,8 @@ private:
 void CertAccessWin32() {
     CertStore store(L"My", true);
 
-    for (Certificate cert = store.Next(); cert; cert = store.Next()) {
+    for (auto it = store.Next(); it; it = store.Next()) {
+        Certificate cert(it);
         std::wcout << L"Cert: " << cert.Name(CERT_SIMPLE_NAME_STR) << L'\n';
 
         if (cert.WillExpireInDays(31)) {
@@ -197,6 +188,6 @@ void CertAccessWin32() {
         }
 
         CNGKey cng(provider->pwszProvName, provider->pwszContainerName, provider->dwKeySpec);
-        cng.GetProperty(NCRYPT_NAME_PROPERTY);
+        cng.Property(NCRYPT_NAME_PROPERTY);
     }
 }
