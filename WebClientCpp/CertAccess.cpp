@@ -1,7 +1,6 @@
 #include <windows.h>
 #include <ncrypt.h>
 
-#include <functional>
 #include <iostream>
 #include <cassert>
 #include <vector>
