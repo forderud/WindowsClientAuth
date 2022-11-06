@@ -38,23 +38,25 @@ void OpenCNGKey(const wchar_t* providername, const wchar_t* keyname, DWORD legac
     NCryptFreeObject(provider);
 }
 
+/** CertGetCertificateContextProperty convenience wrapper.
+    Expects the query to either succeed or fail with CRYPT_E_NOT_FOUND. */
 static std::vector<BYTE> CertContextProperty(const CERT_CONTEXT& cert, DWORD prop) {
-    DWORD len = 0;
-    if (!CertGetCertificateContextProperty(&cert, prop, nullptr, &len)) {
+    DWORD buffer_len = 0;
+    if (!CertGetCertificateContextProperty(&cert, prop, nullptr, &buffer_len)) {
         DWORD err = GetLastError();
         if (err == CRYPT_E_NOT_FOUND)
             return {};
 
         abort();
     }
-    std::vector<BYTE> prov_buf(len, 0);
-    if (!CertGetCertificateContextProperty(&cert, prop, prov_buf.data(), &len)) {
+    std::vector<BYTE> buffer(buffer_len, 0);
+    if (!CertGetCertificateContextProperty(&cert, prop, buffer.data(), &buffer_len)) {
         DWORD err = GetLastError();
         err;
         abort();
     }
 
-    return prov_buf;
+    return buffer;
 }
 
 /** Check if a certificate will expire within the next "X" days. */
