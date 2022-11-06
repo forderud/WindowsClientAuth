@@ -7,6 +7,43 @@
 #include <vector>
 
 
+class CNGKey {
+public:
+    CNGKey(const wchar_t* providername, const wchar_t* keyname, DWORD legacyKeySpec) {
+        SECURITY_STATUS status = NCryptOpenStorageProvider(&m_provider, providername, 0);
+        if (status != ERROR_SUCCESS)
+            abort();
+
+        status = NCryptOpenKey(m_provider, &m_key, keyname, legacyKeySpec, NCRYPT_SILENT_FLAG);
+        if (status == NTE_BAD_KEYSET)
+            abort();
+        if (status != ERROR_SUCCESS)
+            abort();
+    }
+    ~CNGKey() {
+        NCryptFreeObject(m_key);
+        NCryptFreeObject(m_provider);
+    }
+
+    std::vector<BYTE> Property(const wchar_t* prop) const {
+        DWORD size = 0;
+        SECURITY_STATUS status = NCryptGetProperty(m_key, prop, nullptr, 0, &size, 0);
+        if (status == NTE_NOT_FOUND)
+            return {};
+        if (status != ERROR_SUCCESS)
+            abort();
+        std::vector<BYTE> result;
+        result.resize(size);
+        NCryptGetProperty(m_key, prop, result.data(), size, &size, 0);
+        return result;
+    }
+
+private:
+    NCRYPT_PROV_HANDLE m_provider = 0;
+    NCRYPT_KEY_HANDLE m_key = 0;
+};
+
+
 class Certificate {
 public:
     Certificate(const CERT_CONTEXT* cert) : m_cert(cert) {
