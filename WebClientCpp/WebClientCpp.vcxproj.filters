@@ -6,4 +6,7 @@
     <ClCompile Include="WebClientMSXML.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CertAccess.hpp" />
+  </ItemGroup>
 </Project>
