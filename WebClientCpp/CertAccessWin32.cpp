@@ -6,37 +6,43 @@
 #include <cassert>
 
 
-void OpenCNGKey(const wchar_t* providername, const wchar_t* keyname, DWORD legacyKeySpec) {
-    NCRYPT_PROV_HANDLE provider = 0;
-    SECURITY_STATUS status = NCryptOpenStorageProvider(&provider, providername, 0);
-    if (status != ERROR_SUCCESS)
-        abort();
+class CNGKey {
+public:
+    CNGKey(const wchar_t* providername, const wchar_t* keyname, DWORD legacyKeySpec) {
+        SECURITY_STATUS status = NCryptOpenStorageProvider(&m_provider, providername, 0);
+        if (status != ERROR_SUCCESS)
+            abort();
 
-    NCRYPT_KEY_HANDLE key = 0;
-    status = NCryptOpenKey(provider, &key, keyname, legacyKeySpec, NCRYPT_SILENT_FLAG);
-    if (status == NTE_BAD_KEYSET)
-        abort();
-    if (status != ERROR_SUCCESS)
-        abort();
+        status = NCryptOpenKey(m_provider, &m_key, keyname, legacyKeySpec, NCRYPT_SILENT_FLAG);
+        if (status == NTE_BAD_KEYSET)
+            abort();
+        if (status != ERROR_SUCCESS)
+            abort();
 
-    std::wcout << L"  CNG key access succeeded\n";
+        std::wcout << L"  CNG key access succeeded\n";
+    }
+    ~CNGKey() {
+        NCryptFreeObject(m_key);
+        NCryptFreeObject(m_provider);
+    }
 
-#if 0
-    DWORD size = 0;
-    status = NCryptGetProperty(key, NCRYPT_NAME_PROPERTY, nullptr, 0, &size, 0);
-    if (status == NTE_NOT_FOUND)
-        continue;
-    if (status != ERROR_SUCCESS)
-        abort();
-    std::vector<BYTE> cert;
-    cert.resize(size);
-    NCryptGetProperty(key, NCRYPT_NAME_PROPERTY, &cert[0], size, &size, 0);
-#endif
+    std::vector<BYTE> GetProperty(const wchar_t * prop) {
+        DWORD size = 0;
+        SECURITY_STATUS status = NCryptGetProperty(m_key, prop, nullptr, 0, &size, 0);
+        if (status == NTE_NOT_FOUND)
+            return {};
+        if (status != ERROR_SUCCESS)
+            abort();
+        std::vector<BYTE> result;
+        result.resize(size);
+        NCryptGetProperty(m_key, prop, result.data(), size, &size, 0);
+        return result;
+    }
 
-    NCryptFreeObject(key);
-
-    NCryptFreeObject(provider);
-}
+private:
+    NCRYPT_PROV_HANDLE m_provider = 0;
+    NCRYPT_KEY_HANDLE m_key = 0;
+};
 
 
 class Certificate {
@@ -185,6 +191,7 @@ void CertAccessWin32() {
             continue;
         }
 
-        OpenCNGKey(provider->pwszProvName, provider->pwszContainerName, provider->dwKeySpec);
+        CNGKey cng(provider->pwszProvName, provider->pwszContainerName, provider->dwKeySpec);
+        cng.GetProperty(NCRYPT_NAME_PROPERTY);
     }
 }
