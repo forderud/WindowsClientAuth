@@ -181,7 +181,8 @@ void CertAccessWin32() {
 
         std::vector<BYTE> prov_buf = cert.ContextProperty(CERT_KEY_PROV_INFO_PROP_ID);
         if (prov_buf.empty())
-            continue;
+            continue; // no private key
+
         CRYPT_KEY_PROV_INFO* provider = (CRYPT_KEY_PROV_INFO*)prov_buf.data();
         std::wcout << L"  Provider: " << provider->pwszProvName << L'\n';
         std::wcout << L"  Container: " << provider->pwszContainerName << L'\n';
