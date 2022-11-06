@@ -4,6 +4,7 @@
 #include <functional>
 #include <iostream>
 #include <cassert>
+#include <vector>
 
 
 class CNGKey {
@@ -58,7 +59,7 @@ public:
 
         // print certificate name
         std::wstring buffer(len-1, L'\0');
-        len = CertNameToStrW(m_cert->dwCertEncodingType, &m_cert->pCertInfo->Subject, type, buffer.data(), (DWORD)buffer.size()+1);
+        len = CertNameToStrW(m_cert->dwCertEncodingType, &m_cert->pCertInfo->Subject, type, (wchar_t*)buffer.data(), (DWORD)buffer.size()+1);
         assert(len > 0);
         return buffer;
     }
@@ -107,7 +108,7 @@ public:
 
         std::wstring result(2*thumbprint.size(), L'\0');
         for (size_t i = 0; i < thumbprint.size(); ++i)
-            swprintf(result.data() + 2*i, 2+1, L"%02x", thumbprint[i]);
+            swprintf((wchar_t*)result.data() + 2*i, 2+1, L"%02x", thumbprint[i]);
 
         return result;
     }
