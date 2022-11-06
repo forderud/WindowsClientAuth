@@ -133,8 +133,18 @@ public:
         return result;
     }
 
+    /** The returned pointer is owned by this object. */
+    CRYPT_KEY_PROV_INFO* PrivateKey() {
+        m_priv_key = ContextProperty(CERT_KEY_PROV_INFO_PROP_ID);
+        if (m_priv_key.empty())
+            return nullptr; // no private key
+
+        return (CRYPT_KEY_PROV_INFO*)m_priv_key.data();
+    }
+
 private:
-    const CERT_CONTEXT* m_cert = nullptr; //< weak ptr.
+    const CERT_CONTEXT* m_cert = nullptr; ///< weak ptr.
+    std::vector<BYTE>   m_priv_key; ///< buffer for PrivateKey method
 };
 
 class CertStore {
@@ -168,10 +178,8 @@ void CertAccessWin32() {
         Certificate cert(it);
         std::wcout << L"Cert: " << cert.Name(CERT_SIMPLE_NAME_STR) << L'\n';
 
-        if (cert.WillExpireInDays(31)) {
+        if (cert.WillExpireInDays(31))
             std::wcout << L"  Cert will expire within a month.\n";
-            continue;
-        }
 
         std::wcout << L"  Thumbprint: " << cert.ThumbPrintHex() << L'\n';
 
@@ -179,20 +187,19 @@ void CertAccessWin32() {
         for (auto eku : ekus)
             std::cout << "  EKU: " << eku << '\n';
 
-        std::vector<BYTE> prov_buf = cert.ContextProperty(CERT_KEY_PROV_INFO_PROP_ID);
-        if (prov_buf.empty())
-            continue; // no private key
+        CRYPT_KEY_PROV_INFO* priv_key = cert.PrivateKey();
+        if (!priv_key)
+            continue;
 
-        CRYPT_KEY_PROV_INFO* provider = (CRYPT_KEY_PROV_INFO*)prov_buf.data();
-        std::wcout << L"  Provider: " << provider->pwszProvName << L'\n';
-        std::wcout << L"  Container: " << provider->pwszContainerName << L'\n';
+        std::wcout << L"  Provider: " << priv_key->pwszProvName << L'\n';
+        std::wcout << L"  Container: " << priv_key->pwszContainerName << L'\n';
 
-        if (provider->dwProvType != 0) {
+        if (priv_key->dwProvType != 0) {
             std::wcout << L"  Not a CNG type key\n";
             continue;
         }
 
-        CNGKey cng(provider->pwszProvName, provider->pwszContainerName, provider->dwKeySpec);
+        CNGKey cng(priv_key->pwszProvName, priv_key->pwszContainerName, priv_key->dwKeySpec);
         cng.Property(NCRYPT_NAME_PROPERTY);
     }
 }
