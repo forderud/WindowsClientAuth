@@ -54,11 +54,16 @@ public:
         return m_cert;
     }
 
-    std::wstring Name() const {
+    std::wstring Name(DWORD type) const {
         assert(m_cert);
+
+        DWORD len = CertNameToStrW(m_cert->dwCertEncodingType, &m_cert->pCertInfo->Subject, type, nullptr, 0); // length, including null-termination
+        if (!len)
+            return L"";
+
         // print certificate name
-        wchar_t buffer[1024] = {};
-        DWORD len = CertNameToStrW(m_cert->dwCertEncodingType, &m_cert->pCertInfo->Subject, CERT_SIMPLE_NAME_STR, buffer, (DWORD)std::size(buffer));
+        std::wstring buffer(len-1, L'\0');
+        len = CertNameToStrW(m_cert->dwCertEncodingType, &m_cert->pCertInfo->Subject, type, buffer.data(), (DWORD)buffer.size()+1);
         assert(len > 0);
         return buffer;
     }
@@ -159,7 +164,7 @@ void CertAccessWin32() {
     CertStore store(L"My", true);
 
     for (Certificate cert = store.Next(); cert; cert = store.Next()) {
-        std::wcout << L"Cert: " << cert.Name() << L'\n';
+        std::wcout << L"Cert: " << cert.Name(CERT_SIMPLE_NAME_STR) << L'\n';
 
         if (cert.WillExpireInDays(31)) {
             std::wcout << L"  Cert will expire within a month.\n";
