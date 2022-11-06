@@ -95,14 +95,34 @@ static std::vector<std::string> CertEnhancedKeyUsage (const CERT_CONTEXT& cert, 
     return result;
 }
 
+class CertStore {
+public:
+    CertStore(const wchar_t storename[], bool perUser) {
+        m_store = CertOpenStore(CERT_STORE_PROV_SYSTEM, 0, NULL, perUser ? CERT_SYSTEM_STORE_CURRENT_USER : CERT_SYSTEM_STORE_LOCAL_MACHINE, storename);
+        if (m_store == NULL)
+            abort();
 
-void OpenCertStore(const wchar_t storename[], bool perUser) {
-    HCERTSTORE store = CertOpenStore(CERT_STORE_PROV_SYSTEM, 0, NULL, perUser ? CERT_SYSTEM_STORE_CURRENT_USER : CERT_SYSTEM_STORE_LOCAL_MACHINE, storename);
-    if (store == NULL)
-        abort();
+    }
+    ~CertStore() {
+        CertCloseStore(m_store, 0);
+    }
 
-    const CERT_CONTEXT * cert = nullptr;
-    while ((cert = CertEnumCertificatesInStore(store, cert)) != NULL) {
+    /** Cetificate iterator. Returns nullptr at end. */
+    const CERT_CONTEXT* Next() {
+        m_cert = CertEnumCertificatesInStore(m_store, m_cert);
+        return m_cert;
+    }
+
+private:
+    HCERTSTORE          m_store = nullptr;
+    const CERT_CONTEXT* m_cert = nullptr; ///< iterator
+};
+
+
+void CertAccessWin32() {
+    CertStore store(L"My", true);
+
+    for (const CERT_CONTEXT* cert = store.Next(); cert; cert = store.Next()) {
         // print certificate name
         wchar_t buffer[1024] = {};
         DWORD len = CertNameToStrW(cert->dwCertEncodingType, &cert->pCertInfo->Subject, CERT_SIMPLE_NAME_STR, buffer, (DWORD)std::size(buffer));
@@ -141,11 +161,4 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
 
         OpenCNGKey(provider->pwszProvName, provider->pwszContainerName, provider->dwKeySpec);
     }
-
-    CertCloseStore(store, 0);
-}
-
-
-void CertAccessWin32() {
-    OpenCertStore(L"My", true);
 }
