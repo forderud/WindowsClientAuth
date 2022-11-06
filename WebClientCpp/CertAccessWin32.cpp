@@ -75,11 +75,11 @@ static bool CertWillExpireInDays(CERT_INFO & cert_info, int days) {
 }
 
 /** CertGetEnhancedKeyUsage convenience wrapper. Returns empty string if no EKU fields are found. */
-static std::string CertEnhancedKeyUsage (const CERT_CONTEXT& cert, DWORD flags) {
+static std::vector<std::string> CertEnhancedKeyUsage (const CERT_CONTEXT& cert, DWORD flags) {
     DWORD len = 0;
     BOOL ok = CertGetEnhancedKeyUsage(&cert, flags, nullptr, &len);
     if (!ok || (len == 0))
-        return "";
+        return {};
 
     std::vector<BYTE> eku_buf;
     eku_buf.resize(len, (BYTE)0);
@@ -87,7 +87,12 @@ static std::string CertEnhancedKeyUsage (const CERT_CONTEXT& cert, DWORD flags) 
     assert(ok);
 
     auto* eku = (CERT_ENHKEY_USAGE*)eku_buf.data();
-    return *eku->rgpszUsageIdentifier;
+
+    std::vector<std::string> result;
+    for (DWORD i = 0; i < eku->cUsageIdentifier; ++i)
+        result.push_back(eku->rgpszUsageIdentifier[i]);
+    
+    return result;
 }
 
 
@@ -118,8 +123,8 @@ void OpenCertStore(const wchar_t storename[], bool perUser) {
         }
         std::wcout << L'\n';
 
-        std::string eku = CertEnhancedKeyUsage(*cert, 0);
-        if (!eku.empty())
+        std::vector<std::string> ekus = CertEnhancedKeyUsage(*cert, 0);
+        for (auto eku : ekus)
             std::cout << "  EKU: " << eku << '\n';
 
         std::vector<BYTE> prov_buf = CertContextProperty(*cert, CERT_KEY_PROV_INFO_PROP_ID);
