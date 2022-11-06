@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{1023febe-3b9e-488b-88a4-ab9aeeea2540}</ProjectGuid>
-    <RootNamespace>WebClientCpp</RootNamespace>
+    <ProjectGuid>{0dd97443-53da-4882-9437-63b7116c0e8b}</ProjectGuid>
+    <RootNamespace>WebClientUwp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,11 +72,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="WebClientMSXML.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CertAccess.hpp" />
+    <ClCompile Include="WebClientWinRT.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

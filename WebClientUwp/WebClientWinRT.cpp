@@ -49,3 +49,25 @@ void HttpGetWinRT(std::wstring url, Certificate clientCert) {
     hstring message(response.Content().ReadAsStringAsync().get());
     std::wcout << std::wstring(message);
 }
+
+
+int wmain(int argc, wchar_t* argv[]) {
+    init_apartment();
+
+    std::wstring hostname = L"localhost:443"; // default
+    if (argc > 1)
+        hostname = argv[1];
+
+    std::wstring url = L"https://" + hostname;
+
+    try {
+        auto clientCert = GetFirstClientAuthCert();
+
+        std::wcout << "\n\nHTTP request using WinRT HttpClient:\n";
+        HttpGetWinRT(url, clientCert);
+    }
+    catch (hresult_error const& ex) {
+        std::wcerr << L"ERROR: " << std::wstring(ex.message()) << std::endl;
+    }
+    return 0;
+}

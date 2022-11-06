@@ -1,14 +1,13 @@
-#include <winrt/Windows.Security.Cryptography.Certificates.h>
+#include <winrt/Windows.Foundation.Collections.h>
 #include <algorithm>
 #include <iostream>
 #include "CertAccess.hpp"
 
+#pragma comment(lib, "windowsapp.lib")
+
 using namespace winrt;
-using namespace Windows::Security::Cryptography;
 
 void HttpGetMSXML6(std::wstring url, const std::vector<uint8_t>& thumbprint);
-Certificates::Certificate GetFirstClientAuthCert();
-void HttpGetWinRT(std::wstring url, Certificates::Certificate clientCert);
 
 
 int wmain(int argc, wchar_t* argv[]) {
@@ -21,7 +20,6 @@ int wmain(int argc, wchar_t* argv[]) {
     std::wstring url = L"https://" + hostname;
 
     try {
-#ifdef ENABLE_LOW_LEVEL_IMPL
         CertStore store(L"My", true);
 
         for (auto it = store.Next(); it; it = store.Next()) {
@@ -34,6 +32,7 @@ int wmain(int argc, wchar_t* argv[]) {
             std::wcout << L"  Thumbprint: " << cert.ThumbPrintHex() << L'\n';
 
             std::vector<std::string> ekus = cert.EnhancedKeyUsage(0);
+#if 0
             for (auto eku : ekus)
                 std::cout << "  EKU: " << eku << '\n';
 
@@ -51,20 +50,16 @@ int wmain(int argc, wchar_t* argv[]) {
                 cng.Property(NCRYPT_NAME_PROPERTY);
                 std::wcout << L"  CNG key access succeeded\n";
             }
+#endif
 
             auto it2 = std::find(ekus.begin(), ekus.end(), std::string("1.3.6.1.5.5.7.3.2")); // clientAuth OID
-            if (it2 != ekus.end()) {
-                std::wcout << "HTTP request using MSXML6:\n";
-                std::vector<BYTE> thumbprint = cert.ContextProperty(CERT_HASH_PROP_ID);
-                HttpGetMSXML6(url, thumbprint);
-            }
+            if (it2 == ekus.end())
+                continue; // not a clientAuth certificate
+            
+            std::wcout << "  HTTP request using MSXML6:\n";
+            std::vector<BYTE> thumbprint = cert.ContextProperty(CERT_HASH_PROP_ID);
+            HttpGetMSXML6(url, thumbprint);
         }
-#else
-        auto clientCert = GetFirstClientAuthCert();
-
-        std::wcout << "\n\nHTTP request using WinRT HttpClient:\n";
-        HttpGetWinRT(url, clientCert);
-#endif
     } catch (hresult_error const& ex) {
         std::wcerr << L"ERROR: " << std::wstring(ex.message()) << std::endl;
     }

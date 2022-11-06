@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebClientNet", "WebClientNe
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "WebClientPy", "WebClientPy\WebClientPy.pyproj", "{4161C10C-10D5-4C9F-9E3C-1C90E6034A24}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebClientUwp", "WebClientUwp\WebClientUwp.vcxproj", "{0DD97443-53DA-4882-9437-63B7116C0E8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -25,6 +27,10 @@ Global
 		{75578968-7B27-4275-9D85-4573EDAACD2B}.Release|x64.Build.0 = Release|Any CPU
 		{4161C10C-10D5-4C9F-9E3C-1C90E6034A24}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{4161C10C-10D5-4C9F-9E3C-1C90E6034A24}.Release|x64.ActiveCfg = Release|Any CPU
+		{0DD97443-53DA-4882-9437-63B7116C0E8B}.Debug|x64.ActiveCfg = Debug|x64
+		{0DD97443-53DA-4882-9437-63B7116C0E8B}.Debug|x64.Build.0 = Debug|x64
+		{0DD97443-53DA-4882-9437-63B7116C0E8B}.Release|x64.ActiveCfg = Release|x64
+		{0DD97443-53DA-4882-9437-63B7116C0E8B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
