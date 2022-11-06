@@ -38,12 +38,11 @@ int wmain(int argc, wchar_t* argv[]) {
 
         if (priv_key->dwProvType != 0) {
             std::wcout << L"  Not a CNG type key\n";
-            continue;
+        } else {
+            CNGKey cng(priv_key->pwszProvName, priv_key->pwszContainerName, priv_key->dwKeySpec);
+            cng.Property(NCRYPT_NAME_PROPERTY);
+            std::wcout << L"  CNG key access succeeded\n";
         }
-
-        CNGKey cng(priv_key->pwszProvName, priv_key->pwszContainerName, priv_key->dwKeySpec);
-        cng.Property(NCRYPT_NAME_PROPERTY);
-        std::wcout << L"  CNG key access succeeded\n";
     }
 #else
     std::wstring hostname = L"localhost:443"; // default
