@@ -7,6 +7,7 @@
 
 using namespace winrt;
 
+void HttpGetWinHttp(std::wstring url, std::wstring certName);
 void HttpGetMSXML6(std::wstring url, const std::vector<uint8_t>& thumbprint);
 
 
@@ -17,8 +18,10 @@ int wmain(int argc, wchar_t* argv[]) {
     if (argc > 1)
         hostname = argv[1];
 
+    const std::wstring storeName = L"My";
+    const bool perUser = true;
     try {
-        CertStore store(L"My", true);
+        CertStore store(storeName.c_str(), perUser);
 
         for (auto it = store.Next(); it; it = store.Next()) {
             Certificate cert(it);
@@ -54,6 +57,10 @@ int wmain(int argc, wchar_t* argv[]) {
             if (it2 == ekus.end())
                 continue; // not a clientAuth certificate
             
+            std::wcout << "  HTTP request using WinHttp:\n";
+            HttpGetWinHttp(L"https://" + hostname, (perUser ? L"CURRENT_USER\\" : L"LOCAL_MACHINE\\") + storeName + L'\\' + cert.Name(CERT_SIMPLE_NAME_STR));
+            std::wcout << "\n\n";
+
             std::wcout << "  HTTP request using MSXML6:\n";
             std::vector<BYTE> thumbprint = cert.ContextProperty(CERT_HASH_PROP_ID);
             HttpGetMSXML6(L"https://" + hostname, thumbprint);
