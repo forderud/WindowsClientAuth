@@ -9,13 +9,13 @@
 
 using namespace winrt;
 
-class HttpRequest3Callback : public implements<HttpRequest3Callback, IXMLHTTPRequest3Callback> {
+class HttpRequestCb : public implements<HttpRequestCb, IXMLHTTPRequest3Callback> {
 public:
-    HttpRequest3Callback() {
+    HttpRequestCb() {
         m_event = CreateEventEx(NULL, NULL, CREATE_EVENT_MANUAL_RESET, EVENT_ALL_ACCESS);
     }
 
-    ~HttpRequest3Callback() {
+    ~HttpRequestCb() override {
         if (m_event) {
             CloseHandle(m_event);
             m_event = nullptr;
@@ -28,7 +28,7 @@ public:
 
     HRESULT OnHeadersAvailable(IXMLHTTPRequest2* pXHR, DWORD dwStatus, const WCHAR* pwszStatus) override {
         // print HTTP status code
-        std::wcout << L"STATUS " <<  dwStatus << L" " << pwszStatus << std::endl;
+        std::cout << "STATUS " <<  dwStatus << " " << pwszStatus << std::endl;
         return S_OK;
     }
 
@@ -85,7 +85,7 @@ void HttpGetMSXML6(std::wstring url, const std::vector<uint8_t>& thumbprint) {
 
     check_hresult(http->SetClientCertificate((DWORD)thumbprint.size(), thumbprint.data(), NULL));
 
-    com_ptr<HttpRequest3Callback> cb = make_self<HttpRequest3Callback>();
+    com_ptr<HttpRequestCb> cb = make_self<HttpRequestCb>();
 
     check_hresult(http->Open(L"GET", url.c_str(), cb.get(), NULL, NULL, NULL, NULL));
 
