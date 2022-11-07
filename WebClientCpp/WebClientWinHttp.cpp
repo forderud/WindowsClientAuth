@@ -14,8 +14,7 @@ void HttpGetWinHttp(std::wstring url, std::wstring certName) {
 
     check_hresult(http->SetClientCertificate(CComBSTR(certName.c_str())));
     
-    CComVariant var_false;
-    var_false = false; // VARIANT_FALSE;
+    CComVariant var_false(false); // VARIANT_FALSE;
     check_hresult(http->Open(CComBSTR(L"GET"), CComBSTR(url.c_str()), var_false/*not async*/));
 
     CComVariant var_empty; // empty payload
