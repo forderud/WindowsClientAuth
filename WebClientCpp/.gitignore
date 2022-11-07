@@ -1,2 +1,4 @@
 /x64
 /*.user
+/httprequest_h.h
+/httprequest_i.c

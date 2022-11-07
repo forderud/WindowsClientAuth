@@ -7,4 +7,7 @@
   <ItemGroup>
     <ClInclude Include="CertAccess.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Midl Include="httprequest.idl" />
+  </ItemGroup>
 </Project>
