@@ -70,7 +70,7 @@ Steps:
 
 | Language  | Secure certificate store support                          | Sample code              | Limitations |
 |-----------|----------------------------------------------------------|---------------------------|-------------|
-| C++ Win32 | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) | See [WebClientCpp](WebClientCpp/) (using [MSXML6](https://learn.microsoft.com/en-us/windows/win32/api/msxml6/)) | None discovered |
+| C++ Win32 | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) | See [WebClientCpp](WebClientCpp/) (using [WinHTTP](https://learn.microsoft.com/en-us/windows/win32/winhttp/iwinhttprequest-interface) and [MSXML6](https://learn.microsoft.com/en-us/windows/win32/api/msxml6/)) | None discovered |
 | C++/C# UWP| [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | See [WebClientUwp](WebClientUwp/) | Unable to access certificates in ["Local Computer\Personal" store](https://github.com/MicrosoftDocs/winrt-api/issues/2288) |
 | C#/.Net   | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | See [WebClientNet](WebClientNet/) | None discovered |
 | Java      | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | Not yet tested | TBD |
