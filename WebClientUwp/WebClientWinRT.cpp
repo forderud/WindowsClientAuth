@@ -58,13 +58,11 @@ int wmain(int argc, wchar_t* argv[]) {
     if (argc > 1)
         hostname = argv[1];
 
-    std::wstring url = L"https://" + hostname;
-
     try {
         auto clientCert = GetFirstClientAuthCert();
 
         std::wcout << "\n\nHTTP request using WinRT HttpClient:\n";
-        HttpGetWinRT(url, clientCert);
+        HttpGetWinRT(L"https://" + hostname, clientCert);
     }
     catch (hresult_error const& ex) {
         std::wcerr << L"ERROR: " << std::wstring(ex.message()) << std::endl;

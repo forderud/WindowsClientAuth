@@ -17,8 +17,6 @@ int wmain(int argc, wchar_t* argv[]) {
     if (argc > 1)
         hostname = argv[1];
 
-    std::wstring url = L"https://" + hostname;
-
     try {
         CertStore store(L"My", true);
 
@@ -58,7 +56,7 @@ int wmain(int argc, wchar_t* argv[]) {
             
             std::wcout << "  HTTP request using MSXML6:\n";
             std::vector<BYTE> thumbprint = cert.ContextProperty(CERT_HASH_PROP_ID);
-            HttpGetMSXML6(url, thumbprint);
+            HttpGetMSXML6(L"https://" + hostname, thumbprint);
         }
     } catch (hresult_error const& ex) {
         std::wcerr << L"ERROR: " << std::wstring(ex.message()) << std::endl;
