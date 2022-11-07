@@ -1,5 +1,4 @@
 #include <msxml6.h>
-#include <wrl.h>
 #include <winrt/base.h>
 
 #include <iostream>
