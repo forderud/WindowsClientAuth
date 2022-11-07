@@ -74,11 +74,14 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="WebClientMSXML.cpp" />
+    <ClCompile Include="WebClientWinHttp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CertAccess.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Midl Include="httprequest.idl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

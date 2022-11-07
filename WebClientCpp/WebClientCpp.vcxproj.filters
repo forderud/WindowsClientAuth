@@ -3,8 +3,12 @@
   <ItemGroup>
     <ClCompile Include="WebClientMSXML.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="WebClientWinHttp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CertAccess.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="httprequest.idl" />
   </ItemGroup>
 </Project>
