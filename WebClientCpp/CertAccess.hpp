@@ -149,7 +149,7 @@ private:
 
 class CertStore {
 public:
-    CertStore(const wchar_t storename[], bool perUser) {
+    CertStore(const wchar_t* storename, bool perUser) {
         m_store = CertOpenStore(CERT_STORE_PROV_SYSTEM, 0, NULL, perUser ? CERT_SYSTEM_STORE_CURRENT_USER : CERT_SYSTEM_STORE_LOCAL_MACHINE, storename);
         if (m_store == NULL)
             abort();
