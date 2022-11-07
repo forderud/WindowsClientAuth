@@ -9,8 +9,8 @@ using namespace winrt;
 
 
 void HttpGetWinHttp(std::wstring url, std::wstring certName) {
-    com_ptr<IWinHttpRequest> http;
-    check_hresult(CoCreateInstance(CLSID_WinHttpRequest, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(http.put())));
+    CComPtr<IWinHttpRequest> http;
+    check_hresult(http.CoCreateInstance(CLSID_WinHttpRequest, NULL, CLSCTX_INPROC_SERVER));
 
     check_hresult(http->SetClientCertificate(CComBSTR(certName.c_str())));
     
