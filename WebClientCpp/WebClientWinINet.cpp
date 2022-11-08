@@ -21,10 +21,10 @@ static void CHECK_WIN32(bool ok) {
 class HInetWrap {
 public:
     HInetWrap(HINTERNET handle) : m_handle(handle) {
+        CHECK_WIN32(handle);
     }
     ~HInetWrap() {
-        if (m_handle)
-            InternetCloseHandle(m_handle);
+        InternetCloseHandle(m_handle);
     }
 
     operator HINTERNET() const {
@@ -47,16 +47,13 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
 
     // load WinINet
     HInetWrap inet = InternetOpenW(L"TestAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-    CHECK_WIN32(inet);
 
     // configure server connection
     HInetWrap ses = InternetConnectW(inet, hostname.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
-    CHECK_WIN32(ses);
 
     // configure HTTP request
     const DWORD flags = INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE; // enable TLS
     HInetWrap req = HttpOpenRequestW(ses, L"GET", L"/", NULL, L"", NULL, flags, NULL);
-    CHECK_WIN32(req);
 
     // configure client certificate
     BOOL ok = InternetSetOptionW(req, INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert));
