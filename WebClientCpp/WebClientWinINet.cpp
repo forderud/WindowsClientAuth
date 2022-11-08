@@ -17,6 +17,24 @@ static void CHECK_WIN32(bool ok) {
     throw std::runtime_error(message);
 }
 
+/** HINTERNET RAII wrapper. */
+class HInetWrap {
+public:
+    HInetWrap(HINTERNET handle) : m_handle(handle) {
+    }
+    ~HInetWrap() {
+        if (m_handle)
+            InternetCloseHandle(m_handle);
+    }
+
+    operator HINTERNET() const {
+        return m_handle;
+    }
+
+private:
+    HINTERNET m_handle = nullptr;
+};
+
 
 void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
     // parse hostname & port
@@ -28,16 +46,16 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
     }
 
     // load WinINet
-    HINTERNET inet = InternetOpenW(L"TestAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+    HInetWrap inet = InternetOpenW(L"TestAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
     CHECK_WIN32(inet);
 
     // configure server connection
-    HINTERNET ses = InternetConnectW(inet, hostname.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
+    HInetWrap ses = InternetConnectW(inet, hostname.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
     CHECK_WIN32(ses);
 
     // configure HTTP request
     const DWORD flags = INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE; // enable TLS
-    HINTERNET req = HttpOpenRequestW(ses, L"GET", L"/", NULL, L"", NULL, flags, NULL);
+    HInetWrap req = HttpOpenRequestW(ses, L"GET", L"/", NULL, L"", NULL, flags, NULL);
     CHECK_WIN32(req);
 
     // configure client certificate
@@ -55,8 +73,4 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
     CHECK_WIN32(ok);
     buffer[buffer_len] = 0; // add null-termination
     std::cout << buffer << '\n';
-
-    InternetCloseHandle(req);
-    InternetCloseHandle(ses);
-    InternetCloseHandle(inet);
 }
