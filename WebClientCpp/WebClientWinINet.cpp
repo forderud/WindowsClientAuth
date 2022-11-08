@@ -56,18 +56,15 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
     HInetWrap req = HttpOpenRequestW(ses, L"GET", L"/", NULL, L"", NULL, flags, NULL);
 
     // configure client certificate
-    BOOL ok = InternetSetOptionW(req, INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert));
-    CHECK_WIN32(ok);
+    CHECK_WIN32(InternetSetOptionW(req, INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert)));
 
     // send HTTP request
-    ok = HttpSendRequestW(req, NULL, 0, NULL, 0);
-    CHECK_WIN32(ok);
+    CHECK_WIN32(HttpSendRequestW(req, NULL, 0, NULL, 0));
 
     // write response to console
     DWORD buffer_len = 0;
     char  buffer[16 * 1024] = {}; // 16kB buffer
-    ok = InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len);
-    CHECK_WIN32(ok);
+    CHECK_WIN32(InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
     buffer[buffer_len] = 0; // add null-termination
     std::cout << buffer << '\n';
 }
