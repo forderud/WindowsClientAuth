@@ -17,19 +17,23 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
         hostname = hostname.substr(0, idx); // remove port suffix
     }
 
+    // load WinINet
     HINTERNET inet = InternetOpenW(L"TestAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
     if (!inet)
         abort();
 
+    // configure server connection
     HINTERNET ses = InternetConnectW(inet, hostname.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
     if (!ses)
         abort();
 
+    // configure HTTP request
     const DWORD flags = INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE; // enable TLS
     HINTERNET req = HttpOpenRequestW(ses, L"GET", L"/", NULL, L"", NULL, flags, NULL);
     if (!req)
         abort();
 
+    // configure client certificate
     BOOL ok = InternetSetOptionW(req, INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert));
     if (!ok) {
         DWORD err = GetLastError();
@@ -37,12 +41,17 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
         abort();
     }
 
-    int result = HttpSendRequest(req, NULL, 0, NULL, 0);
-    assert(result == 1);
+    // send HTTP request
+    ok = HttpSendRequestW(req, NULL, 0, NULL, 0);
+    if (!ok)
+        abort();
 
+    // write response to console
     DWORD buffer_len = 0;
     char  buffer[16 * 1024] = {}; // 16kB buffer
-    InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len);
+    ok = InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len);
+    if (!ok)
+        abort();
     buffer[buffer_len] = 0; // add null-termination
     std::cout << buffer << '\n';
 
