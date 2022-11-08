@@ -7,6 +7,16 @@
 
 #pragma comment(lib, "Wininet.lib")
 
+static void CHECK_WIN32(bool ok) {
+    if (ok)
+        return;
+
+    DWORD err = GetLastError();
+    // might be ERROR_INTERNET_INCORRECT_HANDLE_TYPE
+    std::string message = "Win32 error " + std::to_string(err);
+    throw std::runtime_error(message);
+}
+
 
 void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
     // parse hostname & port
@@ -19,39 +29,30 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
 
     // load WinINet
     HINTERNET inet = InternetOpenW(L"TestAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-    if (!inet)
-        abort();
+    CHECK_WIN32(inet);
 
     // configure server connection
     HINTERNET ses = InternetConnectW(inet, hostname.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
-    if (!ses)
-        abort();
+    CHECK_WIN32(ses);
 
     // configure HTTP request
     const DWORD flags = INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE; // enable TLS
     HINTERNET req = HttpOpenRequestW(ses, L"GET", L"/", NULL, L"", NULL, flags, NULL);
-    if (!req)
-        abort();
+    CHECK_WIN32(req);
 
     // configure client certificate
     BOOL ok = InternetSetOptionW(req, INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert));
-    if (!ok) {
-        DWORD err = GetLastError();
-        // might be ERROR_INTERNET_INCORRECT_HANDLE_TYPE
-        abort();
-    }
+    CHECK_WIN32(ok);
 
     // send HTTP request
     ok = HttpSendRequestW(req, NULL, 0, NULL, 0);
-    if (!ok)
-        abort();
+    CHECK_WIN32(ok);
 
     // write response to console
     DWORD buffer_len = 0;
     char  buffer[16 * 1024] = {}; // 16kB buffer
     ok = InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len);
-    if (!ok)
-        abort();
+    CHECK_WIN32(ok);
     buffer[buffer_len] = 0; // add null-termination
     std::cout << buffer << '\n';
 

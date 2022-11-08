@@ -72,6 +72,8 @@ int wmain(int argc, wchar_t* argv[]) {
         }
     } catch (hresult_error const& ex) {
         std::wcerr << L"ERROR: " << std::wstring(ex.message()) << std::endl;
+    } catch (std::exception const& ex) {
+        std::cerr << "ERROR: " << ex.what() << std::endl;
     }
     return 0;
 }
