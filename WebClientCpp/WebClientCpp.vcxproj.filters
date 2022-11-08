@@ -4,6 +4,7 @@
     <ClCompile Include="WebClientMSXML.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="WebClientWinHttp.cpp" />
+    <ClCompile Include="WebClientWinINet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CertAccess.hpp" />

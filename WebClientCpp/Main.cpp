@@ -7,6 +7,7 @@
 
 using namespace winrt;
 
+void HttpGetWinINet(std::wstring url, const CERT_CONTEXT* clientCert);
 void HttpGetWinHttp(std::wstring url, std::wstring certName);
 void HttpGetMSXML6(std::wstring url, const std::vector<uint8_t>& thumbprint);
 
@@ -57,6 +58,10 @@ int wmain(int argc, wchar_t* argv[]) {
             if (it2 == ekus.end())
                 continue; // not a clientAuth certificate
             
+            std::wcout << "  HTTP request using WinINet:\n";
+            HttpGetWinINet(hostname, cert);
+            std::wcout << "\n\n";
+
             std::wcout << "  HTTP request using WinHttp:\n";
             HttpGetWinHttp(L"https://" + hostname, (perUser ? L"CURRENT_USER\\" : L"LOCAL_MACHINE\\") + storeName + L'\\' + cert.Name(CERT_SIMPLE_NAME_STR));
             std::wcout << "\n\n";
