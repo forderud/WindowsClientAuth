@@ -141,6 +141,10 @@ public:
         return (CRYPT_KEY_PROV_INFO*)m_priv_key.data();
     }
 
+    operator const CERT_CONTEXT* () const {
+        return m_cert;
+    }
+
 private:
     const CERT_CONTEXT* m_cert = nullptr; ///< weak ptr.
     std::vector<BYTE>   m_priv_key; ///< buffer for PrivateKey method
