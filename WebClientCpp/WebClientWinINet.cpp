@@ -24,12 +24,19 @@ using namespace winrt;
 
 /** InternetReadFile wrapper. */
 static std::string InternetReadFileWrap(HINTERNET req) {
-    // TODO: Get rid of hardcoded buffer limit
-    DWORD buffer_len = 0;
-    char  buffer[16 * 1024] = {}; // 16kB buffer
-    check_bool(InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
-    buffer[buffer_len] = 0; // add null-termination
-    return buffer;
+    std::string result;
+
+    while (true) {
+        char  buffer[1024] = {}; // 1kB buffer
+        DWORD buffer_len = sizeof(buffer);
+        check_bool(InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
+        if (buffer_len == 0)
+            break; // no more data to read
+
+        buffer[buffer_len] = 0; // add null-termination (not really needed, since the buffer is already cleared)
+        result += buffer;
+    }
+    return result;
 }
 
 void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
