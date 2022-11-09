@@ -22,6 +22,16 @@ using InternetHandle = Microsoft::WRL::Wrappers::HandleT<InternetTraits>;
 using namespace winrt;
 
 
+/** InternetReadFile wrapper. */
+static std::string InternetReadFileWrap(HINTERNET req) {
+    // TODO: Get rid of hardcoded buffer limit
+    DWORD buffer_len = 0;
+    char  buffer[16 * 1024] = {}; // 16kB buffer
+    check_bool(InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
+    buffer[buffer_len] = 0; // add null-termination
+    return buffer;
+}
+
 void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
     // parse hostname & port
     size_t idx = hostname.find(':');
@@ -51,9 +61,5 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
     check_bool(HttpSendRequestW(req.Get(), NULL, 0, NULL, 0));
 
     // write response to console
-    DWORD buffer_len = 0;
-    char  buffer[16 * 1024] = {}; // 16kB buffer
-    check_bool(InternetReadFile(req.Get(), reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
-    buffer[buffer_len] = 0; // add null-termination
-    std::cout << buffer << '\n';
+    std::cout << InternetReadFileWrap(req.Get()) << '\n';
 }
