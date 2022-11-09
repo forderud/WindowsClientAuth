@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <wininet.h>
+#include <wrl/wrappers/corewrappers.h>
 
 #include <cassert>
 #include <iostream>
@@ -18,22 +19,15 @@ static void CHECK_WIN32(bool ok) {
 }
 
 /** HINTERNET RAII wrapper. */
-class HInetWrap {
-public:
-    HInetWrap(HINTERNET handle) : m_handle(handle) {
-        CHECK_WIN32(handle);
-    }
-    ~HInetWrap() {
-        InternetCloseHandle(m_handle);
-    }
-
-    operator HINTERNET() const {
-        return m_handle;
-    }
-
-private:
-    HINTERNET m_handle = nullptr;
+struct InternetTraits {
+    using Type = HINTERNET;
+    static bool Close(_In_ Type h) noexcept {
+        return InternetCloseHandle(h) != FALSE;
+    };
+    static Type GetInvalidValue() noexcept { return nullptr; };
 };
+using InternetHandle = Microsoft::WRL::Wrappers::HandleT<InternetTraits>;
+
 
 
 void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
@@ -46,25 +40,28 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
     }
 
     // load WinINet
-    HInetWrap inet = InternetOpenW(L"TestAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+    InternetHandle inet(InternetOpenW(L"TestAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0));
+    CHECK_WIN32(inet.IsValid());
 
     // configure server connection
-    HInetWrap ses = InternetConnectW(inet, hostname.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
+    InternetHandle ses(InternetConnectW(inet.Get(), hostname.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0));
+    CHECK_WIN32(ses.IsValid());
 
     // configure HTTP request
     const DWORD flags = INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE; // enable TLS
-    HInetWrap req = HttpOpenRequestW(ses, L"GET", L"/", NULL, L"", NULL, flags, NULL);
+    InternetHandle req(HttpOpenRequestW(ses.Get(), L"GET", L"/", NULL, L"", NULL, flags, NULL));
+    CHECK_WIN32(req.IsValid());
 
     // configure client certificate
-    CHECK_WIN32(InternetSetOptionW(req, INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert)));
+    CHECK_WIN32(InternetSetOptionW(req.Get(), INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert)));
 
     // send HTTP request
-    CHECK_WIN32(HttpSendRequestW(req, NULL, 0, NULL, 0));
+    CHECK_WIN32(HttpSendRequestW(req.Get(), NULL, 0, NULL, 0));
 
     // write response to console
     DWORD buffer_len = 0;
     char  buffer[16 * 1024] = {}; // 16kB buffer
-    CHECK_WIN32(InternetReadFile(req, reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
+    CHECK_WIN32(InternetReadFile(req.Get(), reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
     buffer[buffer_len] = 0; // add null-termination
     std::cout << buffer << '\n';
 }
