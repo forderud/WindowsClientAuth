@@ -82,6 +82,7 @@ void HttpGetMSXML6(std::wstring url, const std::vector<uint8_t>& thumbprint) {
     com_ptr<IXMLHTTPRequest3> http;
     check_hresult(CoCreateInstance(CLSID_FreeThreadedXMLHTTP60, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(http.put())));
 
+    // WARNING: Doesn't seem to work for certificates in LocalMachine\My store
     check_hresult(http->SetClientCertificate((DWORD)thumbprint.size(), thumbprint.data(), NULL));
 
     com_ptr<HttpRequestCb> cb = make_self<HttpRequestCb>();
