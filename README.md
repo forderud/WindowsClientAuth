@@ -66,7 +66,7 @@ Steps:
 
 ![Browser Webpage](figures/BrowserWebpage.png)
 
-### Testing from code
+### Programmatic HTTP communication
 
 | Language  | Secure certificate store support | HTTP API(s)              | Sample code              | Limitations |
 |-----------|----------------------------------|-----------------------|---------------------------|-------------|
@@ -83,6 +83,9 @@ Client certificate: ClientCert
 
 <html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p><p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
 ```
+
+### Programmatic TLS socket communication
+Client certificates can also be used for authentication when using "raw" TLS/SSL sockets directly. However, it's then important that the underlying socket library is based on [schannel](https://learn.microsoft.com/en-us/windows/win32/secauthn/performing-authentication-using-schannel), and _not_ on OpenSSL. [Winsock](https://learn.microsoft.com/en-us/windows/win32/api/_winsock/) _might_ also work, but that needs to be investigated. The reason for OpenSSL no being supported, is that OpenSSL is unable to access private keys through the [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) API. There does exist a `openssl-cng-engine` project that seeks to address this gap, but [client autentication doesn't appear to be supported yet](https://github.com/rticommunity/openssl-cng-engine/issues/46).
 
 ## Code signing
 The `codeSigning` OID (1.3.6.1.5.5.7.3.3) EKU field in the client certificate enables it to be used for code signing.
