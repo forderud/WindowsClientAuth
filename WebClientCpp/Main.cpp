@@ -1,4 +1,4 @@
-#include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/base.h>
 #include <algorithm>
 #include <iostream>
 #include "CertAccess.hpp"
