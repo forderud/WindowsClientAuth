@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <wininet.h>
+#include <winrt/base.h>
 #include <wrl/wrappers/corewrappers.h>
 
 #include <cassert>
@@ -7,16 +8,6 @@
 #include <string>
 
 #pragma comment(lib, "Wininet.lib")
-
-static void CHECK_WIN32(bool ok) {
-    if (ok)
-        return;
-
-    DWORD err = GetLastError();
-    // might be ERROR_INTERNET_INCORRECT_HANDLE_TYPE
-    std::string message = "Win32 error " + std::to_string(err);
-    throw std::runtime_error(message);
-}
 
 /** HINTERNET RAII wrapper. */
 struct InternetTraits {
@@ -28,6 +19,7 @@ struct InternetTraits {
 };
 using InternetHandle = Microsoft::WRL::Wrappers::HandleT<InternetTraits>;
 
+using namespace winrt;
 
 
 void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
@@ -41,27 +33,27 @@ void HttpGetWinINet(std::wstring hostname, const CERT_CONTEXT * clientCert) {
 
     // load WinINet
     InternetHandle inet(InternetOpenW(L"TestAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0));
-    CHECK_WIN32(inet.IsValid());
+    check_bool(inet.IsValid());
 
     // configure server connection
     InternetHandle ses(InternetConnectW(inet.Get(), hostname.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0));
-    CHECK_WIN32(ses.IsValid());
+    check_bool(ses.IsValid());
 
     // configure HTTP request
     const DWORD flags = INTERNET_FLAG_KEEP_CONNECTION | INTERNET_FLAG_SECURE; // enable TLS
     InternetHandle req(HttpOpenRequestW(ses.Get(), L"GET", L"/", NULL, L"", NULL, flags, NULL));
-    CHECK_WIN32(req.IsValid());
+    check_bool(req.IsValid());
 
     // configure client certificate
-    CHECK_WIN32(InternetSetOptionW(req.Get(), INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert)));
+    check_bool(InternetSetOptionW(req.Get(), INTERNET_OPTION_CLIENT_CERT_CONTEXT, (void*)clientCert, sizeof(*clientCert)));
 
     // send HTTP request
-    CHECK_WIN32(HttpSendRequestW(req.Get(), NULL, 0, NULL, 0));
+    check_bool(HttpSendRequestW(req.Get(), NULL, 0, NULL, 0));
 
     // write response to console
     DWORD buffer_len = 0;
     char  buffer[16 * 1024] = {}; // 16kB buffer
-    CHECK_WIN32(InternetReadFile(req.Get(), reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
+    check_bool(InternetReadFile(req.Get(), reinterpret_cast<void*>(buffer), sizeof(buffer) - 1, &buffer_len));
     buffer[buffer_len] = 0; // add null-termination
     std::cout << buffer << '\n';
 }
