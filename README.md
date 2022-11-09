@@ -85,7 +85,7 @@ Client certificate: ClientCert
 ```
 
 ### Programmatic TLS socket communication
-Client certificates can also be used for authentication when using "raw" TLS/SSL sockets directly. However, it's then important that the underlying socket library is based on [schannel](https://learn.microsoft.com/en-us/windows/win32/secauthn/performing-authentication-using-schannel), and _not_ on OpenSSL. [Winsock](https://learn.microsoft.com/en-us/windows/win32/winsock/secure-winsock-programming) _might_ also work, but that needs to be investigated.
+Client certificates can also be used for authentication when using "raw" TLS/SSL sockets directly. However, it's then important that the underlying socket library is based on [schannel](https://learn.microsoft.com/en-us/windows/win32/secauthn/performing-authentication-using-schannel) with Winsock underneath, and _not_ on OpenSSL. Direct [Winsock](https://learn.microsoft.com/en-us/windows/win32/winsock/secure-winsock-programming) usage _might_ also work, but that remain to be investigated.
 
 The reason for OpenSSL _not_ being supported, is that OpenSSL is unable to access private keys through the [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) API. There does exist a `openssl-cng-engine` project that seeks to address this gap, but [client autentication doesn't appear to be supported yet](https://github.com/rticommunity/openssl-cng-engine/issues/46).
 
