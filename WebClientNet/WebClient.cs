@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using Microsoft.Win32;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 
@@ -21,6 +22,42 @@ bool IsClientAuthCertificate(X509Certificate2 cert)
         }
     }
     return false;
+}
+
+/** Return the long-lived 10 year "MS-Organization-Access" clientAuth certificate associated with a Active-Directory joined machine. */
+X509Certificate2 GetActiveDirectoryCertificate ()
+{
+    string ad_cert_hash;
+    { 
+        using RegistryKey key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\JoinInfo")!;
+        var names = key.GetSubKeyNames();
+
+        if (names.Length == 0)
+            throw new ApplicationException("no AD clientAuth cert found");
+
+        ad_cert_hash = names[0]; // use first AD connection
+    }
+
+    using X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+    store.Open(OpenFlags.ReadOnly);
+
+    // expired certs. are included in the enumeration
+    foreach (X509Certificate2 cert in store.Certificates)
+    {
+        if (!cert.HasPrivateKey)
+            continue;
+
+        if (cert.GetCertHashString() != ad_cert_hash)
+            continue;
+
+        if (IsClientAuthCertificate(cert))
+        {
+            Console.WriteLine("AD client certificate: " + cert.Subject + "\n");
+            return cert;
+        }
+    }
+
+    throw new ApplicationException("no AD clientAuth cert found");
 }
 
 /** Returns the first clientAuth certificate with private key found in the Windows cert. store. */
