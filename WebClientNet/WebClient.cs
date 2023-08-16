@@ -26,10 +26,25 @@ bool IsClientAuthCertificate(X509Certificate2 cert)
 }
 
 /** Return the long-lived 10 year "MS-Organization-Access" clientAuth certificate associated with a Active-Directory joined machine. */
-X509Certificate2 GetActiveDirectoryCertificate ()
+X509Certificate2 GetActiveDirectoryCertificate (bool intune_cert)
 {
     string ad_cert_hash;
-    { 
+    if (intune_cert) {
+        // get short-lived 1-year "Microsoft Intune MDM Device CA" certificate
+        using RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Provisioning\\OMADM\\Accounts")!;
+        var names = key.GetSubKeyNames();
+
+        if (names.Length == 0)
+            throw new ApplicationException("no InTune clientAuth cert found");
+
+        RegistryKey subkey = key.OpenSubKey(names[0]);
+
+        var cert_ref = (string)subkey.GetValue("SslClientCertReference");
+        var tokens = cert_ref.Split(";");
+        Debug.Assert(tokens[0] == "MY");
+        Debug.Assert(tokens[1] == "System");
+        ad_cert_hash = tokens[2];
+    } else { 
         using RegistryKey key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\JoinInfo")!;
         var names = key.GetSubKeyNames();
 
@@ -90,7 +105,7 @@ if (args.Length > 0)
 #if true
     handler.ClientCertificates.Add(GetFirstClientAuthCert());
 #else
-    handler.ClientCertificates.Add(GetActiveDirectoryCertificate());
+    handler.ClientCertificates.Add(GetActiveDirectoryCertificate(true));
 #endif
 
     // perform HTTP request with client authentication
