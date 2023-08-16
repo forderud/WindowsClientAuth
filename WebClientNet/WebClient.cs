@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -44,17 +45,14 @@ X509Certificate2 GetActiveDirectoryCertificate ()
     // expired certs. are included in the enumeration
     foreach (X509Certificate2 cert in store.Certificates)
     {
-        if (!cert.HasPrivateKey)
-            continue;
-
         if (cert.GetCertHashString() != ad_cert_hash)
             continue;
 
-        if (IsClientAuthCertificate(cert))
-        {
-            Console.WriteLine("AD client certificate: " + cert.Subject + "\n");
-            return cert;
-        }
+        // sanity checks
+        Debug.Assert(cert.HasPrivateKey);
+        Debug.Assert(IsClientAuthCertificate(cert));
+
+        return cert;
     }
 
     throw new ApplicationException("no AD clientAuth cert found");
@@ -89,7 +87,11 @@ if (args.Length > 0)
 
 {
     using HttpClientHandler handler = new HttpClientHandler();
+#if true
     handler.ClientCertificates.Add(GetFirstClientAuthCert());
+#else
+    handler.ClientCertificates.Add(GetActiveDirectoryCertificate());
+#endif
 
     // perform HTTP request with client authentication
     using HttpClient client = new HttpClient(handler);
