@@ -47,7 +47,7 @@ string GetCertHash(CertType type)
         if (names.Length == 0)
             throw new ApplicationException("no InTune clientAuth cert found");
 
-        RegistryKey subkey = key.OpenSubKey(names[0])!;
+        using RegistryKey subkey = key.OpenSubKey(names[0])!;
 
         var cert_ref = (string)subkey.GetValue("SslClientCertReference")!;
         var tokens = cert_ref.Split(";");
