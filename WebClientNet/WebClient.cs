@@ -66,6 +66,7 @@ X509Certificate2 GetMachineCertificateFromHash (string cert_hash) {
         Debug.Assert(cert.HasPrivateKey);
         Debug.Assert(IsClientAuthCertificate(cert));
 
+        Console.WriteLine("Client certificate: " + cert.Subject);
         return cert;
     }
 
@@ -84,7 +85,7 @@ X509Certificate2 GetFirstClientAuthCert() {
             continue;
 
         if (IsClientAuthCertificate(cert)) {
-            Console.WriteLine("Client certificate: " + cert.Subject + "\n");
+            Console.WriteLine("Client certificate: " + cert.Subject);
             return cert;
         }
     }
