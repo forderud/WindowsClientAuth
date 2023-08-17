@@ -108,14 +108,17 @@ string hostname = "localhost:443"; // default
 if (args.Length > 0)
     hostname = args[0];
 
-{
-    using HttpClientHandler handler = new HttpClientHandler();
-#if true
+using HttpClientHandler handler = new HttpClientHandler();
+if (args.Length > 1) {
+    if (args[1] == "ad")
+        handler.ClientCertificates.Add(GetMachineCertificateFromHash(GetCertHash(CertType.ActiveDirectory)));
+    else if (args[1] == "intune")
+        handler.ClientCertificates.Add(GetMachineCertificateFromHash(GetCertHash(CertType.InTune)));
+}
+if (handler.ClientCertificates.Count == 0)
     handler.ClientCertificates.Add(GetFirstClientAuthCert());
-#else
-    handler.ClientCertificates.Add(GetMachineCertificateFromHash(GetCertHash(CertType.InTune)));
-#endif
 
+{
     // perform HTTP request with client authentication
     using HttpClient client = new HttpClient(handler);
 
