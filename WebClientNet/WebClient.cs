@@ -109,15 +109,17 @@ if (args.Length > 0)
     hostname = args[0];
 
 using HttpClientHandler handler = new HttpClientHandler();
-if (args.Length > 1) {
-    if (args[1] == "ad")
-        handler.ClientCertificates.Add(GetMachineCertificateFromHash(GetCertHash(CertType.ActiveDirectory)));
-    else if (args[1] == "intune")
-        handler.ClientCertificates.Add(GetMachineCertificateFromHash(GetCertHash(CertType.InTune)));
+{
+    // client cert. selection
+    if (args.Length > 1) {
+        if (args[1] == "ad")
+            handler.ClientCertificates.Add(GetMachineCertificateFromHash(GetCertHash(CertType.ActiveDirectory)));
+        else if (args[1] == "intune")
+            handler.ClientCertificates.Add(GetMachineCertificateFromHash(GetCertHash(CertType.InTune)));
+    }
+    if (handler.ClientCertificates.Count == 0)
+        handler.ClientCertificates.Add(GetFirstClientAuthCert());
 }
-if (handler.ClientCertificates.Count == 0)
-    handler.ClientCertificates.Add(GetFirstClientAuthCert());
-
 {
     // perform HTTP request with client authentication
     using HttpClient client = new HttpClient(handler);
