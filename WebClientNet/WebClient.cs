@@ -4,19 +4,15 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 
-bool IsClientAuthCertificate(X509Certificate2 cert)
-{
+bool IsClientAuthCertificate(X509Certificate2 cert) {
     // based on sample code on https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509enhancedkeyusageextension
-    foreach (X509Extension ext in cert.Extensions)
-    {
+    foreach (X509Extension ext in cert.Extensions) {
         if (ext.Oid == null)
             continue;
 
-        if (ext.Oid.FriendlyName == "Enhanced Key Usage")
-        {
+        if (ext.Oid.FriendlyName == "Enhanced Key Usage") {
             var ext2 = (X509EnhancedKeyUsageExtension)ext;
-            foreach (Oid oid in ext2.EnhancedKeyUsages)
-            {
+            foreach (Oid oid in ext2.EnhancedKeyUsages) {
                 if (oid.Value == "1.3.6.1.5.5.7.3.2") // clientAuth OID
                     return true;
             }
@@ -26,10 +22,8 @@ bool IsClientAuthCertificate(X509Certificate2 cert)
 }
 
 
-string GetCertHash(CertType type)
-{
-    if (type == CertType.ActiveDirectory)
-    {
+string GetCertHash(CertType type) {
+    if (type == CertType.ActiveDirectory) {
         // Get long-lived 10-year "MS-Organization-Access" clientAuth certificate associated with a Active-Directory joined machine
         using RegistryKey key = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\JoinInfo")!;
         var names = key.GetSubKeyNames();
@@ -38,8 +32,7 @@ string GetCertHash(CertType type)
             throw new ApplicationException("no AD clientAuth cert found");
 
         return names[0]; // use first AD connection
-    } else if (type == CertType.InTune)
-    {
+    } else if (type == CertType.InTune) {
         // Get short-lived 1-year "Microsoft Intune MDM Device CA" certificate
         using RegistryKey key = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Provisioning\\OMADM\\Accounts")!;
         var names = key.GetSubKeyNames();
@@ -60,14 +53,12 @@ string GetCertHash(CertType type)
 }
 
 
-X509Certificate2 GetMachineCertificateFromHash (string cert_hash)
-{
+X509Certificate2 GetMachineCertificateFromHash (string cert_hash) {
     using X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
     store.Open(OpenFlags.ReadOnly);
 
     // expired certs. are included in the enumeration
-    foreach (X509Certificate2 cert in store.Certificates)
-    {
+    foreach (X509Certificate2 cert in store.Certificates) {
         if (cert.GetCertHashString() != cert_hash)
             continue;
 
@@ -82,20 +73,17 @@ X509Certificate2 GetMachineCertificateFromHash (string cert_hash)
 }
 
 /** Returns the first clientAuth certificate with private key found in the Windows cert. store. */
-X509Certificate2 GetFirstClientAuthCert()
-{
+X509Certificate2 GetFirstClientAuthCert() {
     // open personal certificate store
     using X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
     store.Open(OpenFlags.ReadOnly);
 
     // expired certs. are included in the enumeration
-    foreach (X509Certificate2 cert in store.Certificates)
-    {
+    foreach (X509Certificate2 cert in store.Certificates) {
         if (!cert.HasPrivateKey)
             continue;
 
-        if (IsClientAuthCertificate(cert))
-        {
+        if (IsClientAuthCertificate(cert)) {
             Console.WriteLine("Client certificate: " + cert.Subject + "\n");
             return cert;
         }
@@ -124,22 +112,18 @@ using HttpClientHandler handler = new HttpClientHandler();
     // perform HTTP request with client authentication
     using HttpClient client = new HttpClient(handler);
 
-    try
-    {
+    try {
         HttpResponseMessage response = await client.GetAsync("https://"+hostname);
         response.EnsureSuccessStatusCode();
 
         string responseBody = await response.Content.ReadAsStringAsync();
         Console.WriteLine(responseBody);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
         Console.WriteLine("ERROR:{0} ", e.Message);
     }
 }
 
-enum CertType
-{
+enum CertType {
     ActiveDirectory, /// long-lived 10 year "MS-Organization-Access"
     InTune,          /// short-lived 1-year "Microsoft Intune MDM Device CA" certificate
 };
