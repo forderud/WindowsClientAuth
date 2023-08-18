@@ -28,11 +28,11 @@ class MyServer(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(bytes("<html><head><title>Client certificate authentication test</title></head>", "utf-8"))
-        self.wfile.write(bytes("<body>", "utf-8"))
-        self.wfile.write(bytes("<p>Request path: %s</p>" % self.path, "utf-8"))
-        self.wfile.write(bytes("<p>Validated <b>client certificate</b>: {}, issued by {}.</p>".format(client_cert, client_cert_issuer), "utf-8"))
-        self.wfile.write(bytes("</body></html>", "utf-8"))
+        self.wfile.write(bytes("<html><head><title>Client certificate authentication test</title></head>\n", "utf-8"))
+        self.wfile.write(bytes("<body>\n", "utf-8"))
+        self.wfile.write(bytes("<p>Request path: %s</p>\n" % self.path, "utf-8"))
+        self.wfile.write(bytes("<p>Successfully validated <b>client certificate</b>: {}, issued by {}.</p>\n".format(client_cert, client_cert_issuer), "utf-8"))
+        self.wfile.write(bytes("</body></html>\n", "utf-8"))
 
 with http.server.HTTPServer(hostname, MyServer) as httpd:
     print("serving at " + str(hostname))
