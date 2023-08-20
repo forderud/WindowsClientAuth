@@ -81,7 +81,11 @@ All the language samples are command-line applications that tries to authenticat
 ```
 Client certificate: ClientCert
 
-<html><head><title>Client certificate authentication test</title></head><body><p>Request path: /</p><p>Validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p></body></html>
+<html><head><title>Client certificate authentication test</title></head>
+<body>
+<p>Request path: /</p>
+<p>Successfully validated <b>client certificate</b>: (commonName: ClientCert), issued by (commonName: TestRootCertificate).</p>
+</body></html>
 ```
 
 ### Programmatic TLS socket communication
