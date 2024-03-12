@@ -5,8 +5,8 @@ if len(sys.argv) > 1:
     host_port = sys.argv[1].split(":")
     hostname = (host_port[0], int(host_port[1]))
 
-# file paths relative to this script
-KEY_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\localhost.key')
+# Server certificate. The client needs to trust the issuer (CA) of this certificate.
+KEY_FILE = os.path.join(os.path.dirname(__file__), 'TestCertificates\\localhost.key') # path relative to this script
 
 def ParseCertSequence(cert):
     entries = []
