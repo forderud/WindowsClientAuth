@@ -75,7 +75,6 @@ Steps:
 | C#/.Net   | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | | See [WebClientNet](WebClientNet/) | None discovered |
 | Java      | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | | Not yet tested | TBD |
 | Python    |No known support (see [#10](../../issues/10)) | | See [WebClientPy](WebClientPy/) (file-based certificate handling)| [Unable to use certificate store for mTLS](https://github.com/sethmlarson/truststore/issues/78) |
-| Go        |No known support (see [#17](../../issues/17)) | | See [WebClientGo](WebClientGo/) (file-based certificate handling)| [How to access certificates in Windows system store?](https://groups.google.com/g/certtostore-discuss/c/UFkMHzoW6MA) |
 
 All the language samples are command-line applications that tries to authenticate against `https://localhost:443/` using the client certificate. The applications can be run without any arguments and will output the following on success:
 ```

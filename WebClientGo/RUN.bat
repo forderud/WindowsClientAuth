@@ -1,1 +1,0 @@
-go.exe run -v .
