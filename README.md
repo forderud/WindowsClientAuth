@@ -97,6 +97,19 @@ The above API alternatives will automatically utilize the Windows proxy settings
 
 Proxy settings can either be configured from "Windows Settings" -> "Proxy" or using the [`Netsh set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command
 
+
+How to inspect proxy settings:
+```
+> netsh winhttp show advproxy
+
+Current WinHTTP advanced proxy settings:
+
+{
+        "AutoconfigUrl":        "https://my.company/pac.pac",
+        "AutoDetect":   true
+}
+```
+
 ## Code signing
 The `codeSigning` OID (1.3.6.1.5.5.7.3.3) EKU field in the client certificate enables it to be used for code signing.
 
