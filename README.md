@@ -111,7 +111,7 @@ Current WinHTTP advanced proxy settings:
         "AutoDetect":    true
 }
 ```
-It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each ohter. The same settings are also found in the `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder (use `regedit.exe` to view them).
+It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each other. The same settings are also found in the `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder (use `regedit.exe` to view them).
 
 
 ## Code signing
