@@ -113,6 +113,8 @@ Current WinHTTP advanced proxy settings:
 ```
 It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each other. The same settings are also found in the `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder (use `regedit.exe` to view them), which also works on Win10.
 
+Most SW (including  [.Net runtime](https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Net/Http/WinInetProxyHelper.cs) and [Chrome/Chromium](https://github.com/chromium/chromium/blob/main/components/winhttp/proxy_configuration.cc)) appear to be using [WinHttpGetProxyForUrl](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetproxyforurl) for determining which proxy server to use for a given HTTP request. This simplifies networking code, since the application doesn't need to parse proxy settings directly.
+
 
 ## Code signing
 The `codeSigning` OID (1.3.6.1.5.5.7.3.3) EKU field in the client certificate enables it to be used for code signing.
