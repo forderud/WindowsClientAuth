@@ -68,13 +68,13 @@ Steps:
 
 ### Programmatic HTTP communication
 
-| Language  | Secure certificate store support | HTTP API(s)           | Proxy support | Sample code              | Limitations |
-|-----------|----------------------------------|-----------------------|---------------|--------------------------|-------------|
-| C++ Win32 | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) | [WinHTTP](https://learn.microsoft.com/en-us/windows/win32/winhttp/iwinhttprequest-interface), [WinINet](https://learn.microsoft.com/en-us/windows/win32/wininet/portal) & [MSXML6](https://learn.microsoft.com/en-us/windows/win32/api/msxml6/) | Automatically picked up from Windows registry | See [WebClientCpp](WebClientCpp/) | Unable to access certificates in ["Local Computer\Personal" store with MSXML6](https://stackoverflow.com/a/38779903/3267386). |
-| C++/C# UWP| [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | | Automatically picked up from Windows registry | See [WebClientUwp](WebClientUwp/) | Unable to access certificates in ["Local Computer\Personal" store](https://github.com/MicrosoftDocs/winrt-api/issues/2288) |
-| C#/.Net   | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | | Automatically picked up from Windows registry | See [WebClientNet](WebClientNet/) | None discovered |
-| Java      | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | | | Not yet tested | TBD |
-| Python    |No known support (see [#10](../../issues/10)) | | [Automatically picked up from Windows registry](https://docs.python.org/3/library/urllib.request.html#urllib.request.getproxies) | See [WebClientPy](WebClientPy/) (file-based certificate handling)| [Unable to use certificate store for mTLS](https://github.com/sethmlarson/truststore/issues/78) |
+| Language  | Secure certificate store support | HTTP API(s)           | Sample code              | Limitations |
+|-----------|----------------------------------|-----------------------|--------------------------|-------------|
+| C++ Win32 | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) | [WinHTTP](https://learn.microsoft.com/en-us/windows/win32/winhttp/iwinhttprequest-interface), [WinINet](https://learn.microsoft.com/en-us/windows/win32/wininet/portal) & [MSXML6](https://learn.microsoft.com/en-us/windows/win32/api/msxml6/) | See [WebClientCpp](WebClientCpp/) | Unable to access certificates in ["Local Computer\Personal" store with MSXML6](https://stackoverflow.com/a/38779903/3267386). |
+| C++/C# UWP| [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | | See [WebClientUwp](WebClientUwp/) | Unable to access certificates in ["Local Computer\Personal" store](https://github.com/MicrosoftDocs/winrt-api/issues/2288) |
+| C#/.Net   | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | | See [WebClientNet](WebClientNet/) | None discovered |
+| Java      | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | | Not yet tested | TBD |
+| Python    |No known support (see [#10](../../issues/10)) | | See [WebClientPy](WebClientPy/) (file-based certificate handling)| [Unable to use certificate store for mTLS](https://github.com/sethmlarson/truststore/issues/78) |
 
 All the language samples are command-line applications that tries to authenticate against `https://localhost:443/` using the client certificate. The applications can be run without any arguments and will output the following on success:
 ```
@@ -113,7 +113,7 @@ Current WinHTTP advanced proxy settings:
 ```
 It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each other. The same settings are also found in the `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder (use `regedit.exe` to view them), which also works on Win10.
 
-Most SW (including  [.Net runtime](https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Net/Http/WinInetProxyHelper.cs) and [Chrome/Chromium](https://github.com/chromium/chromium/blob/main/components/winhttp/proxy_configuration.cc)) appear to be using [WinHttpGetProxyForUrl](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetproxyforurl) for determining which proxy server to use for a given HTTP request. This simplifies networking code, since the application doesn't need to parse proxy settings directly.
+Most SW (including  [.Net runtime](https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Net/Http/WinInetProxyHelper.cs) and [Chrome/Chromium](https://github.com/chromium/chromium/blob/main/components/winhttp/proxy_configuration.cc)) appear to be using [WinHttpGetProxyForUrl](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetproxyforurl) for determining which proxy server to use for a given HTTP request. This simplifies networking code, since the application doesn't need to parse proxy settings directly. Python urllib documentes that [proxy settings are automatically picked up from Windows registry](https://docs.python.org/3/library/urllib.request.html#urllib.request.getproxies) without specifying the exact mechanism.
 
 
 ## Code signing
