@@ -98,7 +98,7 @@ The above API alternatives will automatically utilize the Windows proxy settings
 Proxy settings can either be configured from "Windows Settings" -> "Proxy" or using the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command
 
 
-How to inspect proxy settings:
+How to inspect proxy settings (if running Win11):
 ```
 > netsh winhttp show advproxy
 
@@ -111,7 +111,7 @@ Current WinHTTP advanced proxy settings:
         "AutoDetect":    true
 }
 ```
-It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each other. The same settings are also found in the `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder (use `regedit.exe` to view them).
+It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each other. The same settings are also found in the `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder (use `regedit.exe` to view them), which also works on Win10.
 
 
 ## Code signing
