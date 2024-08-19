@@ -105,10 +105,14 @@ How to inspect proxy settings:
 Current WinHTTP advanced proxy settings:
 
 {
-        "AutoconfigUrl":        "https://my.company/pac.pac",
-        "AutoDetect":   true
+        "Proxy":         "http://proxy.mycompany.com:8080",
+        "ProxyBypass":   "mycompany.com",
+        "AutoconfigUrl": "https://mycompany.com/pac.pac",
+        "AutoDetect":    true
 }
 ```
+It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each ohter.
+
 
 ## Code signing
 The `codeSigning` OID (1.3.6.1.5.5.7.3.3) EKU field in the client certificate enables it to be used for code signing.
