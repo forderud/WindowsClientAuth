@@ -74,7 +74,7 @@ Steps:
 | C++/C# UWP| [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | | See [WebClientUwp](WebClientUwp/) | Unable to access certificates in ["Local Computer\Personal" store](https://github.com/MicrosoftDocs/winrt-api/issues/2288) |
 | C#/.Net   | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | | See [WebClientNet](WebClientNet/) | None discovered |
 | Java      | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | | Not yet tested | TBD |
-| Python    |No known support (see [#10](../../issues/10)) | | See [WebClientPy](WebClientPy/) (file-based certificate handling)| [Unable to use certificate store for mTLS](https://github.com/sethmlarson/truststore/issues/78) |
+| Python    |No known support (see [#10](../../issues/10)) | | See [WebClientPy](WebClientPy/) (file-based certificate handling)| [Unable to use certificate store for mTLS](https://github.com/sethmlarson/truststore/issues/78). _Might_ need to use [PyPAC](https://github.com/carsonyl/pypac) for PAC proxy support. |
 
 All the language samples are command-line applications that tries to authenticate against `https://localhost:443/` using the client certificate. The applications can be run without any arguments and will output the following on success:
 ```
