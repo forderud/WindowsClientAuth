@@ -95,7 +95,7 @@ The reason for OpenSSL _not_ being supported, is that OpenSSL is unable to acces
 ### Proxy settings
 The above API alternatives will automatically utilize the Windows proxy settings for the currently logged in user.
 
-Proxy settings can either be configured from "Windows Settings" -> "Proxy" UI, through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command, or by directly setting `Internet Settings` registry values ([AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie)).
+Proxy settings can either be configured from the "Windows Settings" -> "Proxy" UI, through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command, or by directly setting `Internet Settings` registry values ([AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie)).
 
 
 How to inspect proxy settings (if running Win11):
@@ -113,7 +113,7 @@ Current WinHTTP advanced proxy settings:
 ```
 It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each other. The same settings are also found in the `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder (use `regedit.exe` to view them), which also works on Win10.
 
-Most SW (including  [.Net runtime](https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Net/Http/WinInetProxyHelper.cs) and [Chrome/Chromium](https://github.com/chromium/chromium/blob/main/components/winhttp/proxy_configuration.cc)) appear to be using [WinHttpGetProxyForUrl](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetproxyforurl) to determine which proxy server to use for a given HTTP request. This simplifies networking code, since the application doesn't need to parse proxy settings directly. Python urllib documentes that [proxy settings are automatically picked up from Windows registry](https://docs.python.org/3/library/urllib.request.html#urllib.request.getproxies) without specifying the exact mechanism.
+Most SW (including  [.Net runtime](https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Net/Http/WinInetProxyHelper.cs) and [Chrome/Chromium](https://github.com/chromium/chromium/blob/main/components/winhttp/proxy_configuration.cc)) appear to be using [WinHttpGetProxyForUrl](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetproxyforurl) to determine which proxy server to use for a given HTTP request. This simplifies networking code, since the application doesn't need to parse proxy settings directly. Python urllib documents that [proxy settings are automatically picked up from Windows registry](https://docs.python.org/3/library/urllib.request.html#urllib.request.getproxies) without specifying the exact mechanism.
 
 
 ## Code signing
