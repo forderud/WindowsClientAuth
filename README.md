@@ -98,11 +98,11 @@ The above API alternatives will automatically utilize the Windows proxy settings
 Proxy settings can either be configured from the "Windows Settings" -> "Proxy" UI, through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command, or by directly setting `Internet Settings` registry values ([AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie)).
 
 
-### netsh winhttp advproxy samples (require Win11)
+### netsh proxy samples (require Win11)
 Set proxy settings:
 ```
-echo { "Proxy":"", "ProxyBypass":"", "AutoconfigUrl":"https://mycompany.com/pac.pac", "AutoDetect":true} > proxy-settings.json
-netsh winhttp set advproxy setting-scope=user settings-file=proxy-settings.json
+> echo { "Proxy":"", "ProxyBypass":"", "AutoconfigUrl":"https://mycompany.com/pac.pac", "AutoDetect":true} > proxy-settings.json
+> netsh winhttp set advproxy setting-scope=user settings-file=proxy-settings.json
 ```
 Use `setting-scope=machine` to instead set proxy settings for all users.
 
@@ -120,6 +120,8 @@ Current WinHTTP advanced proxy settings:
         "AutoDetect":    true
 }
 ```
+
+### Notes
 It's usually _not_ a good idea to combine `Proxy` & `ProxyBypass` settings with `AutoconfigUrl` as shown above, since the settings would undermine each other. The same settings are also found in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` and/or `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folders (use `regedit.exe` to view them), which also works on Win10.
 
 Most SW (including  [.Net runtime](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Net.Http/src/System/Net/Http/SocketsHttpHandler/WinInetProxyHelper.cs) and [Chrome/Chromium](https://github.com/chromium/chromium/blob/main/components/winhttp/proxy_configuration.cc)) appear to be using [WinHttpGetIEProxyConfigForCurrentUser](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetieproxyconfigforcurrentuser) together with [WinHttpGetProxyForUrl](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetproxyforurl) to determine which proxy server to use for a given HTTP request. This simplifies networking code, since the application doesn't need to parse proxy settings directly. Python urllib documents that [proxy settings are automatically picked up from Windows registry](https://docs.python.org/3/library/urllib.request.html#urllib.request.getproxies) without specifying the exact mechanism.
