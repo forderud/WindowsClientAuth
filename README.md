@@ -98,7 +98,14 @@ The above API alternatives will automatically utilize the Windows proxy settings
 Proxy settings can either be configured from the "Windows Settings" -> "Proxy" UI, through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command, or by directly setting `Internet Settings` registry values ([AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie)).
 
 
-How to inspect proxy settings (if running Win11):
+How to set proxy settings (if running Win11):
+```
+echo { "Proxy":"", "ProxyBypass":"", "AutoconfigUrl":"https://mycompany.com/pac.pac", "AutoDetect":true} > proxy-settings.json
+netsh winhttp set advproxy setting-scope=user settings-file=proxy-settings.json
+```
+
+
+How to view proxy settings (if running Win11):
 ```
 > netsh winhttp show advproxy
 
