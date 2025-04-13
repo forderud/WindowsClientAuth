@@ -96,9 +96,9 @@ The reason for OpenSSL _not_ being supported, is that OpenSSL is unable to acces
 The above API alternatives will automatically utilize the Windows proxy settings for the currently logged in user.
 
 #### Alternatives for configuring proxy settings
-1. From the "Windows Settings" -> "Proxy" UI;
-1. Through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command;
-1. By directly setting `Internet Settings` registry keys ([AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie)).
+1. From the "Windows Settings" -> "Proxy" UI.
+1. Through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command.
+1. By directly setting `Internet Settings` registry keys.
 
 
 ### netsh proxy samples (require Win11)
@@ -147,8 +147,7 @@ Windows Registry Editor Version 5.00
 "MigrateProxy"=dword:00000001
 "AutoConfigURL"="https://mycompany.com/pac.pac"
 ```
-
-This will update proxy settings for the currently logged in user, the default user (used for new account creation), LocalSystem (S-1-5-18) and the LocalService account (S-1-5-19). The LocalSystem & LocalService accounts are used for by background services that might also need internet access (based on [configure endpoint proxy and internet connectivity settings](https://learn.microsoft.com/en-us/defender-for-identity/deploy/configure-proxy)).
+Based on [AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie). This will update proxy settings for the currently logged in user, the default user (used for new account creation), LocalSystem (S-1-5-18) and the LocalService account (S-1-5-19). The LocalSystem & LocalService accounts are used for by background services that might also need internet access (based on [configure endpoint proxy and internet connectivity settings](https://learn.microsoft.com/en-us/defender-for-identity/deploy/configure-proxy)).
 
 ### Notes
 The underlying settings are found in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` and/or `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folders (use `regedit.exe` to view them), which also works on Win10.
