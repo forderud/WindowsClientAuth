@@ -95,7 +95,10 @@ The reason for OpenSSL _not_ being supported, is that OpenSSL is unable to acces
 ## Proxy settings
 The above API alternatives will automatically utilize the Windows proxy settings for the currently logged in user.
 
-Proxy settings can either be configured from the "Windows Settings" -> "Proxy" UI, through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command, or by directly setting `Internet Settings` registry values ([AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie)).
+Alternatives for configuring proxy settings:
+1  From the "Windows Settings" -> "Proxy" UI;
+1. Through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command;
+1. By directly setting `Internet Settings` registry values ([AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie)).
 
 
 ### netsh proxy samples (require Win11)
