@@ -92,20 +92,22 @@ Client certificates can also be used for authentication when using "raw" TLS/SSL
 
 The reason for OpenSSL _not_ being supported, is that OpenSSL is unable to access private keys through the [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) API. There does exist a `openssl-cng-engine` project that seeks to address this gap, but [client autentication doesn't appear to be supported yet](https://github.com/rticommunity/openssl-cng-engine/issues/46).
 
-### Proxy settings
+## Proxy settings
 The above API alternatives will automatically utilize the Windows proxy settings for the currently logged in user.
 
 Proxy settings can either be configured from the "Windows Settings" -> "Proxy" UI, through the [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) command, or by directly setting `Internet Settings` registry values ([AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie)).
 
 
-How to set proxy settings (if running Win11):
+### netsh winhttp advproxy samples (require Win11)
+Set proxy settings:
 ```
 echo { "Proxy":"", "ProxyBypass":"", "AutoconfigUrl":"https://mycompany.com/pac.pac", "AutoDetect":true} > proxy-settings.json
 netsh winhttp set advproxy setting-scope=user settings-file=proxy-settings.json
 ```
+Use `setting-scope=machine` to instead set proxy settings for all users.
 
 
-How to view proxy settings (if running Win11):
+Show proxy settings:
 ```
 > netsh winhttp show advproxy
 
