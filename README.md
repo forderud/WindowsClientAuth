@@ -122,6 +122,34 @@ Current WinHTTP advanced proxy settings:
 }
 ```
 
+### registry key samples (for Win10)
+Store the following in `proxy-settings.reg` and merge it into the Windows registry:
+```
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings]
+"ProxyEnable"=dword:00000000
+"MigrateProxy"=dword:00000001
+"AutoConfigURL"="https://mycompany.com/pac.pac"
+
+[HKEY_USERS\.DEFAULT\Software\Microsoft\Windows\CurrentVersion\Internet Settings]
+"ProxyEnable"=dword:00000000
+"MigrateProxy"=dword:00000001
+"AutoConfigURL"="https://mycompany.com/pac.pac"
+
+[HKEY_USERS\S-1-5-18\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings]
+"ProxyEnable"=dword:00000000
+"MigrateProxy"=dword:00000001
+"AutoConfigURL"="https://mycompany.com/pac.pac"
+
+[HKEY_USERS\S-1-5-19\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings]
+"ProxyEnable"=dword:00000000
+"MigrateProxy"=dword:00000001
+"AutoConfigURL"="https://mycompany.com/pac.pac"
+```
+
+This will update proxy settings for the currently logged in user, the default user (used for new accounts created afterwards), the LocalSystem account (S-1-5-18) and LocalService account (S-1-5-19).
+
 ### Notes
 The underlying settings are found in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` and/or `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings` registry folders (use `regedit.exe` to view them), which also works on Win10.
 
