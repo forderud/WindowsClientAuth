@@ -101,8 +101,8 @@ The above API alternatives will automatically utilize Windows proxy settings.
 1. By directly setting `Internet Settings` registry keys (see below)
 
 
-### netsh proxy samples (require Win11)
-Set proxy settings:
+### Proxy configuration on Windows 11
+Set proxy settings through the new `advproxy` mode introduced in Win11:
 ```
 echo { "Proxy":"", "ProxyBypass":"", "AutoconfigUrl":"https://mycompany.com/pac.pac", "AutoDetect":true} > proxy-settings.json
 netsh winhttp set advproxy setting-scope=user settings-file=proxy-settings.json
@@ -122,8 +122,14 @@ Current WinHTTP advanced proxy settings:
 }
 ```
 
-### Registry key samples (for Win10)
-Store the following in `proxy-settings.reg` and merge it into the Windows registry:
+### Proxy configuration on Windows 10
+Configuration of proxy server and bypass list:
+```
+netsh winhttp set proxy proxy-server="http=proxy.mycompany.com;https=proxy.mycompany.com:88" bypass-list="*.mycompany.com"
+```
+
+
+`AutoConfigURL` needs to be configured manually through registry keys on Win10. This can be done by storing the following in `proxy-settings.reg` and merge it into the Windows registry:
 ```
 Windows Registry Editor Version 5.00
 
