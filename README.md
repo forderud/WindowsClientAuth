@@ -128,7 +128,6 @@ Configuration of proxy server and bypass list:
 netsh winhttp set proxy proxy-server="http=proxy.mycompany.com;https=proxy.mycompany.com:88" bypass-list="*.mycompany.com"
 ```
 
-
 `AutoConfigURL` needs to be configured manually through registry keys on Win10. This can be done by storing the following in `proxy-settings.reg` and merge it into the Windows registry:
 ```
 Windows Registry Editor Version 5.00
@@ -153,6 +152,7 @@ Windows Registry Editor Version 5.00
 "MigrateProxy"=dword:00000001
 "AutoConfigURL"="https://mycompany.com/pac.pac"
 ```
+
 Based on [AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie). This will update proxy settings for the currently logged in user, the default user (used for new account creation), LocalSystem (S-1-5-18) and the LocalService account (S-1-5-19). The LocalSystem & LocalService accounts are used for by background services that might also need internet access (based on [configure endpoint proxy and internet connectivity settings](https://learn.microsoft.com/en-us/defender-for-identity/deploy/configure-proxy)).
 
 Configuration of system-wide proxy settings from `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` does unfortuantely not seem to work on Win10. Not sure exacly why.
