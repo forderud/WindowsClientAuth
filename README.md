@@ -93,7 +93,7 @@ Client certificates can also be used for authentication when using "raw" TLS/SSL
 The reason for OpenSSL _not_ being supported, is that OpenSSL is unable to access private keys through the [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) API. There does exist a `openssl-cng-engine` project that seeks to address this gap, but [client autentication doesn't appear to be supported yet](https://github.com/rticommunity/openssl-cng-engine/issues/46).
 
 ## Proxy settings
-The above API alternatives will automatically utilize the Windows proxy settings for the currently logged in user.
+The above API alternatives will automatically utilize Windows proxy settings.
 
 #### Alternatives for configuring proxy settings
 1. From the "Windows Settings" -> "Proxy" UI.
