@@ -84,6 +84,7 @@ int wmain(int argc, wchar_t* argv[]) {
         wchar_t* url = nullptr;
         if (argc >= 3)
             url = argv[2]; // L"http://www.google.com/";
+
         PrintProxySettings(url);
 
         {
