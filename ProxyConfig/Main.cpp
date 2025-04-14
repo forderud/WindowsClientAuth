@@ -6,7 +6,22 @@
 #include "ProxyConfig.hpp"
 #include "ProxySettings.hpp"
 #include <winhttp.h>
+#include <atlbase.h>
 
+
+bool IsWin11OrNewer() {
+    CRegKey reg;
+    LSTATUS res = reg.Open(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", KEY_READ);
+    assert(res == ERROR_SUCCESS);
+
+    wchar_t buildStr[128] = {};
+    ULONG charCount = std::size(buildStr);
+    res = reg.QueryStringValue(L"CurrentBuild", buildStr, &charCount);
+    assert(res == ERROR_SUCCESS);
+
+    int buildNum = _wtoi(buildStr);
+    return buildNum >= 22000;
+}
 
 void ProxyChangeCallback(ULONGLONG /*flags*/, void* context) {
     wprintf(L"\n");
@@ -23,6 +38,10 @@ typedef DWORD (*WinHttpRegisterProxyChangeNotification_fn)(ULONGLONG ullFlags, W
 
 
 int wmain(int argc, wchar_t* argv[]) {
+    if (IsWin11OrNewer()) {
+        wprintf(L"WARNING: You should instead use netsh winhttp set advproxy if running on Win11 or newer.\n");
+    }
+
     if (argc < 2) {
         wprintf(L"USAGE modes:\n");
         wprintf(L"  View proxy settings: ProxyConfig.exe view <test-url>\n");
