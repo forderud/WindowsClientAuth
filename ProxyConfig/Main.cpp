@@ -40,6 +40,7 @@ typedef DWORD (*WinHttpRegisterProxyChangeNotification_fn)(ULONGLONG ullFlags, W
 int wmain(int argc, wchar_t* argv[]) {
     if (IsWin11OrNewer()) {
         wprintf(L"WARNING: You should instead use netsh winhttp set advproxy if running on Win11 or newer.\n");
+        wprintf(L"\n");
     }
 
     if (argc < 2) {
