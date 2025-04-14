@@ -11,7 +11,7 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "WebClientPy", "WebClientPy\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebClientUwp", "WebClientUwp\WebClientUwp.vcxproj", "{0DD97443-53DA-4882-9437-63B7116C0E8B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GetProxySettings", "GetProxySettings\GetProxySettings.vcxproj", "{2F1949F5-A4E7-420A-A522-B4C896038C88}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProxyConfig", "ProxyConfig\ProxyConfig.vcxproj", "{2F1949F5-A4E7-420A-A522-B4C896038C88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -80,7 +80,7 @@ typedef DWORD (*WinHttpRegisterProxyChangeNotification_fn)(ULONGLONG ullFlags, W
 
 int wmain(int argc, wchar_t* argv[]) {
     if (argc < 2) {
-        wprintf(L"USAGE: GetProxySettings.exe <URL>\n");
+        wprintf(L"USAGE: ProxyConfig.exe <URL>\n");
         return 1;
     }
 
