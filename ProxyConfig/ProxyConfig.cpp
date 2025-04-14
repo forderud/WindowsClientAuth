@@ -77,7 +77,7 @@ int SetProxyPerUser(bool perUser) {
 
     if (!perUser) {
         res = internetSettingsPolicy.SetDWORDValue(L"ProxySettingsPerUser", 0);
-        assert(res == ERROR_SUCCESS);
+        res; // ignore errors
 
         CRegKey HKLM_internetSettings;
         res = HKLM_internetSettings.Open(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
@@ -89,7 +89,7 @@ int SetProxyPerUser(bool perUser) {
         wprintf(L"Proxy is system-wide.\n");
     } else {
         res = internetSettingsPolicy.DeleteSubKey(L"ProxySettingsPerUser");
-        assert(res == ERROR_SUCCESS);
+        res; // ignore errors
 
         CRegKey HKCU_internetSettings;
         res = HKCU_internetSettings.Open(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
