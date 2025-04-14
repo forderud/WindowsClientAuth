@@ -113,6 +113,14 @@ void PrintProxySettings() {
             if (option.Value.dwValue & AUTO_PROXY_FLAG_DETECTION_SUSPECT)
                 wprintf(L" | AUTO_PROXY_FLAG_DETECTION_SUSPECT");
             wprintf(L"\n");
+        } else if (option.dwOption == INTERNET_PER_CONN_AUTOCONFIG_RELOAD_DELAY_MINS) {
+            // integer value
+            wprintf(L"  Value: %u\n", option.Value.dwValue);
+        } else if (option.dwOption == INTERNET_PER_CONN_AUTOCONFIG_LAST_DETECT_TIME) {
+            // time-based value
+            SYSTEMTIME st = {};
+            FileTimeToSystemTime(&option.Value.ftValue, &st);
+            wprintf(L"  Date: %02d-%02d-%02dT%02d:%02d:%02d.%02dZ\n", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
         }
     }
 }
