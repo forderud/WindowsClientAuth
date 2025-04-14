@@ -130,7 +130,7 @@ Exampe of how to configure AutoConfigURL for all users:
 ProxyConfig.exe autoproxy https://mycompany.com/pac.pac
 ```
 
-Exampe of how to configure proxy server and bypadd list for all users:
+Exampe of how to configure proxy server and bypass list for all users:
 ```
 ProxyConfig.exe setproxy proxy.mycompany.com:8080 *.mycompany.com
 ```
