@@ -67,8 +67,8 @@ int wmain(int argc, wchar_t* argv[]) {
         // first start syncing proxy settings
         SetProxyPerUser(false);
         // then update proxy settings
-        std::wstring autoConfigUrl = argv[2];
-        int res = UpdateProxySettings(autoConfigUrl.c_str(), nullptr, nullptr, true);
+        wchar_t* autoConfigUrl = argv[2];
+        int res = UpdateProxySettings(autoConfigUrl, nullptr, nullptr, true);
         return res;
     } else if ((mode == L"setproxy") && (argc >= 3)) {
         if (!IsUserAnAdmin()) {
@@ -79,11 +79,11 @@ int wmain(int argc, wchar_t* argv[]) {
         // first start syncing proxy settings
         SetProxyPerUser(false);
         // then update proxy settings
-        std::wstring proxy = argv[2];
+        wchar_t* proxy = argv[2];
         wchar_t* bypassList = nullptr;
         if (argc >= 4)
             bypassList = argv[3];
-        int res = UpdateProxySettings(nullptr, proxy.c_str(), bypassList, true);
+        int res = UpdateProxySettings(nullptr, proxy, bypassList, true);
         return res;
     } else if (mode == L"clear") {
         if (!IsUserAnAdmin()) {
