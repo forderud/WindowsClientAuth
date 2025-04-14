@@ -37,7 +37,7 @@ int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer
 
         options[3].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
         if (autoConfigUrl) {
-            wprintf(L"  AutoconfigUrl: %s\n", autoConfigUrl);
+            wprintf(L"  AutoConfigURL: %s\n", autoConfigUrl);
             proxyType |= PROXY_TYPE_AUTO_PROXY_URL;
             options[3].Value.pszValue = (wchar_t*)autoConfigUrl;
         }
