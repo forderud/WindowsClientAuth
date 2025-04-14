@@ -35,6 +35,21 @@ const wchar_t* InternetPerConString(DWORD dwOption) {
     abort();
 }
 
+bool IsStringOption(DWORD dwOption) {
+    if (dwOption == INTERNET_PER_CONN_PROXY_SERVER)
+        return true;
+    if (dwOption == INTERNET_PER_CONN_PROXY_BYPASS)
+        return true;
+    if (dwOption == INTERNET_PER_CONN_AUTOCONFIG_URL)
+        return true;
+    if (dwOption == INTERNET_PER_CONN_AUTOCONFIG_SECONDARY_URL)
+        return true;
+    if (dwOption == INTERNET_PER_CONN_AUTOCONFIG_LAST_DETECT_URL)
+        return true;
+
+    return false;
+}
+
 
 void PrintProxySettings() {
     std::vector<INTERNET_PER_CONN_OPTIONW> options(4, INTERNET_PER_CONN_OPTIONW{});
@@ -78,7 +93,7 @@ void PrintProxySettings() {
             if (option.Value.dwValue & PROXY_TYPE_AUTO_DETECT)
                 wprintf(L" | PROXY_TYPE_AUTO_DETECT");
             wprintf(L"\n");
-        } else {
+        } else if (IsStringOption(option.dwOption)) {
             // string-based values
             wprintf(L"  Value: %s\n", option.Value.pszValue);
         }
