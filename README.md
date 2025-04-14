@@ -98,7 +98,7 @@ The above API alternatives will automatically utilize Windows proxy settings.
 #### Alternatives for configuring proxy settings
 1. From the "Windows Settings" -> "Proxy" UI
 1. Through [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) that was introduced in Windows 11
-1. Through [`netsh winhttp set proxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-proxy) and/or directly editing `Internet Settings` registry keys
+1. Through the WinINET API and `ProxySettingsPerUser` registry key.
 
 
 ### Proxy configuration on Windows 11
@@ -121,42 +121,17 @@ Current WinHTTP advanced proxy settings:
 ```
 
 ### Proxy configuration on Windows 10
-Configuration of proxy and bypass for background services:
+The ProxyConfig project in this repo can be used to programatically configure proxy settings on Windows 10 machines. This project uses the WinINET APIs to configure `INTERNET_PER_CONN_PROXY_SERVER` & `INTERNET_PER_CONN_PROXY_BYPASS` or `INTERNET_PER_CONN_AUTOCONFIG_URL` settings for the current user. Then, the `ProxySettingsPerUser=0` and `MigrateProxy=1` registry keys are set to migrate the settings to all users.
+
+Exampe of how to configure AutoConfigURL for all users:
 ```
-netsh winhttp show proxy
-netsh winhttp set proxy proxy-server="http=proxy.mycompany.com:8080;https=proxy.mycompany.com:8080" bypass-list="*.mycompany.com"
-```
-The configuration will be stored in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Connections\WinHttpSettings` binary blob in the registry.
-
-
-`AutoConfigURL` needs to be configured manually through registry keys on Win10. This can be done by storing the following in `proxy-settings.reg` and merge it into the Windows registry:
-```
-Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings]
-"ProxyEnable"=dword:00000000
-"MigrateProxy"=dword:00000001
-"AutoConfigURL"="https://mycompany.com/pac.pac"
-
-[HKEY_USERS\.DEFAULT\Software\Microsoft\Windows\CurrentVersion\Internet Settings]
-"ProxyEnable"=dword:00000000
-"MigrateProxy"=dword:00000001
-"AutoConfigURL"="https://mycompany.com/pac.pac"
-
-[HKEY_USERS\S-1-5-18\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings]
-"ProxyEnable"=dword:00000000
-"MigrateProxy"=dword:00000001
-"AutoConfigURL"="https://mycompany.com/pac.pac"
-
-[HKEY_USERS\S-1-5-19\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings]
-"ProxyEnable"=dword:00000000
-"MigrateProxy"=dword:00000001
-"AutoConfigURL"="https://mycompany.com/pac.pac"
+ProxyConfig.exe autoproxy https://mycompany.com/pac.pac
 ```
 
-Based on [AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie). This will update proxy settings for the currently logged in user, the default user (used for new account creation), LocalSystem (S-1-5-18) and the LocalService account (S-1-5-19). The LocalSystem & LocalService accounts are used for by background services that might also need internet access (based on [configure endpoint proxy and internet connectivity settings](https://learn.microsoft.com/en-us/defender-for-identity/deploy/configure-proxy)).
-
-Configuration of system-wide `AutoConfigURL` from `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` does unfortuantely not seem to work.
+Exampe of how to configure proxy server and bypadd list for all users:
+```
+ProxyConfig.exe setproxy proxy.mycompany.com:8080 *.mycompany.com
+```
 
 
 ### Proxy setting usage
