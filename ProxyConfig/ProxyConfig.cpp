@@ -52,14 +52,16 @@ int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer
         list.pOptions = options.data();
     }
 
-    HINTERNET session = 0; // don't need to open handle
+    HINTERNET session = NULL; // 0 means system-wide changes
+
+    // configure new proxy settings
     BOOL ok = InternetSetOptionW(session, INTERNET_OPTION_PER_CONNECTION_OPTION, &list, sizeof(list));
     if (!ok) {
         DWORD err = GetLastError();
         wprintf(L"InternetSetOption INTERNET_OPTION_PER_CONNECTION_OPTION failed with err %u\n", err);
         abort();
     }
-
+    // refresh global proxy settings
     ok = InternetSetOptionW(session, INTERNET_OPTION_REFRESH, nullptr, 0);
     if (!ok) {
         DWORD err = GetLastError();
