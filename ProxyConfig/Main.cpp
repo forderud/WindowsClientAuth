@@ -98,6 +98,8 @@ int wmain(int argc, wchar_t* argv[]) {
 
         return res;
     } else if (mode == L"view") {
+        PrintProxySettings();
+
         wchar_t* url = nullptr;
         if (argc >= 3)
             url = argv[2]; // L"http://www.google.com/";
