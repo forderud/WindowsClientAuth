@@ -73,7 +73,10 @@ int SetProxyPerUser(bool perUser) {
     // based on https://www.powershellgallery.com/packages/WinInetProxy/0.1.0/Content/WinInetProxy.psm1
     CRegKey internetSettingsPolicy;
     LSTATUS res = internetSettingsPolicy.Open(HKEY_LOCAL_MACHINE, L"Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-    assert(res == ERROR_SUCCESS);
+    if (res != ERROR_SUCCESS) {
+        wprintf(L"ERROR Unable to open HKLM Policies Internet Settings (err=%u).\n", res);
+        abort();
+    }
 
     if (!perUser) {
         res = internetSettingsPolicy.SetDWORDValue(L"ProxySettingsPerUser", 0);
@@ -81,7 +84,10 @@ int SetProxyPerUser(bool perUser) {
 
         CRegKey HKLM_internetSettings;
         res = HKLM_internetSettings.Open(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-        assert(res == ERROR_SUCCESS);
+        if (res != ERROR_SUCCESS) {
+            wprintf(L"ERROR Unable to open HKLM Internet Settings (err=%u).\n", res);
+            abort();
+        }
 
         res = HKLM_internetSettings.SetDWORDValue(L"MigrateProxy", 1);
         res; // ignore errors
@@ -93,7 +99,10 @@ int SetProxyPerUser(bool perUser) {
 
         CRegKey HKCU_internetSettings;
         res = HKCU_internetSettings.Open(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-        assert(res == ERROR_SUCCESS);
+        if (res != ERROR_SUCCESS) {
+            wprintf(L"ERROR Unable to open HKCU Internet Settings (err=%u).\n", res);
+            abort();
+        }
 
         res = HKCU_internetSettings.SetDWORDValue(L"MigrateProxy", 1);
         res; // ignore errors
