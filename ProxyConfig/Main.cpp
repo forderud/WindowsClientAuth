@@ -70,7 +70,7 @@ int wmain(int argc, wchar_t* argv[]) {
         std::wstring autoConfigUrl = argv[2];
         int res = UpdateProxySettings(autoConfigUrl.c_str(), nullptr, nullptr, true);
         return res;
-    } else if ((mode == L"setproxy") && (argc >= 4)) {
+    } else if ((mode == L"setproxy") && (argc >= 3)) {
         if (!IsUserAnAdmin()) {
             wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
             return 2;
@@ -80,8 +80,10 @@ int wmain(int argc, wchar_t* argv[]) {
         SetProxyPerUser(false);
         // then update proxy settings
         std::wstring proxy = argv[2];
-        std::wstring bypassList = argv[3];
-        int res = UpdateProxySettings(nullptr, proxy.c_str(), bypassList.c_str(), true);
+        wchar_t* bypassList = nullptr;
+        if (argc >= 4)
+            bypassList = argv[3];
+        int res = UpdateProxySettings(nullptr, proxy.c_str(), bypassList, true);
         return res;
     } else if (mode == L"clear") {
         if (!IsUserAnAdmin()) {
