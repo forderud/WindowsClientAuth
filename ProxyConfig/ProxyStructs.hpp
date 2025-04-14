@@ -2,6 +2,8 @@
 /** RAII wrappers of some WinHTTP proxy datastructures. */
 #include <Windows.h>
 #include <winhttp.h>
+#include <iostream>
+#include <cassert>
 
 
 struct WINHTTP_CURRENT_USER_IE_PROXY_CONFIG_wrap : public WINHTTP_CURRENT_USER_IE_PROXY_CONFIG {
