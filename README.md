@@ -121,7 +121,7 @@ Current WinHTTP advanced proxy settings:
 ```
 
 ### Proxy configuration on Windows 10
-System-wide configuration of proxy server and bypass list:
+Configuration of proxy and bypass for background services:
 ```
 netsh winhttp show proxy
 netsh winhttp set proxy proxy-server="http=proxy.mycompany.com:8080;https=proxy.mycompany.com:8080" bypass-list="*.mycompany.com"
