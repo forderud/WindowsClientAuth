@@ -58,19 +58,21 @@ int wmain(int argc, wchar_t* argv[]) {
     std::wstring mode = argv[1];
 
     if ((mode == L"autoproxy") && (argc >= 3)) {
-        if (IsUserAnAdmin())
-            SetProxyPerUser(false);
-        else
-            wprintf(L"Skipping system-wide proxy configuration since user is not an admin.\n");
+        if (!IsUserAnAdmin()) {
+            wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
+        }
+
+        SetProxyPerUser(false);
 
         std::wstring autoConfigUrl = argv[2];
         int res = UpdateProxySettings(autoConfigUrl.c_str(), nullptr, nullptr, true);
         return res;
     } else if ((mode == L"setproxy") && (argc >= 4)) {
-        if (IsUserAnAdmin())
-            SetProxyPerUser(false);
-        else
-            wprintf(L"Skipping system-wide proxy configuration since user is not an admin.\n");
+        if (!IsUserAnAdmin()) {
+            wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
+        }
+
+        SetProxyPerUser(false);
 
         std::wstring proxy = argv[2];
         std::wstring bypassList = argv[3];
