@@ -140,7 +140,7 @@ int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer
         // DOC: https://learn.microsoft.com/en-us/windows/win32/api/wininet/ns-wininet-internet_per_conn_optionw
         options[0].dwOption = INTERNET_PER_CONN_FLAGS_UI;
         DWORD& proxyType = options[0].Value.dwValue;
-        proxyType = PROXY_TYPE_DIRECT;
+        proxyType = PROXY_TYPE_DIRECT; // direct for local servers
 
         if (autoDetect)
             proxyType |= PROXY_TYPE_AUTO_DETECT;
