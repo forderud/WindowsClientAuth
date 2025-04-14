@@ -64,8 +64,9 @@ int wmain(int argc, wchar_t* argv[]) {
             return 2;
         }
 
+        // first start syncing proxy settings
         SetProxyPerUser(false);
-
+        // then update proxy settings
         std::wstring autoConfigUrl = argv[2];
         int res = UpdateProxySettings(autoConfigUrl.c_str(), nullptr, nullptr, true);
         return res;
@@ -75,8 +76,9 @@ int wmain(int argc, wchar_t* argv[]) {
             return 2;
         }
 
+        // first start syncing proxy settings
         SetProxyPerUser(false);
-
+        // then update proxy settings
         std::wstring proxy = argv[2];
         std::wstring bypassList = argv[3];
         int res = UpdateProxySettings(nullptr, proxy.c_str(), bypassList.c_str(), true);
@@ -87,9 +89,11 @@ int wmain(int argc, wchar_t* argv[]) {
             return 2;
         }
 
+        // first clear proxy settings
+        int res = UpdateProxySettings(nullptr, nullptr, nullptr, true); // auto-detect enabled by default
+        // then stop syncing future changes
         SetProxyPerUser(true);
 
-        int res = UpdateProxySettings(nullptr, nullptr, nullptr, true); // auto-detect enabled by default
         return res;
     } else if (mode == L"view") {
         wchar_t* url = nullptr;
