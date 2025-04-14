@@ -60,6 +60,7 @@ int wmain(int argc, wchar_t* argv[]) {
     if ((mode == L"autoproxy") && (argc >= 3)) {
         if (!IsUserAnAdmin()) {
             wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
+            return 2;
         }
 
         SetProxyPerUser(false);
@@ -70,6 +71,7 @@ int wmain(int argc, wchar_t* argv[]) {
     } else if ((mode == L"setproxy") && (argc >= 4)) {
         if (!IsUserAnAdmin()) {
             wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
+            return 2;
         }
 
         SetProxyPerUser(false);
