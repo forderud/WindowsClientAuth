@@ -116,7 +116,7 @@ Current WinHTTP advanced proxy settings:
         "AutoConfigIsEnabled":  true,
         "AutoconfigUrl":        "https://mycompany.com/pac.pac",
         "AutoDetect":   true,
-        "PerUserProxySettings": true
+        "PerUserProxySettings": false
 }
 ```
 
