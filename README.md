@@ -128,6 +128,8 @@ System-wide configuration of proxy server and bypass list:
 netsh winhttp show proxy
 netsh winhttp set proxy proxy-server="http=proxy.mycompany.com:8080;https=proxy.mycompany.com:8080" bypass-list="*.mycompany.com"
 ```
+The configuration will be stored in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Connections\WinHttpSettings` binary blob in the registry.
+
 
 `AutoConfigURL` needs to be configured manually through registry keys on Win10. This can be done by storing the following in `proxy-settings.reg` and merge it into the Windows registry:
 ```
