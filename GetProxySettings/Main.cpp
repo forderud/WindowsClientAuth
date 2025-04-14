@@ -2,6 +2,7 @@
     Most users probably want to use "netsh winhttp show advproxy" instead of this tool if on Win11 or newer. */
 #include <iostream>
 #include <cassert>
+#include <shlobj_core.h>
 #include "ProxyStructs.hpp"
 #include "ProxyConfig.hpp"
 
@@ -87,13 +88,26 @@ int wmain(int argc, wchar_t* argv[]) {
 
     if ((url == L"autoproxy") && (argc >= 3)) {
         std::wstring autoConfigUrl = argv[2];
-        return UpdateProxySettings(autoConfigUrl.c_str(), nullptr, nullptr, true);
+        int res = UpdateProxySettings(autoConfigUrl.c_str(), nullptr, nullptr, true);
+
+        if (IsUserAnAdmin())
+            SetProxyPerUser(false);
+        else
+            wprintf(L"Skipping system-wide proxy configuration since user is not an admin.\n");
+
+        return res;
     }else if ((url == L"setproxy") && (argc >= 4)) {
         std::wstring proxy = argv[2];
         std::wstring bypassList = argv[3];
-        return UpdateProxySettings(nullptr, proxy.c_str(), bypassList.c_str(), true);
-    }
+        int res = UpdateProxySettings(nullptr, proxy.c_str(), bypassList.c_str(), true);
 
+        if (IsUserAnAdmin())
+            SetProxyPerUser(false);
+        else
+            wprintf(L"Skipping system-wide proxy configuration since user is not an admin.\n");
+
+        return res;
+    }
 
     PrintProxySettings(url.c_str());
 

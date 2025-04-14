@@ -1,6 +1,8 @@
 #include "ProxyConfig.hpp"
 #include <Windows.h>
 #include <wininet.h>
+#include <atlbase.h>
+#include <cassert>
 #include <vector>
 
 #pragma comment(lib, "Wininet.lib")
@@ -63,5 +65,39 @@ int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer
     }
 
     wprintf(L"[completed]\n");
+    return 0;
+}
+
+
+int SetProxyPerUser(bool perUser) {
+    // based on https://www.powershellgallery.com/packages/WinInetProxy/0.1.0/Content/WinInetProxy.psm1
+    CRegKey HKLM_internetSettingsRegKey;
+    LSTATUS res = HKLM_internetSettingsRegKey.Open(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+    assert(res == ERROR_SUCCESS);
+
+    CRegKey HKCU_internetSettingsRegKey;
+    res = HKCU_internetSettingsRegKey.Open(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+    assert(res == ERROR_SUCCESS);
+
+    CRegKey internetSettingsPolicyRegKey;
+    res = internetSettingsPolicyRegKey.Open(HKEY_LOCAL_MACHINE, L"Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+    assert(res == ERROR_SUCCESS);
+
+    CRegKey internetSettingsRegKey;
+    if (!perUser) {
+        res = internetSettingsPolicyRegKey.SetDWORDValue(L"ProxySettingsPerUser", 0);
+        assert(res == ERROR_SUCCESS);
+        internetSettingsRegKey = HKLM_internetSettingsRegKey;
+        wprintf(L"Proxy is system-wide.\n");
+    } else {
+        res = internetSettingsPolicyRegKey.DeleteSubKey(L"ProxySettingsPerUser");
+        assert(res == ERROR_SUCCESS);
+        internetSettingsRegKey = HKCU_internetSettingsRegKey;
+        wprintf(L"Proxy is per user.\n");
+    }
+
+    res = internetSettingsRegKey.SetDWORDValue(L"MigrateProxy", 1);
+    res; // ignore errors
+
     return 0;
 }
