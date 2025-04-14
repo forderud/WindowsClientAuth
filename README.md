@@ -123,7 +123,7 @@ Current WinHTTP advanced proxy settings:
 ### Proxy configuration on Windows 10
 There's unfortunately no inbuilt tool for programatic proxy configuration in Windows 10. However, there's a [Configure proxy settings for Azure Stack HCI](https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings) document that describes some of the underlying registry keys and points to a `WinInetProxy` script with sourcecode.
 
-The `ProxyConfig` project is based on the WinInetProxy sample, and can be used to programatically configure proxy settings on Windows 10 machines. This project uses the WinINet [`InternetSetOption`](https://learn.microsoft.com/en-us/windows/win32/api/wininet/nf-wininet-internetsetoptionw) function to configure `INTERNET_PER_CONN_PROXY_SERVER` & `INTERNET_PER_CONN_PROXY_BYPASS` or `INTERNET_PER_CONN_AUTOCONFIG_URL` settings for the current user. Then, the `ProxySettingsPerUser=0` and `MigrateProxy=1` registry keys are set to migrate the settings to all users.
+The `ProxyConfig` project is based on the WinInetProxy sample, and can be used to programatically configure proxy settings on Windows 10 machines. This project uses the WinINet [`InternetSetOption`](https://learn.microsoft.com/en-us/windows/win32/api/wininet/nf-wininet-internetsetoptionw) function to configure `INTERNET_PER_CONN_PROXY_SERVER` & `INTERNET_PER_CONN_PROXY_BYPASS` or `INTERNET_PER_CONN_AUTOCONFIG_URL` settings for the current user. Then, the `ProxySettingsPerUser=0` registry key is set to migrate the settings to all users.
 
 Exampe of how to configure AutoConfigURL for all users:
 ```

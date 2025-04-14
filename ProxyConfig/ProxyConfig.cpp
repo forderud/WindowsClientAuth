@@ -88,30 +88,10 @@ int SetProxyPerUser(bool perUser) {
         res = internetSettingsPolicy.SetDWORDValue(L"ProxySettingsPerUser", 0);
         res; // ignore errors
 
-        CRegKey HKLM_internetSettings;
-        res = HKLM_internetSettings.Open(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-        if (res != ERROR_SUCCESS) {
-            wprintf(L"ERROR Unable to open HKLM Internet Settings (err=%u).\n", res);
-            abort();
-        }
-
-        res = HKLM_internetSettings.SetDWORDValue(L"MigrateProxy", 1);
-        res; // ignore errors
-
         wprintf(L"Proxy is system-wide.\n");
     } else {
         // disable system-wide proxy settings
         res = internetSettingsPolicy.DeleteSubKey(L"ProxySettingsPerUser");
-        res; // ignore errors
-
-        CRegKey HKCU_internetSettings;
-        res = HKCU_internetSettings.Open(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-        if (res != ERROR_SUCCESS) {
-            wprintf(L"ERROR Unable to open HKCU Internet Settings (err=%u).\n", res);
-            abort();
-        }
-
-        res = HKCU_internetSettings.SetDWORDValue(L"MigrateProxy", 1);
         res; // ignore errors
 
         wprintf(L"Proxy is per user.\n");
