@@ -156,7 +156,7 @@ Windows Registry Editor Version 5.00
 
 Based on [AutoConfigURL example](https://learn.microsoft.com/en-us/archive/technet-wiki/31679.use-automatic-configuration-script-ie). This will update proxy settings for the currently logged in user, the default user (used for new account creation), LocalSystem (S-1-5-18) and the LocalService account (S-1-5-19). The LocalSystem & LocalService accounts are used for by background services that might also need internet access (based on [configure endpoint proxy and internet connectivity settings](https://learn.microsoft.com/en-us/defender-for-identity/deploy/configure-proxy)).
 
-Configuration of system-wide proxy settings from `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` does unfortuantely not seem to work on Win10. Not sure exacly why.
+Configuration of system-wide `AutoConfigURL` from `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` does unfortuantely not seem to work.
 
 
 ### Proxy setting usage
