@@ -96,6 +96,23 @@ void PrintProxySettings() {
         } else if (IsStringOption(option.dwOption)) {
             // string-based values
             wprintf(L"  Value: %s\n", option.Value.pszValue);
+        } else if (option.dwOption == INTERNET_PER_CONN_AUTODISCOVERY_FLAGS) {
+            wprintf(L"  Value:");
+            if (option.Value.dwValue & AUTO_PROXY_FLAG_USER_SET)
+                wprintf(L" | AUTO_PROXY_FLAG_USER_SET");
+            if (option.Value.dwValue & AUTO_PROXY_FLAG_ALWAYS_DETECT)
+                wprintf(L" | AUTO_PROXY_FLAG_ALWAYS_DETECT");
+            if (option.Value.dwValue & AUTO_PROXY_FLAG_DETECTION_RUN)
+                wprintf(L" | AUTO_PROXY_FLAG_DETECTION_RUN");
+            if (option.Value.dwValue & AUTO_PROXY_FLAG_MIGRATED)
+                wprintf(L" | AUTO_PROXY_FLAG_MIGRATED");
+            if (option.Value.dwValue & AUTO_PROXY_FLAG_DONT_CACHE_PROXY_RESULT)
+                wprintf(L" | AUTO_PROXY_FLAG_DONT_CACHE_PROXY_RESULT");
+            if (option.Value.dwValue & AUTO_PROXY_FLAG_CACHE_INIT_RUN)
+                wprintf(L" | AUTO_PROXY_FLAG_CACHE_INIT_RUN");
+            if (option.Value.dwValue & AUTO_PROXY_FLAG_DETECTION_SUSPECT)
+                wprintf(L" | AUTO_PROXY_FLAG_DETECTION_SUSPECT");
+            wprintf(L"\n");
         }
     }
 }
