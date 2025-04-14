@@ -37,9 +37,6 @@ const wchar_t* InternetPerConString(DWORD dwOption) {
 
 
 void PrintProxySettings() {
-    HINTERNET session = NULL; // 0 means system-wide changes
-
-
     std::vector<INTERNET_PER_CONN_OPTIONW> options(4, INTERNET_PER_CONN_OPTIONW{});
     options[0].dwOption = INTERNET_PER_CONN_FLAGS_UI;
     options[1].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
@@ -54,6 +51,7 @@ void PrintProxySettings() {
         list.pOptions = options.data();
     }
 
+    HINTERNET session = NULL; // 0 means system-wide changes
     DWORD bufferSize = sizeof(list);
     BOOL ok = InternetQueryOptionW(session, INTERNET_OPTION_PER_CONNECTION_OPTION, &list, &bufferSize);
     if (!ok) {
@@ -68,10 +66,22 @@ void PrintProxySettings() {
         wprintf(L"Option #%u:\n", i);
         wprintf(L"  Type: %s\n", InternetPerConString(option.dwOption));
 
-        if (option.dwOption == INTERNET_PER_CONN_FLAGS_UI)
-            wprintf(L"  Value: %u\n", option.Value.dwValue);
-        else
+        if (option.dwOption == INTERNET_PER_CONN_FLAGS_UI) {
+            // integer values
+            wprintf(L"  Value:");
+            if (option.Value.dwValue & PROXY_TYPE_DIRECT)
+                wprintf(L" | PROXY_TYPE_DIRECT");
+            if (option.Value.dwValue & PROXY_TYPE_PROXY)
+                wprintf(L" | PROXY_TYPE_PROXY");
+            if (option.Value.dwValue & PROXY_TYPE_AUTO_PROXY_URL)
+                wprintf(L" | PROXY_TYPE_AUTO_PROXY_URL");
+            if (option.Value.dwValue & PROXY_TYPE_AUTO_DETECT)
+                wprintf(L" | PROXY_TYPE_AUTO_DETECT");
+            wprintf(L"\n");
+        } else {
+            // string-based values
             wprintf(L"  Value: %s\n", option.Value.pszValue);
+        }
     }
 }
 
