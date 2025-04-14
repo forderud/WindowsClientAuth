@@ -8,6 +8,8 @@
 #include <winhttp.h>
 #include <atlbase.h>
 
+//#define ENABLE_PROXY_CHANGE_NOTIFICATION
+
 
 bool IsWin11OrNewer() {
     CRegKey reg;
@@ -23,6 +25,7 @@ bool IsWin11OrNewer() {
     return buildNum >= 22000;
 }
 
+#ifdef ENABLE_PROXY_CHANGE_NOTIFICATION
 void ProxyChangeCallback(ULONGLONG /*flags*/, void* context) {
     wprintf(L"\n");
     wprintf(L"\n");
@@ -35,6 +38,7 @@ void ProxyChangeCallback(ULONGLONG /*flags*/, void* context) {
 
 // WinHttpRegisterProxyChangeNotification function signature
 typedef DWORD (*WinHttpRegisterProxyChangeNotification_fn)(ULONGLONG ullFlags, WINHTTP_PROXY_CHANGE_CALLBACK pfnCallback, PVOID pvContext, WINHTTP_PROXY_CHANGE_REGISTRATION_HANDLE* hRegistration);
+#endif
 
 
 int wmain(int argc, wchar_t* argv[]) {
@@ -81,6 +85,7 @@ int wmain(int argc, wchar_t* argv[]) {
         PrintProxySettings(url);
 
         {
+#ifdef ENABLE_PROXY_CHANGE_NOTIFICATION
             // WinHttpRegisterProxyChangeNotification is not yet available on Win10 22H2. Therefore,
             // load the function pointer manually to avoid startup crash on older Windows versions.
             HMODULE winHttp = LoadLibrary(L"WinHttp.dll");
@@ -95,11 +100,11 @@ int wmain(int argc, wchar_t* argv[]) {
 
                 wprintf(L"Waiting for proxy setting changes...\n");
                 Sleep(INFINITE);
-            }
-            else {
+            } else {
                 wprintf(L"Unable to subscribe to proxy changes since WinHttpRegisterProxyChangeNotification is not available. ");
                 wprintf(L"This is most likely caused by running on a Windows version predating Win11.\n");
             }
+#endif
         }
     } else {
         wprintf(L"ERROR: Unsupported mode.\n");
