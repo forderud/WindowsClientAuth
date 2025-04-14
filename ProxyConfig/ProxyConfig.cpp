@@ -84,6 +84,7 @@ int SetProxyPerUser(bool perUser) {
     }
 
     if (!perUser) {
+        // enable system-wide proxy settings
         res = internetSettingsPolicy.SetDWORDValue(L"ProxySettingsPerUser", 0);
         res; // ignore errors
 
@@ -99,6 +100,7 @@ int SetProxyPerUser(bool perUser) {
 
         wprintf(L"Proxy is system-wide.\n");
     } else {
+        // disable system-wide proxy settings
         res = internetSettingsPolicy.DeleteSubKey(L"ProxySettingsPerUser");
         res; // ignore errors
 
