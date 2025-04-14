@@ -81,7 +81,7 @@ void PrintProxySettings() {
         wprintf(L"Option #%u:\n", i);
         wprintf(L"  Type: %s\n", InternetPerConString(option.dwOption));
 
-        if (option.dwOption == INTERNET_PER_CONN_FLAGS_UI) {
+        if ((option.dwOption == INTERNET_PER_CONN_FLAGS) || (option.dwOption == INTERNET_PER_CONN_FLAGS_UI)) {
             // integer values
             wprintf(L"  Value:");
             if (option.Value.dwValue & PROXY_TYPE_DIRECT)
