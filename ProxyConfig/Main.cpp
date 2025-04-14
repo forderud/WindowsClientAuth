@@ -49,9 +49,10 @@ int wmain(int argc, wchar_t* argv[]) {
 
     if (argc < 2) {
         wprintf(L"USAGE modes:\n");
-        wprintf(L"  View proxy settings: ProxyConfig.exe view <test-url>\n");
-        wprintf(L"  Set autoproxy PAC  : ProxyConfig.exe autoproxy <pac-url>\n");
-        wprintf(L"  Set classic proxy  : ProxyConfig.exe setproxy <proxy> <bypass-list>\n");
+        wprintf(L"  View proxy settings : ProxyConfig.exe view <test-url>\n");
+        wprintf(L"  Set autoproxy PAC   : ProxyConfig.exe autoproxy <pac-url>\n");
+        wprintf(L"  Set classic proxy   : ProxyConfig.exe setproxy <proxy> <bypass-list>\n");
+        wprintf(L"  Clear proxy settings: ProxyConfig.exe clear\n");
         return 1;
     }
 
@@ -79,6 +80,16 @@ int wmain(int argc, wchar_t* argv[]) {
         std::wstring proxy = argv[2];
         std::wstring bypassList = argv[3];
         int res = UpdateProxySettings(nullptr, proxy.c_str(), bypassList.c_str(), true);
+        return res;
+    } else if (mode == L"clear") {
+        if (!IsUserAnAdmin()) {
+            wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
+            return 2;
+        }
+
+        SetProxyPerUser(true);
+
+        int res = UpdateProxySettings(nullptr, nullptr, nullptr, true); // auto-detect enabled by default
         return res;
     } else if (mode == L"view") {
         wchar_t* url = nullptr;
