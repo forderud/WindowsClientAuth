@@ -135,6 +135,8 @@ Exampe of how to configure proxy server and bypadd list for all users:
 ProxyConfig.exe setproxy proxy.mycompany.com:8080 *.mycompany.com
 ```
 
+The system-wide proxy settings will be stored in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder.
+
 Note: `netsh winhttp set proxy` can unfortunately not be used for this, since it doesn't update proxy settings for the current user. It also lacks AutoConfigURL support.
 
 ### Proxy setting usage
