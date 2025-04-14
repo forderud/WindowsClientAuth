@@ -123,9 +123,9 @@ Current WinHTTP advanced proxy settings:
 ```
 
 ### Proxy configuration on Windows 10
-Configuration of proxy server and bypass list:
+System-wide configuration of proxy server and bypass list:
 ```
-netsh winhttp set proxy proxy-server="http=proxy.mycompany.com;https=proxy.mycompany.com:88" bypass-list="*.mycompany.com"
+netsh winhttp set proxy proxy-server="http=proxy.mycompany.com:8080;https=proxy.mycompany.com:8080" bypass-list="*.mycompany.com"
 ```
 
 `AutoConfigURL` needs to be configured manually through registry keys on Win10. This can be done by storing the following in `proxy-settings.reg` and merge it into the Windows registry:
