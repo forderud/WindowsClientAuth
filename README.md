@@ -102,13 +102,11 @@ The above API alternatives will automatically utilize Windows proxy settings.
 
 
 ### Proxy configuration on Windows 11
-Set proxy settings through the new `advproxy` mode introduced in Win11:
+System-wide proxy configuration:
 ```
 echo { "Proxy":"", "ProxyBypass":"", "AutoconfigUrl":"https://mycompany.com/pac.pac", "AutoDetect":true} > proxy-settings.json
-netsh winhttp set advproxy setting-scope=user settings-file=proxy-settings.json
+netsh winhttp set advproxy setting-scope=machine settings-file=proxy-settings.json
 ```
-Use `setting-scope=machine` to instead set proxy settings for all users.
-
 
 Show proxy settings: `netsh winhttp show advproxy`
 ```
