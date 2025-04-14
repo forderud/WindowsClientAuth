@@ -75,8 +75,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Proxyconfig.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ProxyConfig.hpp" />
     <ClInclude Include="ProxyStructs.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
