@@ -14,6 +14,7 @@ int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer
 
     std::vector<INTERNET_PER_CONN_OPTIONW> options(4, INTERNET_PER_CONN_OPTIONW{});
     {
+        // DOC: https://learn.microsoft.com/en-us/windows/win32/api/wininet/ns-wininet-internet_per_conn_optionw
         options[0].dwOption = INTERNET_PER_CONN_FLAGS_UI;
         DWORD& proxyType = options[0].Value.dwValue;
         proxyType = PROXY_TYPE_DIRECT;
@@ -44,12 +45,14 @@ int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer
     }
 
     INTERNET_PER_CONN_OPTION_LISTW list{};
-    list.dwSize = sizeof(list);
-    list.pszConnection = NULL; // LAN
-    list.dwOptionCount = (DWORD)options.size();
-    list.pOptions = options.data();
+    {
+        list.dwSize = sizeof(list);
+        list.pszConnection = NULL; // LAN
+        list.dwOptionCount = (DWORD)options.size();
+        list.pOptions = options.data();
+    }
 
-    HINTERNET session = 0;
+    HINTERNET session = 0; // don't need to open handle
     BOOL ok = InternetSetOptionW(session, INTERNET_OPTION_PER_CONNECTION_OPTION, &list, sizeof(list));
     if (!ok) {
         DWORD err = GetLastError();
