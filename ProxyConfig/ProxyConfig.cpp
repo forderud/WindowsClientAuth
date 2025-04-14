@@ -39,32 +39,39 @@ const wchar_t* InternetPerConString(DWORD dwOption) {
 void PrintProxySettings() {
     HINTERNET session = NULL; // 0 means system-wide changes
 
-    // determine required buffer size
-    DWORD bufferSize = 0;
-    BOOL ok = InternetQueryOptionW(session, INTERNET_OPTION_PER_CONNECTION_OPTION, nullptr, &bufferSize);
+
+    std::vector<INTERNET_PER_CONN_OPTIONW> options(4, INTERNET_PER_CONN_OPTIONW{});
+    options[0].dwOption = INTERNET_PER_CONN_FLAGS_UI;
+    options[1].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
+    options[2].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
+    options[3].dwOption = INTERNET_PER_CONN_AUTOCONFIG_URL;
+
+    INTERNET_PER_CONN_OPTION_LISTW list{};
+    {
+        list.dwSize = sizeof(list);
+        list.pszConnection = NULL; // LAN
+        list.dwOptionCount = (DWORD)options.size();
+        list.pOptions = options.data();
+    }
+
+    DWORD bufferSize = sizeof(list);
+    BOOL ok = InternetQueryOptionW(session, INTERNET_OPTION_PER_CONNECTION_OPTION, &list, &bufferSize);
     if (!ok) {
         DWORD err = GetLastError();
         wprintf(L"InternetQueryOptionW INTERNET_OPTION_PER_CONNECTION_OPTION failed with err %u\n", err);
         abort();
     }
 
-    std::vector<BYTE> buffer(bufferSize, (BYTE)0);
-
-    ok = InternetQueryOptionW(session, INTERNET_OPTION_PER_CONNECTION_OPTION, buffer.data(), &bufferSize);
-    if (!ok) {
-        DWORD err = GetLastError();
-        wprintf(L"InternetQueryOptionW INTERNET_OPTION_PER_CONNECTION_OPTION failed with err %u\n", err);
-        abort();
-    }
-
-    auto* list = (INTERNET_PER_CONN_OPTION_LISTW*)buffer.data();
-    for (DWORD i = 0; i < list->dwOptionCount; i++) {
-        INTERNET_PER_CONN_OPTIONW& option = list->pOptions[i];
+    for (DWORD i = 0; i < list.dwOptionCount; i++) {
+        INTERNET_PER_CONN_OPTIONW& option = list.pOptions[i];
 
         wprintf(L"Option #%u:\n", i);
         wprintf(L"  Type: %s\n", InternetPerConString(option.dwOption));
 
-        wprintf(L"  Value: %s\n", option.Value.pszValue);
+        if (option.dwOption == INTERNET_PER_CONN_FLAGS_UI)
+            wprintf(L"  Value: %u\n", option.Value.dwValue);
+        else
+            wprintf(L"  Value: %s\n", option.Value.pszValue);
     }
 }
 
