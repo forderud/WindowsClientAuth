@@ -4,8 +4,8 @@
 #pragma comment(lib, "Winhttp.lib")
 
 
-bool PrintProxySettings(const wchar_t* testUrl) {
-    wprintf(L"Checking proxy settings for %s ...\n", testUrl);
+bool PrintWinHttpProxySettings(const wchar_t* testUrl) {
+    wprintf(L"Checking WinHttp proxy settings for URL %s ...\n", testUrl);
 
     WINHTTP_CURRENT_USER_IE_PROXY_CONFIG_wrap settings;
     BOOL ok = WinHttpGetIEProxyConfigForCurrentUser(&settings);

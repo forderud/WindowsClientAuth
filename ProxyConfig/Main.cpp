@@ -33,7 +33,7 @@ void ProxyChangeCallback(ULONGLONG /*flags*/, void* context) {
     wprintf(L"\n");
 
     wchar_t* url = (wchar_t*)context;
-    PrintProxySettings(url);
+    PrintWinHttpProxySettings(url);
 }
 
 // WinHttpRegisterProxyChangeNotification function signature
@@ -104,7 +104,7 @@ int wmain(int argc, wchar_t* argv[]) {
         if (argc >= 3)
             url = argv[2]; // L"http://www.google.com/";
 
-        PrintProxySettings(url);
+        PrintWinHttpProxySettings(url);
 
         {
 #ifdef ENABLE_PROXY_CHANGE_NOTIFICATION

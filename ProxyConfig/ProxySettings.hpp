@@ -1,3 +1,3 @@
 #pragma once
 
-bool PrintProxySettings(const wchar_t* url);
+bool PrintWinHttpProxySettings(const wchar_t* url);
