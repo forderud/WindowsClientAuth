@@ -31,7 +31,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return 1;
     }
 
-    std::wstring mode = argv[1]; // L"http://www.google.com/";
+    std::wstring mode = argv[1];
 
     if ((mode == L"autoproxy") && (argc >= 3)) {
         std::wstring autoConfigUrl = argv[2];
@@ -55,7 +55,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
         return res;
     } else if (mode == L"view") {
-        std::wstring url = argv[2];
+        std::wstring url = argv[2]; // L"http://www.google.com/";
         PrintProxySettings(url.c_str());
 
         {
