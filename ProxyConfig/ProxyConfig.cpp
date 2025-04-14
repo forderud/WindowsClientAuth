@@ -52,6 +52,8 @@ bool IsStringOption(DWORD dwOption) {
 
 
 void PrintProxySettings() {
+    wprintf(L"Checking WinINet proxy settings...\n");
+
     std::vector<INTERNET_PER_CONN_OPTIONW> options(4, INTERNET_PER_CONN_OPTIONW{});
     options[0].dwOption = INTERNET_PER_CONN_FLAGS_UI;
     options[1].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
@@ -124,6 +126,8 @@ void PrintProxySettings() {
             wprintf(L"  Date: %02d-%02d-%02dT%02d:%02d:%02d.%02dZ\n", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
         }
     }
+
+    wprintf(L"\n");
 }
 
 
