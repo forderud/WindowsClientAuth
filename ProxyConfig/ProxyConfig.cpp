@@ -71,33 +71,35 @@ int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer
 
 int SetProxyPerUser(bool perUser) {
     // based on https://www.powershellgallery.com/packages/WinInetProxy/0.1.0/Content/WinInetProxy.psm1
-    CRegKey HKLM_internetSettingsRegKey;
-    LSTATUS res = HKLM_internetSettingsRegKey.Open(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+    CRegKey internetSettingsPolicy;
+    LSTATUS res = internetSettingsPolicy.Open(HKEY_LOCAL_MACHINE, L"Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
     assert(res == ERROR_SUCCESS);
 
-    CRegKey HKCU_internetSettingsRegKey;
-    res = HKCU_internetSettingsRegKey.Open(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-    assert(res == ERROR_SUCCESS);
-
-    CRegKey internetSettingsPolicyRegKey;
-    res = internetSettingsPolicyRegKey.Open(HKEY_LOCAL_MACHINE, L"Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
-    assert(res == ERROR_SUCCESS);
-
-    CRegKey internetSettingsRegKey;
     if (!perUser) {
-        res = internetSettingsPolicyRegKey.SetDWORDValue(L"ProxySettingsPerUser", 0);
+        res = internetSettingsPolicy.SetDWORDValue(L"ProxySettingsPerUser", 0);
         assert(res == ERROR_SUCCESS);
-        internetSettingsRegKey = HKLM_internetSettingsRegKey;
+
+        CRegKey HKLM_internetSettings;
+        res = HKLM_internetSettings.Open(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+        assert(res == ERROR_SUCCESS);
+
+        res = HKLM_internetSettings.SetDWORDValue(L"MigrateProxy", 1);
+        res; // ignore errors
+
         wprintf(L"Proxy is system-wide.\n");
     } else {
-        res = internetSettingsPolicyRegKey.DeleteSubKey(L"ProxySettingsPerUser");
+        res = internetSettingsPolicy.DeleteSubKey(L"ProxySettingsPerUser");
         assert(res == ERROR_SUCCESS);
-        internetSettingsRegKey = HKCU_internetSettingsRegKey;
+
+        CRegKey HKCU_internetSettings;
+        res = HKCU_internetSettings.Open(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+        assert(res == ERROR_SUCCESS);
+
+        res = HKCU_internetSettings.SetDWORDValue(L"MigrateProxy", 1);
+        res; // ignore errors
+
         wprintf(L"Proxy is per user.\n");
     }
-
-    res = internetSettingsRegKey.SetDWORDValue(L"MigrateProxy", 1);
-    res; // ignore errors
 
     return 0;
 }
