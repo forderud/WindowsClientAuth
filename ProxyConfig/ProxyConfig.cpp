@@ -81,8 +81,11 @@ void PrintProxySettings() {
         wprintf(L"Option #%u:\n", i);
         wprintf(L"  Type: %s\n", InternetPerConString(option.dwOption));
 
-        if ((option.dwOption == INTERNET_PER_CONN_FLAGS) || (option.dwOption == INTERNET_PER_CONN_FLAGS_UI)) {
-            // integer values
+        if (IsStringOption(option.dwOption)) {
+            // string-based value
+            wprintf(L"  Value: %s\n", option.Value.pszValue);
+        } else if ((option.dwOption == INTERNET_PER_CONN_FLAGS) || (option.dwOption == INTERNET_PER_CONN_FLAGS_UI)) {
+            // proxy type bitmask
             wprintf(L"  Value:");
             if (option.Value.dwValue & PROXY_TYPE_DIRECT)
                 wprintf(L" | PROXY_TYPE_DIRECT");
@@ -93,10 +96,8 @@ void PrintProxySettings() {
             if (option.Value.dwValue & PROXY_TYPE_AUTO_DETECT)
                 wprintf(L" | PROXY_TYPE_AUTO_DETECT");
             wprintf(L"\n");
-        } else if (IsStringOption(option.dwOption)) {
-            // string-based values
-            wprintf(L"  Value: %s\n", option.Value.pszValue);
         } else if (option.dwOption == INTERNET_PER_CONN_AUTODISCOVERY_FLAGS) {
+            // auto proxy bitmask
             wprintf(L"  Value:");
             if (option.Value.dwValue & AUTO_PROXY_FLAG_USER_SET)
                 wprintf(L" | AUTO_PROXY_FLAG_USER_SET");
