@@ -75,8 +75,10 @@ int wmain(int argc, wchar_t* argv[]) {
 
         return res;
     } else if (mode == L"view") {
-        std::wstring url = argv[2]; // L"http://www.google.com/";
-        PrintProxySettings(url.c_str());
+        wchar_t* url = nullptr;
+        if (argc >= 3)
+            url = argv[2]; // L"http://www.google.com/";
+        PrintProxySettings(url);
 
         {
             // WinHttpRegisterProxyChangeNotification is not yet available on Win10 22H2. Therefore,
@@ -88,7 +90,7 @@ int wmain(int argc, wchar_t* argv[]) {
             if (winHttpRegisterProxyChangeNotification) {
                 wprintf(L"Registering proxy change notification handler...\n");
                 WINHTTP_PROXY_CHANGE_REGISTRATION_HANDLE handle = 0;
-                DWORD err = winHttpRegisterProxyChangeNotification(WINHTTP_PROXY_NOTIFY_CHANGE, ProxyChangeCallback, (void*)url.c_str(), &handle);
+                DWORD err = winHttpRegisterProxyChangeNotification(WINHTTP_PROXY_NOTIFY_CHANGE, ProxyChangeCallback, (void*)url, &handle);
                 assert(!err);
 
                 wprintf(L"Waiting for proxy setting changes...\n");
