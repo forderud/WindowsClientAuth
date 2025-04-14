@@ -8,6 +8,67 @@
 #pragma comment(lib, "Wininet.lib")
 
 
+const wchar_t* InternetPerConString(DWORD dwOption) {
+    switch (dwOption) {
+    case INTERNET_PER_CONN_FLAGS:
+        return L"INTERNET_PER_CONN_FLAGS";
+    case INTERNET_PER_CONN_PROXY_SERVER:
+        return L"INTERNET_PER_CONN_PROXY_SERVER";
+    case INTERNET_PER_CONN_PROXY_BYPASS:
+        return L"INTERNET_PER_CONN_PROXY_BYPASS";
+    case INTERNET_PER_CONN_AUTOCONFIG_URL:
+        return L"INTERNET_PER_CONN_AUTOCONFIG_URL";
+    case INTERNET_PER_CONN_AUTODISCOVERY_FLAGS:
+        return L"INTERNET_PER_CONN_AUTODISCOVERY_FLAGS";
+    case INTERNET_PER_CONN_AUTOCONFIG_SECONDARY_URL:
+        return L"INTERNET_PER_CONN_AUTOCONFIG_SECONDARY_URL";
+    case INTERNET_PER_CONN_AUTOCONFIG_RELOAD_DELAY_MINS:
+        return L"INTERNET_PER_CONN_AUTOCONFIG_RELOAD_DELAY_MINS";
+    case INTERNET_PER_CONN_AUTOCONFIG_LAST_DETECT_TIME:
+        return L"INTERNET_PER_CONN_AUTOCONFIG_LAST_DETECT_TIME";
+    case INTERNET_PER_CONN_AUTOCONFIG_LAST_DETECT_URL:
+        return L"INTERNET_PER_CONN_AUTOCONFIG_LAST_DETECT_URL";
+    case INTERNET_PER_CONN_FLAGS_UI:
+        return L"INTERNET_PER_CONN_FLAGS_UI";
+    }
+
+    abort();
+}
+
+
+void PrintProxySettings() {
+    HINTERNET session = NULL; // 0 means system-wide changes
+
+    // determine required buffer size
+    DWORD bufferSize = 0;
+    BOOL ok = InternetQueryOptionW(session, INTERNET_OPTION_PER_CONNECTION_OPTION, nullptr, &bufferSize);
+    if (!ok) {
+        DWORD err = GetLastError();
+        wprintf(L"InternetQueryOptionW INTERNET_OPTION_PER_CONNECTION_OPTION failed with err %u\n", err);
+        abort();
+    }
+
+    std::vector<BYTE> buffer(bufferSize, (BYTE)0);
+
+    ok = InternetQueryOptionW(session, INTERNET_OPTION_PER_CONNECTION_OPTION, buffer.data(), &bufferSize);
+    if (!ok) {
+        DWORD err = GetLastError();
+        wprintf(L"InternetQueryOptionW INTERNET_OPTION_PER_CONNECTION_OPTION failed with err %u\n", err);
+        abort();
+    }
+
+    auto* list = (INTERNET_PER_CONN_OPTION_LISTW*)buffer.data();
+    for (DWORD i = 0; i < list->dwOptionCount; i++) {
+        INTERNET_PER_CONN_OPTIONW& option = list->pOptions[i];
+
+        wprintf(L"Option #%u:\n", i);
+        wprintf(L"  Type: %s\n", InternetPerConString(option.dwOption));
+
+        wprintf(L"  Value: %s\n", option.Value.pszValue);
+    }
+}
+
+
 int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer, const wchar_t* proxyBypass, bool autoDetect) {
     // bassed on https://www.powershellgallery.com/packages/WinInetProxy/0.1.0/Content/WinInetProxy.psm1
     wprintf(L"Updating proxy configuration...\n");
