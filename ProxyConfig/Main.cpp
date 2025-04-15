@@ -91,13 +91,13 @@ int wmain(int argc, wchar_t* argv[]) {
 #endif
         }
     } else  if (mode == L"scope") {
-        if (!IsUserAnAdmin()) {
-            wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
-            return 2;
-        }
-
-        bool perUser = true; // default
         if (argc >= 3) {
+            if (!IsUserAnAdmin()) {
+                wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
+                return 2;
+            }
+
+            bool perUser = true; // default
             std::wstring scope = argv[2];
             if (scope == L"machine")
                 perUser = false;
