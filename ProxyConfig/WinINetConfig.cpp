@@ -211,13 +211,13 @@ int SetProxyPerUser(bool perUser) {
         res = internetSettingsPolicy.SetDWORDValue(L"ProxySettingsPerUser", 0);
         res; // ignore errors
 
-        wprintf(L"Proxy settings are system-wide.\n");
+        wprintf(L"Proxy settings are now system-wide.\n");
     } else {
         // disable system-wide proxy settings
         res = internetSettingsPolicy.DeleteValue(L"ProxySettingsPerUser");
         res; // ignore errors
 
-        wprintf(L"Proxy settings are per user.\n");
+        wprintf(L"Proxy settings are now per user.\n");
     }
 
     return 0;
