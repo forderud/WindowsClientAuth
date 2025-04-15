@@ -70,9 +70,13 @@ int wmain(int argc, wchar_t* argv[]) {
             std::wstring scope = argv[2];
             if (scope == L"machine")
                 perUser = false;
-        }
 
-        SetProxyPerUser(perUser);
+            // update proxy scope
+            SetProxyPerUser(perUser);
+        } else {
+            // display proxy scope
+            PrintProxyPerUser();
+        }
     } else if ((mode == L"autoproxy") && (argc >= 3)) {
         if (!IsUserAnAdmin()) {
             wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");

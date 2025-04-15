@@ -197,6 +197,23 @@ int wininet::UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* pr
 }
 
 
+void PrintProxyPerUser() {
+    CRegKey internetSettingsPolicy;
+    LSTATUS res = internetSettingsPolicy.Open(HKEY_LOCAL_MACHINE, L"Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", KEY_READ);
+    if (res != ERROR_SUCCESS) {
+        wprintf(L"ERROR Unable to open HKLM Policies Internet Settings (err=%u).\n", res);
+        abort();
+    }
+
+    DWORD perUser = 0;
+    res = internetSettingsPolicy.QueryDWORDValue(L"ProxySettingsPerUser", perUser);
+    if ((res == ERROR_SUCCESS) && (perUser == 0)) {
+        wprintf(L"Proxy settings are currently system-wide.\n");
+    } else {
+        wprintf(L"Proxy settings are currently per user.\n");
+    }
+}
+
 int SetProxyPerUser(bool perUser) {
     // based on https://www.powershellgallery.com/packages/WinInetProxy/0.1.0/Content/WinInetProxy.psm1
     CRegKey internetSettingsPolicy;
