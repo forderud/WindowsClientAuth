@@ -150,7 +150,7 @@ The system-wide proxy settings will be stored in the `HKEY_LOCAL_MACHINE\SOFTWAR
 
 Note: `netsh winhttp set proxy` can unfortunately not be used for this, since it doesn't update proxy settings for the current user. It also lacks AutoConfigURL support.
 
-### Proxy setting usage
+### Proxy usage
 Most SW (including  [.Net runtime](https://github.com/dotnet/runtime/blob/main/src/libraries/System.Net.Http/src/System/Net/Http/SocketsHttpHandler/WinInetProxyHelper.cs) and [Chrome/Chromium](https://github.com/chromium/chromium/blob/main/components/winhttp/proxy_configuration.cc)) appear to be using [WinHttpGetIEProxyConfigForCurrentUser](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetieproxyconfigforcurrentuser) together with [WinHttpGetProxyForUrl](https://learn.microsoft.com/en-us/windows/win32/api/winhttp/nf-winhttp-winhttpgetproxyforurl) to determine which proxy server to use for a given HTTP request. This simplifies networking code, since the application doesn't need to parse proxy settings directly. Python urllib documents that [proxy settings are automatically picked up from Windows registry](https://docs.python.org/3/library/urllib.request.html#urllib.request.getproxies) without specifying the exact mechanism.
 
 
