@@ -51,7 +51,7 @@ bool IsStringOption(DWORD dwOption) {
 }
 
 
-void PrintProxySettings() {
+void wininet::PrintProxySettings() {
     wprintf(L"Checking WinINet proxy settings...\n");
 
     std::vector<INTERNET_PER_CONN_OPTIONW> options(4, INTERNET_PER_CONN_OPTIONW{});
@@ -131,7 +131,7 @@ void PrintProxySettings() {
 }
 
 
-int UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer, const wchar_t* proxyBypass, bool autoDetect) {
+int wininet::UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* proxyServer, const wchar_t* proxyBypass, bool autoDetect) {
     // bassed on https://www.powershellgallery.com/packages/WinInetProxy/0.1.0/Content/WinInetProxy.psm1
     wprintf(L"Updating WinINet proxy configuration...\n");
 

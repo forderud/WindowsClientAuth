@@ -68,7 +68,7 @@ int wmain(int argc, wchar_t* argv[]) {
         SetProxyPerUser(false);
         // then update proxy settings
         wchar_t* autoConfigUrl = argv[2];
-        int res = UpdateProxySettings(autoConfigUrl, nullptr, nullptr, true);
+        int res = wininet::UpdateProxySettings(autoConfigUrl, nullptr, nullptr, true);
         return res;
     } else if ((mode == L"setproxy") && (argc >= 3)) {
         if (!IsUserAnAdmin()) {
@@ -83,7 +83,7 @@ int wmain(int argc, wchar_t* argv[]) {
         wchar_t* bypassList = nullptr;
         if (argc >= 4)
             bypassList = argv[3];
-        int res = UpdateProxySettings(nullptr, proxy, bypassList, true);
+        int res = wininet::UpdateProxySettings(nullptr, proxy, bypassList, true);
         return res;
     } else if (mode == L"clear") {
         if (!IsUserAnAdmin()) {
@@ -92,13 +92,13 @@ int wmain(int argc, wchar_t* argv[]) {
         }
 
         // first clear proxy settings
-        int res = UpdateProxySettings(nullptr, nullptr, nullptr, true); // auto-detect enabled by default
+        int res = wininet::UpdateProxySettings(nullptr, nullptr, nullptr, true); // auto-detect enabled by default
         // then stop syncing future changes
         SetProxyPerUser(true);
 
         return res;
     } else if (mode == L"view") {
-        PrintProxySettings();
+        wininet::PrintProxySettings();
 
         wchar_t* url = nullptr;
         if (argc >= 3)
