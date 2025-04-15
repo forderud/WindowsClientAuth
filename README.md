@@ -126,7 +126,7 @@ Steps:
             <td>No known support (see <a href="../../issues/10">#10</a>)</td>
             <td></td>
             <td>See <a href="WebClientPy/">WebClientPy</a> (file-based certificate handling)</td>
-            <td><a href="https://github.com/sethmlarson/truststore/issues/78">Unable to use certificate store for mTLS</a>. _Might_ need to use <a href="https://github.com/carsonyl/pypac">PyPAC</a> for PAC proxy support.</td>
+            <td><a href="https://github.com/sethmlarson/truststore/issues/78">Unable to use certificate store for mTLS</a>. <i>Might</i> need to use <a href="https://github.com/carsonyl/pypac">PyPAC</a> for PAC proxy support.</td>
         </tr>
     </tbody>
 </table>
