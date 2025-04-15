@@ -97,7 +97,7 @@ The above API alternatives will automatically utilize Windows proxy settings.
 
 #### Alternatives for configuring proxy settings
 1. From the "Windows Settings" -> "Proxy" UI (only for per-user proxy settings)
-1. Through [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) that was introduced in Windows 11
+1. Through [`netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) that was introduced in Windows 11
 1. Through the WinINet API which also works on Windows 10.
 
 The [`ProxySettingsPerUser=0`](https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-ie-clientnetworkprotocolimplementation-hklmproxyserver) registry key can be configured to make proxy settings system-wide. This will have the side-effect of making the Windows proxy UI read-only. Proxy changes then instead needs to be done programatically from a process with admin privileges.  
@@ -125,9 +125,9 @@ Current WinHTTP advanced proxy settings:
 ```
 
 ### Proxy configuration on Windows 10
-There's unfortunately no feature-complete command-line tool for proxy configuration included with Windows 10. However, there's a [Configure proxy settings for Azure Stack HCI](https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings) document that describes some of the underlying registry keys and points to a `WinInetProxy` script with sourcecode.
+There's unfortunately no feature-complete command-line tool for proxy configuration included with Windows 10. However, there's a [Configure proxy settings for Azure Stack HCI](https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings) document that points to a `WinInetProxy` script with sample code.
 
-The `ProxyConfig` project is based on the WinInetProxy sample, and can be used to programatically configure proxy settings on Windows 10 machines. This project uses the WinINet [`InternetSetOption`](https://learn.microsoft.com/en-us/windows/win32/api/wininet/nf-wininet-internetsetoptionw) function to configure `INTERNET_PER_CONN_PROXY_SERVER` & `INTERNET_PER_CONN_PROXY_BYPASS` or `INTERNET_PER_CONN_AUTOCONFIG_URL` settings for the current user. It can also set the `ProxySettingsPerUser=0` registry key to make proxy  settings system-wide.
+The `ProxyConfig` project is based on the WinInetProxy sample, and can be used to configure proxy settings from the command-line on Windows 10 machines without netsh winhttp set advproxy. This project uses the WinINet [`InternetSetOption`](https://learn.microsoft.com/en-us/windows/win32/api/wininet/nf-wininet-internetsetoptionw) function to configure `INTERNET_PER_CONN_PROXY_SERVER`, `INTERNET_PER_CONN_PROXY_BYPASS` and `INTERNET_PER_CONN_AUTOCONFIG_URL` settings. It can also set the `ProxySettingsPerUser=0` registry key to make proxy changes system-wide.
 
 System-wide AutoConfigURL proxy configuration:
 ```
