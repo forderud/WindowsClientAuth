@@ -59,7 +59,38 @@ int wmain(int argc, wchar_t* argv[]) {
 
     std::wstring mode = argv[1];
 
-    if (mode == L"scope") {
+    if (mode == L"view") {
+        wininet::PrintProxySettings();
+
+        wchar_t* url = nullptr;
+        if (argc >= 3)
+            url = argv[2]; // L"http://www.google.com/";
+
+        winhttp::PrintProxySettings(url);
+
+        {
+#ifdef ENABLE_PROXY_CHANGE_NOTIFICATION
+            // WinHttpRegisterProxyChangeNotification is not yet available on Win10 22H2. Therefore,
+            // load the function pointer manually to avoid startup crash on older Windows versions.
+            HMODULE winHttp = LoadLibrary(L"WinHttp.dll");
+            assert(winHttp);
+            auto winHttpRegisterProxyChangeNotification = (WinHttpRegisterProxyChangeNotification_fn)GetProcAddress(winHttp, "WinHttpRegisterProxyChangeNotification"); // not yet avialable on Win10 22H2
+
+            if (winHttpRegisterProxyChangeNotification) {
+                wprintf(L"Registering proxy change notification handler...\n");
+                WINHTTP_PROXY_CHANGE_REGISTRATION_HANDLE handle = 0;
+                DWORD err = winHttpRegisterProxyChangeNotification(WINHTTP_PROXY_NOTIFY_CHANGE, ProxyChangeCallback, (void*)url, &handle);
+                assert(!err);
+
+                wprintf(L"Waiting for proxy setting changes...\n");
+                Sleep(INFINITE);
+            } else {
+                wprintf(L"Unable to subscribe to proxy changes since WinHttpRegisterProxyChangeNotification is not available. ");
+                wprintf(L"This is most likely caused by running on a Windows version predating Win11.\n");
+            }
+#endif
+        }
+    } else  if (mode == L"scope") {
         if (!IsUserAnAdmin()) {
             wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
             return 2;
@@ -107,37 +138,6 @@ int wmain(int argc, wchar_t* argv[]) {
         // first clear proxy settings
         int res = wininet::UpdateProxySettings(nullptr, nullptr, nullptr, true); // auto-detect enabled by default
         return res;
-    } else if (mode == L"view") {
-        wininet::PrintProxySettings();
-
-        wchar_t* url = nullptr;
-        if (argc >= 3)
-            url = argv[2]; // L"http://www.google.com/";
-
-        winhttp::PrintProxySettings(url);
-
-        {
-#ifdef ENABLE_PROXY_CHANGE_NOTIFICATION
-            // WinHttpRegisterProxyChangeNotification is not yet available on Win10 22H2. Therefore,
-            // load the function pointer manually to avoid startup crash on older Windows versions.
-            HMODULE winHttp = LoadLibrary(L"WinHttp.dll");
-            assert(winHttp);
-            auto winHttpRegisterProxyChangeNotification = (WinHttpRegisterProxyChangeNotification_fn)GetProcAddress(winHttp, "WinHttpRegisterProxyChangeNotification"); // not yet avialable on Win10 22H2
-
-            if (winHttpRegisterProxyChangeNotification) {
-                wprintf(L"Registering proxy change notification handler...\n");
-                WINHTTP_PROXY_CHANGE_REGISTRATION_HANDLE handle = 0;
-                DWORD err = winHttpRegisterProxyChangeNotification(WINHTTP_PROXY_NOTIFY_CHANGE, ProxyChangeCallback, (void*)url, &handle);
-                assert(!err);
-
-                wprintf(L"Waiting for proxy setting changes...\n");
-                Sleep(INFINITE);
-            } else {
-                wprintf(L"Unable to subscribe to proxy changes since WinHttpRegisterProxyChangeNotification is not available. ");
-                wprintf(L"This is most likely caused by running on a Windows version predating Win11.\n");
-            }
-#endif
-        }
     } else {
         wprintf(L"ERROR: Unsupported mode.\n");
         return -1;
