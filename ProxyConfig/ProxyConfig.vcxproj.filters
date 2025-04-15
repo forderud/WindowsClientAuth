@@ -10,4 +10,7 @@
     <ClInclude Include="WinINetConfig.hpp" />
     <ClInclude Include="WinHTTPSettings.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="module.rc" />
+  </ItemGroup>
 </Project>
