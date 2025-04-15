@@ -98,7 +98,7 @@ The above API alternatives will automatically utilize Windows proxy settings.
 #### Alternatives for configuring proxy settings
 1. From the "Windows Settings" -> "Proxy" UI (only for per-user proxy settings)
 1. Through [`netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) that was introduced in Windows 11
-1. Through the WinINet API which also works on Windows 10.
+1. Through [WinINet](https://learn.microsoft.com/en-us/windows/win32/wininet/about-wininet) which also works on Windows 10.
 
 The [`ProxySettingsPerUser=0`](https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-ie-clientnetworkprotocolimplementation-hklmproxyserver) registry key can be configured to make proxy settings system-wide, so that it's applied to all user accounts including background services. This will have the side-effect of making the Windows proxy UI read-only. Proxy changes then instead needs to be done programatically from a process with admin privileges.  
 ![image](https://github.com/user-attachments/assets/376eb228-144f-44cd-be42-49ca444666e1)  
