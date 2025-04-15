@@ -1,4 +1,4 @@
-#include "ProxyConfig.hpp"
+#include "WinINetConfig.hpp"
 #include <Windows.h>
 #include <wininet.h>
 #include <atlbase.h>

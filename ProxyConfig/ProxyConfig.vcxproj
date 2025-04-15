@@ -74,11 +74,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ProxyConfig.cpp" />
+    <ClCompile Include="WinINetConfig.cpp" />
     <ClCompile Include="WinHTTPSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ProxyConfig.hpp" />
+    <ClInclude Include="WinINetConfig.hpp" />
     <ClInclude Include="WinHTTPSettings.hpp" />
     <ClInclude Include="ProxyStructs.hpp" />
   </ItemGroup>

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cassert>
 #include <shlobj_core.h>
-#include "ProxyConfig.hpp"
+#include "WinINetConfig.hpp"
 #include "WinHTTPSettings.hpp"
 #include <winhttp.h>
 #include <atlbase.h>
