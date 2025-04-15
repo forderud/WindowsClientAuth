@@ -98,8 +98,9 @@ The above API alternatives will automatically utilize Windows proxy settings.
 #### Alternatives for configuring proxy settings
 1. From the "Windows Settings" -> "Proxy" UI
 1. Through [`Netsh winhttp set advproxy`](https://learn.microsoft.com/en-us/windows/win32/winhttp/netsh-exe-commands#set-advproxy) that was introduced in Windows 11
-1. Through the WinINet API and [`ProxySettingsPerUser`](https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-ie-clientnetworkprotocolimplementation-hklmproxyserver) registry key.
+1. Through the WinINet API, which also works on Windows 10.
 
+The [`ProxySettingsPerUser=0`](https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-ie-clientnetworkprotocolimplementation-hklmproxyserver) registry key can be configured to 
 
 ### Proxy configuration on Windows 11
 System-wide proxy configuration:
