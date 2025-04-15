@@ -3,11 +3,11 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ProxyConfig.cpp" />
-    <ClCompile Include="ProxySettings.cpp" />
+    <ClCompile Include="WinHTTPSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ProxyStructs.hpp" />
     <ClInclude Include="ProxyConfig.hpp" />
-    <ClInclude Include="ProxySettings.hpp" />
+    <ClInclude Include="WinHTTPSettings.hpp" />
   </ItemGroup>
 </Project>

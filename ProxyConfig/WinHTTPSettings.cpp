@@ -1,10 +1,10 @@
-#include "ProxySettings.hpp"
+#include "WinHTTPSettings.hpp"
 #include "ProxyStructs.hpp"
 
 #pragma comment(lib, "Winhttp.lib")
 
 
-bool PrintWinHttpProxySettings(const wchar_t* testUrl) {
+bool winhttp::PrintProxySettings(const wchar_t* testUrl) {
     wprintf(L"Checking WinHttp proxy settings...\n");
 
     WINHTTP_CURRENT_USER_IE_PROXY_CONFIG_wrap settings;
