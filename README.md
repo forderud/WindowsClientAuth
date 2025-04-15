@@ -129,13 +129,13 @@ There's unfortunately no feature-complete command-line tool for proxy configurat
 
 The `ProxyConfig` project is based on the WinInetProxy sample, and can be used to programatically configure proxy settings on Windows 10 machines. This project uses the WinINet [`InternetSetOption`](https://learn.microsoft.com/en-us/windows/win32/api/wininet/nf-wininet-internetsetoptionw) function to configure `INTERNET_PER_CONN_PROXY_SERVER` & `INTERNET_PER_CONN_PROXY_BYPASS` or `INTERNET_PER_CONN_AUTOCONFIG_URL` settings for the current user. It can also set the `ProxySettingsPerUser=0` registry key to make proxy  settings system-wide.
 
-How to configure AutoConfigURL for all users:
+System-wide AutoConfigURL proxy configuration:
 ```
 ProxyConfig.exe scope machine
 ProxyConfig.exe autoproxy https://mycompany.com/pac.pac
 ```
 
-How to configure proxy server and bypass list for all users:
+System-wide proxy server and bypass list configuration:
 ```
 ProxyConfig.exe scope machine
 ProxyConfig.exe setproxy proxy.mycompany.com:8080 *.mycompany.com
