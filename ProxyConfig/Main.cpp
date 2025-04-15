@@ -50,6 +50,7 @@ int wmain(int argc, wchar_t* argv[]) {
     if (argc < 2) {
         wprintf(L"USAGE modes:\n");
         wprintf(L"  View proxy settings : ProxyConfig.exe view <test-url>\n");
+        wprintf(L"  Proxy settings scope: ProxyConfig.exe scope [user|machine|default]\n");
         wprintf(L"  Set autoproxy PAC   : ProxyConfig.exe autoproxy <pac-url>\n");
         wprintf(L"  Set classic proxy   : ProxyConfig.exe setproxy <proxy> <bypass-list>\n");
         wprintf(L"  Clear proxy settings: ProxyConfig.exe clear\n");
@@ -58,15 +59,26 @@ int wmain(int argc, wchar_t* argv[]) {
 
     std::wstring mode = argv[1];
 
-    if ((mode == L"autoproxy") && (argc >= 3)) {
+    if (mode == L"scope") {
         if (!IsUserAnAdmin()) {
             wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
             return 2;
         }
 
-        // first start syncing proxy settings
-        SetProxyPerUser(false);
-        // then update proxy settings
+        bool perUser = true; // default
+        if (argc >= 3) {
+            std::wstring scope = argv[2];
+            if (scope == L"machine")
+                perUser = false;
+        }
+
+        SetProxyPerUser(perUser);
+    } else if ((mode == L"autoproxy") && (argc >= 3)) {
+        if (!IsUserAnAdmin()) {
+            wprintf(L"ERROR: Admin privileges required to change system-wide proxy settings.\n");
+            return 2;
+        }
+
         wchar_t* autoConfigUrl = argv[2];
         int res = wininet::UpdateProxySettings(autoConfigUrl, nullptr, nullptr, true);
         return res;
@@ -76,9 +88,6 @@ int wmain(int argc, wchar_t* argv[]) {
             return 2;
         }
 
-        // first start syncing proxy settings
-        SetProxyPerUser(false);
-        // then update proxy settings
         wchar_t* proxy = argv[2];
         wchar_t* bypassList = nullptr;
         if (argc >= 4)
@@ -93,9 +102,6 @@ int wmain(int argc, wchar_t* argv[]) {
 
         // first clear proxy settings
         int res = wininet::UpdateProxySettings(nullptr, nullptr, nullptr, true); // auto-detect enabled by default
-        // then stop syncing future changes
-        SetProxyPerUser(true);
-
         return res;
     } else if (mode == L"view") {
         wininet::PrintProxySettings();

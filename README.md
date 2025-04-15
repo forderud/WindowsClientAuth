@@ -129,11 +129,13 @@ The `ProxyConfig` project is based on the WinInetProxy sample, and can be used t
 
 Exampe of how to configure AutoConfigURL for all users:
 ```
+ProxyConfig.exe scope machine
 ProxyConfig.exe autoproxy https://mycompany.com/pac.pac
 ```
 
 Exampe of how to configure proxy server and bypass list for all users:
 ```
+ProxyConfig.exe scope machine
 ProxyConfig.exe setproxy proxy.mycompany.com:8080 *.mycompany.com
 ```
 
