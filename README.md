@@ -103,6 +103,8 @@ The above API alternatives will automatically utilize Windows proxy settings.
 The [`ProxySettingsPerUser=0`](https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-ie-clientnetworkprotocolimplementation-hklmproxyserver) registry key can be configured to make proxy settings system-wide. This will have the side-effect of making the Windows proxy UI read-only. Proxy changes then instead needs to be done programatically from a process with admin privileges.  
 ![image](https://github.com/user-attachments/assets/376eb228-144f-44cd-be42-49ca444666e1)  
 
+System-wide proxy settings will be stored in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder.
+
 ### Proxy configuration on Windows 11
 System-wide proxy configuration:
 ```
@@ -144,9 +146,6 @@ How to switch back to default proxy settings:
 ProxyConfig.exe clear
 ProxyConfig.exe scope default
 ```
-
-
-The system-wide proxy settings will be stored in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder.
 
 Note: `netsh winhttp set proxy` can unfortunately not be used for this, since it doesn't update proxy settings for the current user. It also lacks AutoConfigURL support.
 
