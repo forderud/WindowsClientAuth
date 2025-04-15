@@ -123,21 +123,28 @@ Current WinHTTP advanced proxy settings:
 ```
 
 ### Proxy configuration on Windows 10
-There's unfortunately no inbuilt tool for programatic proxy configuration on Windows 10. However, there's a [Configure proxy settings for Azure Stack HCI](https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings) document that describes some of the underlying registry keys and points to a `WinInetProxy` script with sourcecode.
+There's unfortunately no feature-complete command-line tool for proxy configuration included with Windows 10. However, there's a [Configure proxy settings for Azure Stack HCI](https://learn.microsoft.com/en-us/azure/azure-local/manage/configure-proxy-settings) document that describes some of the underlying registry keys and points to a `WinInetProxy` script with sourcecode.
 
 The `ProxyConfig` project is based on the WinInetProxy sample, and can be used to programatically configure proxy settings on Windows 10 machines. This project uses the WinINet [`InternetSetOption`](https://learn.microsoft.com/en-us/windows/win32/api/wininet/nf-wininet-internetsetoptionw) function to configure `INTERNET_PER_CONN_PROXY_SERVER` & `INTERNET_PER_CONN_PROXY_BYPASS` or `INTERNET_PER_CONN_AUTOCONFIG_URL` settings for the current user. It can also set the `ProxySettingsPerUser=0` registry key to make proxy  settings system-wide.
 
-Exampe of how to configure AutoConfigURL for all users:
+How to configure AutoConfigURL for all users:
 ```
 ProxyConfig.exe scope machine
 ProxyConfig.exe autoproxy https://mycompany.com/pac.pac
 ```
 
-Exampe of how to configure proxy server and bypass list for all users:
+How to configure proxy server and bypass list for all users:
 ```
 ProxyConfig.exe scope machine
 ProxyConfig.exe setproxy proxy.mycompany.com:8080 *.mycompany.com
 ```
+
+How to switch back to default proxy settings:
+```
+ProxyConfig.exe clear
+ProxyConfig.exe scope default
+```
+
 
 The system-wide proxy settings will be stored in the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings` registry folder.
 
