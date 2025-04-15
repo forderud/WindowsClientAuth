@@ -70,9 +70,9 @@ Steps:
 
 | Language  | Secure certificate store support | HTTP API(s)           | Sample code              | Limitations |
 |-----------|----------------------------------|-----------------------|--------------------------|-------------|
-| C++ Win32 | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) | [WinHTTP](https://learn.microsoft.com/en-us/windows/win32/winhttp/iwinhttprequest-interface) | See [WebClientCpp](WebClientCpp/) |  |
-|           |                                                                          | [WinINet](https://learn.microsoft.com/en-us/windows/win32/wininet/portal) | See [WebClientCpp](WebClientCpp/) |  |
-|           |                                                                          | [MSXML6](https://learn.microsoft.com/en-us/windows/win32/api/msxml6/) | See [WebClientCpp](WebClientCpp/) | Unable to access certificates in ["Local Computer\Personal" store with MSXML6](https://stackoverflow.com/a/38779903/3267386). |
+| C++ Win32 | [CNG](https://learn.microsoft.com/en-us/windows/win32/seccng/cng-portal) | [WinHTTP](https://learn.microsoft.com/en-us/windows/win32/winhttp/iwinhttprequest-interface) | See [WebClientCpp](WebClientCpp/) | None discovered |
+|           |                                                                          | [WinINet](https://learn.microsoft.com/en-us/windows/win32/wininet/portal) | See [WebClientCpp](WebClientCpp/) | None discovered |
+|           |                                                                          | [MSXML6](https://learn.microsoft.com/en-us/windows/win32/api/msxml6/) | See [WebClientCpp](WebClientCpp/) | Unable to access certificates in ["Local Computer\Personal" store](https://stackoverflow.com/a/38779903/3267386). |
 | C++/C# UWP| [CertificateStores](https://learn.microsoft.com/en-us/uwp/api/windows.security.cryptography.certificates.certificatestores) | | See [WebClientUwp](WebClientUwp/) | Unable to access certificates in ["Local Computer\Personal" store](https://github.com/MicrosoftDocs/winrt-api/issues/2288) |
 | C#/.Net   | [X509Store](https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.x509certificates.x509store) | | See [WebClientNet](WebClientNet/) | None discovered |
 | Java      | [Leveraging Security in the Native Platform Using Java ..](https://www.oracle.com/technical-resources/articles/javase/security.html) | | Not yet tested | TBD |
