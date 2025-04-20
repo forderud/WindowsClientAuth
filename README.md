@@ -43,7 +43,7 @@ It will also show up in the web browser certificate dialogs:
 ![Browser Cert Install](figures/BrowserCertInstall.png) 
 
 
-### TPM storage of private key
+### TPM storage of private keys
 Run `tpm.msc` to open the "Trusted Platform Module (TPM) Management" snap-in that will display details of the TPM setup for the current system:  
 ![image](https://github.com/user-attachments/assets/296aec64-d1da-4d38-948e-1631132c5af4)
 
