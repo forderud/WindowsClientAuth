@@ -50,9 +50,9 @@ Run `tpm.msc` to open the "Trusted Platform Module (TPM) Management" snap-in tha
 
 Installed certificates will by default have their private key managed by the SW-based "Microsoft Software Key Storage Provider" when importing non-exportable. It's also possible to store the private key in the TPM chip for enhanced HW-enforced security.
 
-This should in principle by possible with `certutil -user -csp TPM -p "" -importpfx ClientCert.pfx NoExport`. However, that doesn't seem to work as expected, and instead leads to a `NTE_INVALID_PARAMETER` error. This appears to be a known issue, and one can use the [TPMImport](https://github.com/glueckkanja-pki/TPMImport) tool as work-around. The certificate can then be imported to the TPM with `TPMImport.exe -user -v ClientCert.pfx ""`.
+This should in principle by possible with `certutil [-user] -csp TPM -p "" -importpfx ClientCert.pfx NoExport`. However, that doesn't seem to work as expected, and instead leads to a `NTE_INVALID_PARAMETER` error. This appears to be a known issue, and one can use the [TPMImport](https://github.com/glueckkanja-pki/TPMImport) tool as work-around. The certificate can then be imported to the TPM with `TPMImport.exe [-user] -v ClientCert.pfx ""`.
 
-One can verify the actual key storage with `certutil -user -store My ClientCert`. You'll then get `Provider = Microsoft Platform Crypto Provider` if the private key is actually stored in the TPM.
+One can verify the actual key storage with `certutil [-user] -store My ClientCert`. You'll then get `Provider = Microsoft Platform Crypto Provider` if the private key is actually stored in the TPM.
 
 
 ## Client authentication
