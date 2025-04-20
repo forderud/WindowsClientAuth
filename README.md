@@ -44,7 +44,7 @@ It will also show up in the web browser certificate dialogs:
 
 
 ### TPM system check
-Run `tpm.msc` to open the "Trusted Platform Module (TPM) Management" snap-in that will display details of the TPM setup for the current system:  
+Run `tpm.msc` to open the "Trusted Platform Module (TPM) Management" snap-in to view TPM details for the current system:  
 ![image](https://github.com/user-attachments/assets/296aec64-d1da-4d38-948e-1631132c5af4)
 
 
