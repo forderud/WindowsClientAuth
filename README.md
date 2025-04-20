@@ -43,11 +43,12 @@ It will also show up in the web browser certificate dialogs:
 ![Browser Cert Install](figures/BrowserCertInstall.png) 
 
 
-### TPM storage of private keys
+### TPM system check
 Run `tpm.msc` to open the "Trusted Platform Module (TPM) Management" snap-in that will display details of the TPM setup for the current system:  
 ![image](https://github.com/user-attachments/assets/296aec64-d1da-4d38-948e-1631132c5af4)
 
 
+### TPM storage of private keys
 Installed certificates will by default have their private key managed by the SW-based "Microsoft Software Key Storage Provider" when importing non-exportable. It's also possible to store the private key in the TPM chip for enhanced HW-enforced security.
 
 RSA keys can be imported to the TPM with `certutil [-user] -csp TPM -p "" -importpfx ClientCert.pfx NoExport`. However, that seem to fail with `NTE_BAD_TYPE` for EC-DSA certificates. It's then possible to use [TPMImport](https://github.com/glueckkanja-pki/TPMImport) as work-around with a `TPMImport.exe [-user] -v ClientCert.pfx ""` command.
