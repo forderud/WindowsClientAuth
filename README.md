@@ -52,7 +52,7 @@ Installed certificates will by default have their private key managed by the SW-
 
 RSA keys can be imported to the TPM with `certutil [-user] -csp TPM -p "" -importpfx ClientCert.pfx NoExport`. However, that seem to fail with `NTE_BAD_TYPE` for EC-DSA certificates. It's then possible to use [TPMImport](https://github.com/glueckkanja-pki/TPMImport) as work-around with a `TPMImport.exe [-user] -v ClientCert.pfx ""` command.
 
-One can verify the actual key storage with `certutil [-user] -store My`. You'll then get `Provider = Microsoft Platform Crypto Provider` if the private key is actually stored in the TPM.
+Key storage can be verified with `certutil [-user] -store My`. You'll then get `Provider = Microsoft Platform Crypto Provider` if the private key is actually stored in the TPM.
 
 
 ## Client authentication
