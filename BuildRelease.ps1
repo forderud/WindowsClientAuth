@@ -20,7 +20,7 @@ $PatchVer = $ver_tokens[2]
 $BuildVer = $ver_tokens[3]
 
 ## Restore NuGet packages
-msbuild /nologo /verbosity:minimal -t:restore WebClient.sln
+msbuild /nologo /verbosity:minimal /target:restore WebClient.sln
 
 ### Build solution in Release for x64
 msbuild /nologo /verbosity:minimal /property:Configuration="Release"`;Platform="x64"`;MajorVer=$MajorVer`;MinorVer=$MinorVer`;PatchVer=$PatchVer`;BuildVer=$BuildVer WebClient.sln
