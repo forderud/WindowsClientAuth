@@ -17,12 +17,17 @@ def ParseCertSequence(cert):
 
 class MyServer(http.server.BaseHTTPRequestHandler):
     def do_HEAD(self):
-        print("HEAD request")
+        print("")
+        print("== HEAD request ==")
+        print(self.headers)
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
+
     def do_GET(self):
-        print("GET request")
+        print("")
+        print("== GET request ==")
+        print(self.headers)
         # get client cert info
         cert = self.connection.getpeercert()
         client_cert = "None"
