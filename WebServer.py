@@ -24,6 +24,7 @@ class MyServer(http.server.BaseHTTPRequestHandler):
         if cert:
             client_cert = ParseCertSequence(cert['subject'])
             client_cert_issuer = ParseCertSequence(cert['issuer'])
+            print("Client authenticated with certificate: "+client_cert+" "+client_cert_issuer)
         
         self.send_response(200)
         self.send_header("Content-type", "text/html")
