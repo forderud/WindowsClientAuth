@@ -61,7 +61,7 @@ with http.server.HTTPServer(hostname, MyServer) as httpd:
     
     # DOC: https://docs.python.org/3/library/ssl.html
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.verify_mode = ssl.CERT_OPTIONAL # or ssl.CERT_REQUIRED
+    context.verify_mode = ssl.CERT_REQUIRED # or ssl.CERT_OPTIONAL
     context.load_default_certs(ssl.Purpose.CLIENT_AUTH)
     context.load_cert_chain(KEY_FILE) # server identity
     httpd.socket = context.wrap_socket(sock=httpd.socket, server_side=True)
