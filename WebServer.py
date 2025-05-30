@@ -20,6 +20,12 @@ class MyServer(http.server.BaseHTTPRequestHandler):
         print("")
         print("== HEAD request ==")
         print(self.headers)
+
+        # get client cert info
+        cert = self.connection.getpeercert()
+        print("Client cert: "+str(cert))
+        print("")
+
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
@@ -28,8 +34,12 @@ class MyServer(http.server.BaseHTTPRequestHandler):
         print("")
         print("== GET request ==")
         print(self.headers)
+
         # get client cert info
         cert = self.connection.getpeercert()
+        print("Client cert: "+str(cert))
+        print("")
+
         client_cert = "None"
         client_cert_issuer = "None"
         if cert:
