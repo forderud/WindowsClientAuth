@@ -65,6 +65,7 @@ struct RsaPublicBlob {
         return hash;
 #else
         // ASN DER export of Modulus & Exponent parameters (see https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Security/Cryptography/RSAKeyFormatHelper.Pkcs1.cs)
+        // Encoding reference: https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-der-encoding-of-asn-1-types
         std::vector<BYTE> data; // data to be hashed
         
         data.push_back(0x30); // sequence
@@ -81,8 +82,8 @@ struct RsaPublicBlob {
         data.insert(data.end(), modulus.begin(), modulus.end());
 
         data.push_back(0x02); // integer
-        data.push_back(0x03); // 3 bytes
         auto exponent = Exponent();
+        data.push_back((BYTE)exponent.size()); // typ. 3 bytes
         data.insert(data.end(), exponent.begin(), exponent.end());
 
         return Sha256(data);
