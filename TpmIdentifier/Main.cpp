@@ -75,10 +75,11 @@ struct RsaPublicBlob {
 
         data.push_back(0x02); // integer
         data.push_back(0x82); // 2 bytes length (MSB set)
-        data.push_back(0x01); // 257bytes
-        data.push_back(0x01); // 
-        data.push_back(0x00); // leading byte
         auto modulus = Modulus();
+        uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 257bytes
+        data.push_back(((BYTE*)&modLen)[1]);
+        data.push_back(((BYTE*)&modLen)[0]);
+        data.push_back(0x00); // leading byte
         data.insert(data.end(), modulus.begin(), modulus.end());
 
         data.push_back(0x02); // integer
