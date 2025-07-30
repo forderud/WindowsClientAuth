@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WebClientUwp", "WebClientUw
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProxyConfig", "ProxyConfig\ProxyConfig.vcxproj", "{2F1949F5-A4E7-420A-A522-B4C896038C88}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TpmIdentifier", "TpmIdentifier\TpmIdentifier.vcxproj", "{96878DC7-0E9A-420A-A2BF-76AC714CC5C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -37,6 +39,10 @@ Global
 		{2F1949F5-A4E7-420A-A522-B4C896038C88}.Debug|x64.Build.0 = Debug|x64
 		{2F1949F5-A4E7-420A-A522-B4C896038C88}.Release|x64.ActiveCfg = Release|x64
 		{2F1949F5-A4E7-420A-A522-B4C896038C88}.Release|x64.Build.0 = Release|x64
+		{96878DC7-0E9A-420A-A2BF-76AC714CC5C2}.Debug|x64.ActiveCfg = Debug|x64
+		{96878DC7-0E9A-420A-A2BF-76AC714CC5C2}.Debug|x64.Build.0 = Debug|x64
+		{96878DC7-0E9A-420A-A2BF-76AC714CC5C2}.Release|x64.ActiveCfg = Release|x64
+		{96878DC7-0E9A-420A-A2BF-76AC714CC5C2}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
