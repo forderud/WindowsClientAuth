@@ -50,7 +50,7 @@ struct RsaPublicBlob {
     std::vector<BYTE> PublicKey() const {
         // Encoding reference: https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-der-encoding-of-asn-1-types
         std::vector<BYTE> data;
-        
+#if 1
         data.push_back(0x30); // sequence
         data.push_back(0x82); // 2 bytes length (MSB set)
         data.push_back(0x01); // 266bytes
@@ -75,6 +75,24 @@ struct RsaPublicBlob {
             data.push_back((BYTE)exponent.size()); // typ. 3 bytes
             data.insert(data.end(), exponent.begin(), exponent.end());
         }
+#else
+        // work-in-progress alternative impl.
+        NCRYPT_PROV_HANDLE provHandle = 0;
+        NCryptOpenStorageProvider(&provHandle, MS_KEY_STORAGE_PROVIDER, 0);
+
+        // step 1: Import BCRYPT_RSAKEY_BLOB-encoded key 
+        NCRYPT_KEY_HANDLE nkey = 0;
+        SECURITY_STATUS status = NCryptImportKey(provHandle, NULL, BCRYPT_RSAPUBLIC_BLOB, NULL, &nkey, data.data(), (DWORD)data.size(), 0);
+
+        BCRYPT_ALG_HANDLE algHandle = 0;
+        std::string keyObj = ""; // optional
+        NTSTATUS status2 = BCryptImportKey(algHandle, NULL, BCRYPT_RSAPUBLIC_BLOB, NULL, (UCHAR*)keyObj.c_str(), (DWORD)keyObj.length(), data.data(), (DWORD)data.size(), 0);
+
+        // step 2: Export ASN.1 DER encoding
+        // TODO: Implement
+
+        NCryptFreeObject(provHandle);
+#endif
         return data;
     }
 
