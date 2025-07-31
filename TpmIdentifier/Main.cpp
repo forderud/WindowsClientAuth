@@ -51,26 +51,27 @@ struct RsaPublicBlob {
         // Encoding reference: https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-der-encoding-of-asn-1-types
         std::vector<BYTE> data;
 #if 1
+        auto modulus = Modulus();
+        uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 256bytes + 1 byte leading byte
+        auto exponent = Exponent();
+
         data.push_back(0x30); // sequence
         data.push_back(0x82); // 2 bytes length prefix (MSB set)
-        data.push_back(0x01); // 266bytes
-        data.push_back(0x0A); // 
+        uint16_t payloadLen = (4 + modLen) + (2 + (uint16_t)exponent.size()); // typ. 266bytes
+        data.push_back(((BYTE*)&payloadLen)[1]); // modulus length
+        data.push_back(((BYTE*)&payloadLen)[0]);
 
         {
             // Modulus parameter
-            auto modulus = Modulus();
-            uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 256 + 1 bytes
-
             data.push_back(0x02); // integer
             data.push_back(0x82); // 2 bytes length prefix (MSB set)
             data.push_back(((BYTE*)&modLen)[1]); // modulus length
             data.push_back(((BYTE*)&modLen)[0]);
             data.push_back(0x00); // leading byte
             data.insert(data.end(), modulus.begin(), modulus.end());
-        } {
+        }
+        {
             // Exponent parameter
-            auto exponent = Exponent();
-
             data.push_back(0x02); // integer
             data.push_back((BYTE)exponent.size()); // exponent length (typ. 3 bytes)
             data.insert(data.end(), exponent.begin(), exponent.end());
