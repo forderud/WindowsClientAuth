@@ -177,28 +177,27 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
 
 
 int main() {
+    // connect to TPM chip
     NCRYPT_PROV_HANDLE hProv = NULL;
     HRESULT hr = HRESULT_FROM_WIN32(NCryptOpenStorageProvider(&hProv, MS_PLATFORM_CRYPTO_PROVIDER, 0));
-    if (FAILED(hr)) {
+    if (FAILED(hr))
         abort();
-    }
 
-    // retrieve EK public key as RSA public key BLOB
+    // retrieve TPM Endorsement Key public key (EKpub) as RSA public key BLOB
     // DOC: https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/ns-bcrypt-bcrypt_rsakey_blob
     RsaPublicBlob rsaBlob;
     rsaBlob.buffer.resize(1024, 0);
     DWORD ekPub_len = 0;
     hr = HRESULT_FROM_WIN32(NCryptGetProperty(hProv, NCRYPT_PCP_RSA_EKPUB_PROPERTY, rsaBlob.buffer.data(), (DWORD)rsaBlob.buffer.size(), &ekPub_len, 0)); // "PCP_RSA_EKPUB"
-    if (FAILED(hr)) {
+    if (FAILED(hr))
         abort();
-    }
     rsaBlob.buffer.resize(ekPub_len);
 #if 0
     rsaBlob.PrintHeader();
     rsaBlob.SaveToFile("TPM_EKpub.bin");
 #endif
 
-    // Compute hash that matches the PowerShell (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash command
+    // compute hash that matches the PowerShell (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash command
     std::vector<BYTE> hash = Sha256Hash(rsaBlob.PublicKey());
     printf("TPM EKpub public key hash:\n");
     for (BYTE elm : hash)
@@ -206,5 +205,4 @@ int main() {
     printf("\n");
 
     NCryptFreeObject(hProv);
-    hProv = NULL;
 }
