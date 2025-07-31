@@ -1,3 +1,6 @@
+/* Program to get a unique identifier for the TPM chip on the computer. 
+   Computes the SHA-256 hash of the public-key part of the TPM endorsement key (EKpub).
+   The EK is unique for every TPM and can identify it. The EK can't be changed or removed. */
 #include <windows.h>
 #include <bcrypt.h>
 #include <ncrypt.h>
@@ -11,6 +14,7 @@
 #define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
 
+/** RSA public key BLOB */
 struct RsaPublicBlob {
     std::vector<BYTE> buffer; // BCRYPT_RSAKEY_BLOB public key buffer
 
@@ -58,14 +62,14 @@ struct RsaPublicBlob {
         data.push_back(0x30); // SEQUENCE
         data.push_back(0x82); // 2 bytes length prefix (MSB set)
         uint16_t payloadLen = (4 + modLen) + (2 + (uint16_t)exponent.size()); // typ. 266bytes
-        data.push_back(((BYTE*)&payloadLen)[1]); // modulus length
+        data.push_back(((BYTE*)&payloadLen)[1]); // payload length (big-endian)
         data.push_back(((BYTE*)&payloadLen)[0]);
 
         {
             // Modulus parameter
             data.push_back(0x02); // INTEGER value
             data.push_back(0x82); // 2 bytes length prefix (MSB set)
-            data.push_back(((BYTE*)&modLen)[1]); // modulus length
+            data.push_back(((BYTE*)&modLen)[1]); // modulus length (big-endian)
             data.push_back(((BYTE*)&modLen)[0]);
             data.push_back(0x00); // leading byte
             data.insert(data.end(), modulus.begin(), modulus.end());
@@ -165,8 +169,6 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
 
 
 int main() {
-    // retrieve TPM Endorsement Key public key (EKpub) as RSA public key BLOB
-    // DOC: https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/ns-bcrypt-bcrypt_rsakey_blob
     RsaPublicBlob rsaBlob;
     {
         // connect to TPM chip that is exposed through the "Microsoft Platform Crypto Provider"
@@ -175,6 +177,9 @@ int main() {
         if (FAILED(hr))
             abort();
 
+        // Retrieve TPM Endorsement Key public key (EKpub) as RSA public key BLOB.
+        // This key is unique for every TPM and can identify it,
+        // DOC: https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/ns-bcrypt-bcrypt_rsakey_blob
         rsaBlob.buffer.resize(1024, 0);
         DWORD ekPub_len = 0;
         hr = HRESULT_FROM_WIN32(NCryptGetProperty(hProv, NCRYPT_PCP_RSA_EKPUB_PROPERTY, rsaBlob.buffer.data(), (DWORD)rsaBlob.buffer.size(), &ekPub_len, 0)); // "PCP_RSA_EKPUB"
