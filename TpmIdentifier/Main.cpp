@@ -42,7 +42,8 @@ struct RsaPublicBlob {
         return modulus;
     }
 
-    /** Compute SHA-256 hash of the public key. Matches the following implementations:
+    /** Compute ASN.1 DER encoding of the public key.
+        Matches the following implementations:
         * PowerShell: (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash
         * .Net: SHA256.HashData(RSA.Create(parameters).ExportRSAPublicKey()) with parameters.Exponent and parameters.Modulus set. */
     std::vector<BYTE> PublicKey() const {
@@ -197,8 +198,9 @@ int main() {
     rsaBlob.SaveToFile("TPM_EKpub.bin");
 #endif
 
+    // Compute hash that matches the PowerShell (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash command
     std::vector<BYTE> hash = Sha256Hash(rsaBlob.PublicKey());
-    printf("TPM EKpub public key hash: ");
+    printf("TPM EKpub public key hash:\n");
     for (BYTE elm : hash)
         printf("%02x", elm);
     printf("\n");
