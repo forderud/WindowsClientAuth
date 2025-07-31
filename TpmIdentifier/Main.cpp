@@ -49,8 +49,8 @@ struct RsaPublicBlob {
     /** Compute ASN.1 DER encoding of the public key.
         Based on the WritePkcs1PublicKey function in https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Security/Cryptography/RSAKeyFormatHelper.Pkcs1.cs
         Matches the following implementations:
-        * PowerShell: (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash
-        * .Net: SHA256.HashData(RSA.Create(parameters).ExportRSAPublicKey()) with parameters.Exponent and parameters.Modulus set. */
+        * PowerShell: (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKey
+        * .Net: RSA.Create(parameters).ExportRSAPublicKey() with parameters.Exponent and parameters.Modulus set. */
     std::vector<BYTE> PublicKey() const {
         // Encoding reference: https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-der-encoding-of-asn-1-types
         std::vector<BYTE> data;
