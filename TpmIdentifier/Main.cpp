@@ -52,18 +52,18 @@ struct RsaPublicBlob {
         std::vector<BYTE> data;
 #if 1
         data.push_back(0x30); // sequence
-        data.push_back(0x82); // 2 bytes length (MSB set)
+        data.push_back(0x82); // 2 bytes length prefix (MSB set)
         data.push_back(0x01); // 266bytes
         data.push_back(0x0A); // 
 
         {
             // Modulus parameter
             auto modulus = Modulus();
-            uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 257bytes
+            uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 256 + 1 bytes
 
             data.push_back(0x02); // integer
-            data.push_back(0x82); // 2 bytes length (MSB set)
-            data.push_back(((BYTE*)&modLen)[1]);
+            data.push_back(0x82); // 2 bytes length prefix (MSB set)
+            data.push_back(((BYTE*)&modLen)[1]); // modulus length
             data.push_back(((BYTE*)&modLen)[0]);
             data.push_back(0x00); // leading byte
             data.insert(data.end(), modulus.begin(), modulus.end());
@@ -72,7 +72,7 @@ struct RsaPublicBlob {
             auto exponent = Exponent();
 
             data.push_back(0x02); // integer
-            data.push_back((BYTE)exponent.size()); // typ. 3 bytes
+            data.push_back((BYTE)exponent.size()); // exponent length (typ. 3 bytes)
             data.insert(data.end(), exponent.begin(), exponent.end());
         }
 #else
