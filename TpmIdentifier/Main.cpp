@@ -177,7 +177,7 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
 
 
 int main() {
-    // connect to TPM chip
+    // connect to TPM chip that is exposed through the "Microsoft Platform Crypto Provider"
     NCRYPT_PROV_HANDLE hProv = NULL;
     HRESULT hr = HRESULT_FROM_WIN32(NCryptOpenStorageProvider(&hProv, MS_PLATFORM_CRYPTO_PROVIDER, 0));
     if (FAILED(hr))
@@ -199,7 +199,7 @@ int main() {
 
     // compute hash that matches the PowerShell (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash command
     std::vector<BYTE> hash = Sha256Hash(rsaBlob.PublicKey());
-    printf("TPM EKpub public key hash:\n");
+    printf("TPM EKpub public key SHA-256 hash:\n");
     for (BYTE elm : hash)
         printf("%02x", elm);
     printf("\n");
