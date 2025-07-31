@@ -1,6 +1,6 @@
 /* Program to get a unique identifier for the TPM chip on the computer. 
    Computes the SHA-256 hash of the public-key part of the TPM endorsement key (EKpub).
-   The EK is unique for every TPM and can identify it. The EK can't be changed or removed. */
+   The EK is unique for every TPM and can identify it. The EK can't be changed or removed (from https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/component-updates/tpm-key-attestation). */
 #include <windows.h>
 #include <bcrypt.h>
 #include <ncrypt.h>
@@ -178,7 +178,7 @@ int main() {
             abort();
 
         // Retrieve TPM Endorsement Key public key (EKpub) as RSA public key BLOB.
-        // This key is unique for every TPM and can identify it,
+        // This key is unique for every TPM and can identify it. It cannot be changed, except if replacing the TPM chip.
         // DOC: https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/ns-bcrypt-bcrypt_rsakey_blob
         rsaBlob.buffer.resize(1024, 0);
         DWORD ekPub_len = 0;
@@ -197,8 +197,9 @@ int main() {
 
     // compute hash that matches the PowerShell (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash command
     std::vector<BYTE> hash = Sha256Hash(rsaBlob.PublicKey());
-    printf("TPM EKpub public key SHA-256 hash:\n");
+    printf("TPM Endorsement Key public key (EKpub) SHA-256 hash:\n");
     for (BYTE elm : hash)
         printf("%02x", elm);
-    printf("\n");
+    printf("\n\n");
+    printf("This hash is unique for every TPM and can identify it. It cannot be changed, except if replacing the TPM chip.\n");
 }
