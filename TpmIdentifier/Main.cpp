@@ -55,7 +55,7 @@ struct RsaPublicBlob {
         uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 256bytes + 1 byte leading byte
         auto exponent = Exponent();
 
-        data.push_back(0x30); // sequence
+        data.push_back(0x30); // SEQUENCE
         data.push_back(0x82); // 2 bytes length prefix (MSB set)
         uint16_t payloadLen = (4 + modLen) + (2 + (uint16_t)exponent.size()); // typ. 266bytes
         data.push_back(((BYTE*)&payloadLen)[1]); // modulus length
@@ -63,7 +63,7 @@ struct RsaPublicBlob {
 
         {
             // Modulus parameter
-            data.push_back(0x02); // integer
+            data.push_back(0x02); // INTEGER value
             data.push_back(0x82); // 2 bytes length prefix (MSB set)
             data.push_back(((BYTE*)&modLen)[1]); // modulus length
             data.push_back(((BYTE*)&modLen)[0]);
@@ -72,7 +72,7 @@ struct RsaPublicBlob {
         }
         {
             // Exponent parameter
-            data.push_back(0x02); // integer
+            data.push_back(0x02); // INTEGER value
             data.push_back((BYTE)exponent.size()); // exponent length (typ. 3 bytes)
             data.insert(data.end(), exponent.begin(), exponent.end());
         }
