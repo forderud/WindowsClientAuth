@@ -43,53 +43,39 @@ struct RsaPublicBlob {
     }
 
     /** Compute ASN.1 DER encoding of the public key.
+        Based on the WritePkcs1PublicKey function in https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Security/Cryptography/RSAKeyFormatHelper.Pkcs1.cs
         Matches the following implementations:
         * PowerShell: (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash
         * .Net: SHA256.HashData(RSA.Create(parameters).ExportRSAPublicKey()) with parameters.Exponent and parameters.Modulus set. */
     std::vector<BYTE> PublicKey() const {
-#if 0
-        // TODO: Hash doesn't match (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash
-        std::vector<BYTE> hash(32, 0);
-        DWORD hash_len = (DWORD)hash.size();
-
-        //BOOL ok = CryptHashCertificate(NULL, CALG_SHA_256, 0, buffer.data(), (DWORD)buffer.size(), hash.data(), &hash_len);
-        //assert(ok);
-
-        CERT_PUBLIC_KEY_INFO info{};
-        info.Algorithm.pszObjId = (char*)szOID_RSA;
-        info.Algorithm.Parameters = { 0, nullptr };
-        info.PublicKey = { (DWORD)buffer.size(), (BYTE*)buffer.data(), 0 };
-
-        BOOL ok = CryptHashPublicKeyInfo(NULL, CALG_SHA_256, 0, X509_ASN_ENCODING | PKCS_7_ASN_ENCODING, &info, hash.data(), &hash_len);
-        assert(ok);
-        assert(hash_len == hash.size());
-        return hash;
-#else
-        // ASN DER export of Modulus & Exponent parameters (see https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/Security/Cryptography/RSAKeyFormatHelper.Pkcs1.cs)
         // Encoding reference: https://learn.microsoft.com/en-us/windows/win32/seccertenroll/about-der-encoding-of-asn-1-types
-        std::vector<BYTE> data; // data to be hashed
+        std::vector<BYTE> data;
         
         data.push_back(0x30); // sequence
         data.push_back(0x82); // 2 bytes length (MSB set)
         data.push_back(0x01); // 266bytes
         data.push_back(0x0A); // 
 
-        data.push_back(0x02); // integer
-        data.push_back(0x82); // 2 bytes length (MSB set)
-        auto modulus = Modulus();
-        uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 257bytes
-        data.push_back(((BYTE*)&modLen)[1]);
-        data.push_back(((BYTE*)&modLen)[0]);
-        data.push_back(0x00); // leading byte
-        data.insert(data.end(), modulus.begin(), modulus.end());
+        {
+            // Modulus parameter
+            auto modulus = Modulus();
+            uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 257bytes
 
-        data.push_back(0x02); // integer
-        auto exponent = Exponent();
-        data.push_back((BYTE)exponent.size()); // typ. 3 bytes
-        data.insert(data.end(), exponent.begin(), exponent.end());
+            data.push_back(0x02); // integer
+            data.push_back(0x82); // 2 bytes length (MSB set)
+            data.push_back(((BYTE*)&modLen)[1]);
+            data.push_back(((BYTE*)&modLen)[0]);
+            data.push_back(0x00); // leading byte
+            data.insert(data.end(), modulus.begin(), modulus.end());
+        } {
+            // Exponent parameter
+            auto exponent = Exponent();
 
+            data.push_back(0x02); // integer
+            data.push_back((BYTE)exponent.size()); // typ. 3 bytes
+            data.insert(data.end(), exponent.begin(), exponent.end());
+        }
         return data;
-#endif
     }
 
     void PrintHeader() const {
