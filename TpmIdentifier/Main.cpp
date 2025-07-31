@@ -160,21 +160,26 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
 
 
 int main() {
-    // connect to TPM chip that is exposed through the "Microsoft Platform Crypto Provider"
-    NCRYPT_PROV_HANDLE hProv = NULL;
-    HRESULT hr = HRESULT_FROM_WIN32(NCryptOpenStorageProvider(&hProv, MS_PLATFORM_CRYPTO_PROVIDER, 0));
-    if (FAILED(hr))
-        abort();
-
     // retrieve TPM Endorsement Key public key (EKpub) as RSA public key BLOB
     // DOC: https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/ns-bcrypt-bcrypt_rsakey_blob
     RsaPublicBlob rsaBlob;
-    rsaBlob.buffer.resize(1024, 0);
-    DWORD ekPub_len = 0;
-    hr = HRESULT_FROM_WIN32(NCryptGetProperty(hProv, NCRYPT_PCP_RSA_EKPUB_PROPERTY, rsaBlob.buffer.data(), (DWORD)rsaBlob.buffer.size(), &ekPub_len, 0)); // "PCP_RSA_EKPUB"
-    if (FAILED(hr))
-        abort();
-    rsaBlob.buffer.resize(ekPub_len);
+    {
+        // connect to TPM chip that is exposed through the "Microsoft Platform Crypto Provider"
+        NCRYPT_PROV_HANDLE hProv = NULL;
+        HRESULT hr = HRESULT_FROM_WIN32(NCryptOpenStorageProvider(&hProv, MS_PLATFORM_CRYPTO_PROVIDER, 0));
+        if (FAILED(hr))
+            abort();
+
+        rsaBlob.buffer.resize(1024, 0);
+        DWORD ekPub_len = 0;
+        hr = HRESULT_FROM_WIN32(NCryptGetProperty(hProv, NCRYPT_PCP_RSA_EKPUB_PROPERTY, rsaBlob.buffer.data(), (DWORD)rsaBlob.buffer.size(), &ekPub_len, 0)); // "PCP_RSA_EKPUB"
+        if (FAILED(hr))
+            abort();
+        rsaBlob.buffer.resize(ekPub_len);
+
+        NCryptFreeObject(hProv);
+    }
+
 #if 0
     rsaBlob.PrintHeader();
     rsaBlob.SaveToFile("TPM_EKpub.bin");
@@ -186,6 +191,4 @@ int main() {
     for (BYTE elm : hash)
         printf("%02x", elm);
     printf("\n");
-
-    NCryptFreeObject(hProv);
 }
