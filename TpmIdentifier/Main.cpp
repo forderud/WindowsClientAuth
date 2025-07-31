@@ -2,8 +2,8 @@
    Computes the SHA-256 hash of the public-key part of the TPM endorsement key (EKpub).
    The EK is unique for every TPM and can identify it. The EK can't be changed or removed (from https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/component-updates/tpm-key-attestation). */
 #include <windows.h>
-#include <bcrypt.h>
-#include <ncrypt.h>
+#include <bcrypt.h> // basic cryptographic primitives
+#include <ncrypt.h> // key storage and retrieval
 #include <cassert>
 #include <fstream>
 #include <vector>
