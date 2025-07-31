@@ -45,7 +45,7 @@ struct RsaPublicBlob {
     /** Compute SHA-256 hash of the public key. Matches the following implementations:
         * PowerShell: (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash
         * .Net: SHA256.HashData(RSA.Create(parameters).ExportRSAPublicKey()) with parameters.Exponent and parameters.Modulus set. */
-    std::vector<BYTE> PublicKeyHash() const {
+    std::vector<BYTE> PublicKey() const {
 #if 0
         // TODO: Hash doesn't match (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash
         std::vector<BYTE> hash(32, 0);
@@ -87,7 +87,7 @@ struct RsaPublicBlob {
         data.push_back((BYTE)exponent.size()); // typ. 3 bytes
         data.insert(data.end(), exponent.begin(), exponent.end());
 
-        return Sha256(data);
+        return data;
 #endif
     }
 
@@ -111,69 +111,68 @@ struct RsaPublicBlob {
         std::ofstream file(filename, std::ofstream::out | std::ofstream::binary);
         file.write((char*)&buffer, buffer.size());
     }
+};
 
-private:
-    /** Compute SHA-256 hash of the input data. */
-    static std::vector<BYTE> Sha256(const std::vector<BYTE>& data) {
-        std::vector<BYTE> hash(32, 0);
+/** Compute SHA-256 hash of the input data. */
+static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
+    std::vector<BYTE> hash(32, 0);
 
-        //open an algorithm handle
-        NTSTATUS status = STATUS_UNSUCCESSFUL;
-        BCRYPT_ALG_HANDLE hAlg = NULL;
-        if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hAlg, BCRYPT_SHA256_ALGORITHM, NULL, 0))) {
-            wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
-            abort();
-        }
+    //open an algorithm handle
+    NTSTATUS status = STATUS_UNSUCCESSFUL;
+    BCRYPT_ALG_HANDLE hAlg = NULL;
+    if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hAlg, BCRYPT_SHA256_ALGORITHM, NULL, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
+        abort();
+    }
 
-        //calculate the size of the buffer to hold the hash object
-        DWORD cbData = 0, cbHashObject = 0;
-        if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbData, 0))) {
+    //calculate the size of the buffer to hold the hash object
+    DWORD cbData = 0, cbHashObject = 0;
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbData, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+        abort();
+    }
+
+    //allocate the hash object on the heap
+    BYTE* pbHashObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbHashObject);
+    if (NULL == pbHashObject) {
+        wprintf(L"**** memory allocation failed\n");
+        abort();
+    }
+
+    {
+        // check the length of the hash
+        DWORD cbHash = 0;
+        if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_HASH_LENGTH, (PBYTE)&cbHash, sizeof(DWORD), &cbData, 0))) {
             wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
             abort();
         }
-
-        //allocate the hash object on the heap
-        BYTE* pbHashObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbHashObject);
-        if (NULL == pbHashObject) {
-            wprintf(L"**** memory allocation failed\n");
-            abort();
-        }
-
-        {
-            // check the length of the hash
-            DWORD cbHash = 0;
-            if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_HASH_LENGTH, (PBYTE)&cbHash, sizeof(DWORD), &cbData, 0))) {
-                wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
-                abort();
-            }
-            assert(hash.size() == cbHash);
-        }
-
-        // create a hash
-        BCRYPT_HASH_HANDLE hHash = NULL;
-        if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, pbHashObject, cbHashObject, NULL, 0, 0))) {
-            wprintf(L"**** Error 0x%x returned by BCryptCreateHash\n", status);
-            abort();
-        }
-
-        // hash data
-        if (!NT_SUCCESS(status = BCryptHashData(hHash, (UCHAR*)data.data(), (ULONG)data.size(), 0))) {
-            wprintf(L"**** Error 0x%x returned by BCryptHashData\n", status);
-            abort();
-        }
-
-        // close the hash
-        if (!NT_SUCCESS(status = BCryptFinishHash(hHash, hash.data(), (ULONG)hash.size(), 0))) {
-            wprintf(L"**** Error 0x%x returned by BCryptFinishHash\n", status);
-            abort();
-        }
-
-        BCryptCloseAlgorithmProvider(hAlg, 0);
-        BCryptDestroyHash(hHash);
-        HeapFree(GetProcessHeap(), 0, pbHashObject);
-        return hash;
+        assert(hash.size() == cbHash);
     }
-};
+
+    // create a hash
+    BCRYPT_HASH_HANDLE hHash = NULL;
+    if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, pbHashObject, cbHashObject, NULL, 0, 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptCreateHash\n", status);
+        abort();
+    }
+
+    // hash data
+    if (!NT_SUCCESS(status = BCryptHashData(hHash, (UCHAR*)data.data(), (ULONG)data.size(), 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptHashData\n", status);
+        abort();
+    }
+
+    // close the hash
+    if (!NT_SUCCESS(status = BCryptFinishHash(hHash, hash.data(), (ULONG)hash.size(), 0))) {
+        wprintf(L"**** Error 0x%x returned by BCryptFinishHash\n", status);
+        abort();
+    }
+
+    BCryptCloseAlgorithmProvider(hAlg, 0);
+    BCryptDestroyHash(hHash);
+    HeapFree(GetProcessHeap(), 0, pbHashObject);
+    return hash;
+}
 
 
 int main() {
@@ -198,7 +197,7 @@ int main() {
     rsaBlob.SaveToFile("TPM_EKpub.bin");
 #endif
 
-    std::vector<BYTE> hash = rsaBlob.PublicKeyHash();
+    std::vector<BYTE> hash = Sha256Hash(rsaBlob.PublicKey());
     printf("TPM EKpub public key hash: ");
     for (BYTE elm : hash)
         printf("%02x", elm);
