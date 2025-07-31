@@ -12,7 +12,7 @@
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
 
 struct RsaPublicBlob {
-    std::vector<BYTE> buffer; // EKpub buffer
+    std::vector<BYTE> buffer; // BCRYPT_RSAKEY_BLOB public key buffer
 
     BCRYPT_RSAKEY_BLOB* Header() const {
         auto* header = (BCRYPT_RSAKEY_BLOB*)buffer.data();
