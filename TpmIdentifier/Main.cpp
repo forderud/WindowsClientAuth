@@ -223,16 +223,17 @@ int main() {
 #endif
 
     // compute hash that matches the PowerShell (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash command
-    std::vector<BYTE> pubKey = rsaBlob.PublicKey();
+    printf("Retrieving Endorsement Key public key (EKpub) from the Trusted Platform Module (TPM).\n");
+    printf("This key is unique for every TPM and can identify it. It cannot be changed, except if replacing the TPM.\n");
+    printf("\n");
+    std::vector<BYTE> EKpub = rsaBlob.PublicKey();
 
-    std::vector<BYTE> hash = Sha256Hash(pubKey);
-    printf("TPM Endorsement Key public key (EKpub) SHA-256 hash:\n");
+    std::vector<BYTE> hash = Sha256Hash(EKpub);
+    printf("TPM EKpub SHA-256 hash: ");
     for (BYTE elm : hash)
         printf("%02x", elm);
-    printf("\n\n");
-    printf("This hash is unique for every TPM and can identify it. It cannot be changed, except if replacing the TPM chip.\n");
-    printf("\n");
+    printf(" (secure identifier)\n");
 
-    uint32_t crc32 = Crc32Checksum(pubKey);
-    printf("CRC-32 of TPM EKpub: %x\n", crc32);
+    uint32_t crc32 = Crc32Checksum(EKpub);
+    printf("TPM EKpub CRC-32 checksum: %x (insecure identifier)\n", crc32);
 }
