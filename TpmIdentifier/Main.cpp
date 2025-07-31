@@ -167,6 +167,32 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
     return hash;
 }
 
+/** Compute 32bit cyclic redundancy checksum (CRC-32). */
+static uint32_t Crc32Checksum(const std::vector<BYTE>& data) {
+    // implementation based on https://en.wikipedia.org/wiki/Computation_of_cyclic_redundancy_checks#CRC-32_example
+    uint32_t CRCTable[256] = {};
+    {
+        // table initialization
+        uint32_t crc32 = 1;
+        // CRCTable[0] = 0 already.
+        for (unsigned int i = 128; i; i >>= 1) {
+            crc32 = (crc32 >> 1) ^ (crc32 & 1 ? 0xedb88320 : 0);
+            for (unsigned int j = 0; j < 256; j += 2 * i)
+                CRCTable[i + j] = crc32 ^ CRCTable[j];
+        }
+    }
+
+    uint32_t crc32 = 0xFFFFFFFFu;
+    for (size_t i = 0; i < data.size(); i++) {
+        crc32 ^= data[i];
+        crc32 = (crc32 >> 8) ^ CRCTable[crc32 & 0xff];
+    }
+
+    // Finalize the CRC-32 value by inverting all the bits
+    crc32 ^= 0xFFFFFFFFu;
+    return crc32;
+}
+
 
 int main() {
     RsaPublicBlob rsaBlob;
