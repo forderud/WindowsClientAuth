@@ -167,10 +167,10 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
     return hash;
 }
 
-/** Compute 32bit cyclic redundancy checksum (CRC-32).
-    TODO: Consider replacing with unofficial RtlComputeCrc32 function in Ntdll.dll. */
+/** Compute 32bit cyclic redundancy checksum (CRC-32). */
 static uint32_t Crc32Checksum(const std::vector<BYTE>& data) {
-    // implementation based on https://en.wikipedia.org/wiki/Computation_of_cyclic_redundancy_checks#CRC-32_example
+#if 1
+    // low-level implementation based on https://en.wikipedia.org/wiki/Computation_of_cyclic_redundancy_checks#CRC-32_example
     uint32_t CRCTable[256] = {};
     {
         // table initialization
@@ -192,6 +192,14 @@ static uint32_t Crc32Checksum(const std::vector<BYTE>& data) {
     // Finalize the CRC-32 value by inverting all the bits
     crc32 ^= 0xFFFFFFFFu;
     return crc32;
+#else
+    // call undocumented RtlComputeCrc32 function in Ntdll.dll
+    typedef DWORD (WINAPI* Crc32)(DWORD initial, const BYTE* buffer, UINT buflen);
+    HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
+    auto ComputeCrc32 = (Crc32)GetProcAddress(ntdll, "RtlComputeCrc32");
+
+    return ComputeCrc32(0, data.data(), (UINT)data.size());
+#endif
 }
 
 
