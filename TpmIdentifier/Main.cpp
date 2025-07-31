@@ -62,15 +62,15 @@ struct RsaPublicBlob {
         data.push_back(0x30); // SEQUENCE
         data.push_back(0x82); // 2 bytes length prefix (MSB set)
         uint16_t payloadLen = (4 + modLen) + (2 + (uint16_t)exponent.size()); // typ. 266bytes
-        data.push_back(((BYTE*)&payloadLen)[1]); // payload length (big-endian)
-        data.push_back(((BYTE*)&payloadLen)[0]);
+        data.push_back(payloadLen >> 8); // payload length (big-endian)
+        data.push_back(payloadLen & 0xFF);
 
         {
             // Modulus parameter
             data.push_back(0x02); // INTEGER value
             data.push_back(0x82); // 2 bytes length prefix (MSB set)
-            data.push_back(((BYTE*)&modLen)[1]); // modulus length (big-endian)
-            data.push_back(((BYTE*)&modLen)[0]);
+            data.push_back(modLen >> 8); // modulus length (big-endian)
+            data.push_back(modLen & 0xFF);
             data.push_back(0x00); // leading byte
             data.insert(data.end(), modulus.begin(), modulus.end());
         }
