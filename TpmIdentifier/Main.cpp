@@ -167,7 +167,8 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
     return hash;
 }
 
-/** Compute 32bit cyclic redundancy checksum (CRC-32). */
+/** Compute 32bit cyclic redundancy checksum (CRC-32).
+    TODO: Consider replacing with unofficial RtlComputeCrc32 function in Ntdll.dll. */
 static uint32_t Crc32Checksum(const std::vector<BYTE>& data) {
     // implementation based on https://en.wikipedia.org/wiki/Computation_of_cyclic_redundancy_checks#CRC-32_example
     uint32_t CRCTable[256] = {};
@@ -229,4 +230,6 @@ int main() {
         printf("%02x", elm);
     printf("\n\n");
     printf("This hash is unique for every TPM and can identify it. It cannot be changed, except if replacing the TPM chip.\n");
+
+    RtlComputeCrc32()
 }
