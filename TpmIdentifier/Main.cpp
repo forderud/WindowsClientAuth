@@ -196,7 +196,8 @@ int main() {
 #endif
 
     // compute hash that matches the PowerShell (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash command
-    std::vector<BYTE> hash = Sha256Hash(rsaBlob.PublicKey());
+    std::vector<BYTE> pubKey = rsaBlob.PublicKey();
+    std::vector<BYTE> hash = Sha256Hash(pubKey);
     printf("TPM Endorsement Key public key (EKpub) SHA-256 hash:\n");
     for (BYTE elm : hash)
         printf("%02x", elm);
