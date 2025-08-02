@@ -249,5 +249,5 @@ int main() {
     printf(" (secure identifier)\n");
 
     uint32_t crc32 = Crc32Checksum(EKpub);
-    printf("TPM EKpub CRC-32 checksum: %x (insecure identifier)\n", crc32);
+    printf("TPM EKpub CRC-32 checksum: %x (identifier)\n", crc32);
 }
