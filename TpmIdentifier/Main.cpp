@@ -212,7 +212,7 @@ int main() {
         NCRYPT_PROV_HANDLE hProv = NULL;
         SECURITY_STATUS ret = NCryptOpenStorageProvider(&hProv, MS_PLATFORM_CRYPTO_PROVIDER, 0);
         if (ret != ERROR_SUCCESS) {
-            printf("ERROR: Unable to connect to TPM chip.\n");
+            printf("ERROR: Unable to connect to TPM chip (NCryptOpenStorageProvider error %u).\n", ret);
             abort();
         }
 
@@ -223,7 +223,7 @@ int main() {
         DWORD ekPub_len = 0;
         ret = NCryptGetProperty(hProv, NCRYPT_PCP_RSA_EKPUB_PROPERTY, rsaBlob.buffer.data(), (DWORD)rsaBlob.buffer.size(), &ekPub_len, 0); // "PCP_RSA_EKPUB"
         if (ret != ERROR_SUCCESS) {
-            printf("ERROR: Unable to retrieve TPM Endorsement Key public key (EKpub).\n");
+            printf("ERROR: Unable to retrieve TPM Endorsement Key public key (EKpub) (NCryptGetProperty error %u).\n", ret);
             abort();
         }
         rsaBlob.buffer.resize(ekPub_len);
