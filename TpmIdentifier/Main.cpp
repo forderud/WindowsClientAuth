@@ -61,7 +61,11 @@ struct RsaPublicBlob {
             modLen += 1; // need to add leading byte to signal positive value
 
         auto exponent = Exponent();
-        uint16_t payloadLen = (4 + modLen) + (2 + (uint16_t)exponent.size()); // typ. 266bytes
+        uint8_t expLen = (uint8_t)exponent.size(); // typ. 3bytes
+        if (exponent[0] & 0x80)
+            expLen += 1; // need to add leading byte to signal positive value
+
+        uint16_t payloadLen = (4 + modLen) + (2 + expLen); // typ. 266bytes
 
         data.push_back(0x30); // SEQUENCE
         data.push_back(0x82); // 2 bytes length prefix (MSB set)
@@ -81,7 +85,9 @@ struct RsaPublicBlob {
         {
             // Exponent parameter
             data.push_back(0x02); // INTEGER value
-            data.push_back((BYTE)exponent.size()); // exponent length (typ. 3 bytes)
+            data.push_back(expLen); // exponent length
+            if (exponent[0] & 0x80)
+                data.push_back(0x00); // add leading 0x00 to indicate positive value
             data.insert(data.end(), exponent.begin(), exponent.end());
         }
 #else
