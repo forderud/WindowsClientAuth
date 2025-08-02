@@ -14,6 +14,7 @@
 #define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
 
+
 /** RSA public key BLOB */
 struct RsaPublicBlob {
     // RSA public key buffer. Shall contain {BCRYPT_RSAKEY_BLOB, PublicExponent, Modulus} in big-endian encoding.
@@ -134,6 +135,7 @@ struct RsaPublicBlob {
     }
 };
 
+
 /** Compute SHA-256 hash of the input data. */
 static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
     std::vector<BYTE> hash(32, 0); // SHA-256 output is always 32bytes
@@ -168,6 +170,7 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
     BCryptCloseAlgorithmProvider(hAlg, 0);
     return hash;
 }
+
 
 /** Compute 32bit cyclic redundancy checksum (CRC-32). */
 static uint32_t Crc32Checksum(const std::vector<BYTE>& data) {
@@ -231,11 +234,6 @@ int main() {
 
         NCryptFreeObject(hProv);
     }
-
-#if 0
-    rsaBlob.PrintHeader();
-    rsaBlob.SaveToFile("TPM_EKpub.bin");
-#endif
 
     // compute hash that matches the PowerShell (Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash command
     printf("Retrieving Endorsement Key public key (EKpub) from the Trusted Platform Module (TPM).\n");
