@@ -140,37 +140,27 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
     // open hash algorithm provider
     NTSTATUS status = STATUS_UNSUCCESSFUL;
     BCRYPT_ALG_HANDLE hAlg = NULL;
-    if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hAlg, BCRYPT_SHA256_ALGORITHM, NULL, 0))) {
-        wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
+    if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(&hAlg, BCRYPT_SHA256_ALGORITHM, NULL, 0)))
         abort();
-    }
 
     // get scratch buffer size
     DWORD cbData = 0, cbHashObject = 0;
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbData, 0))) {
-        wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbData, 0)))
         abort();
-    }
 
     // create a hash object
     std::vector<BYTE> scratchBuf(cbHashObject, 0);
     BCRYPT_HASH_HANDLE hHash = NULL;
-    if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, scratchBuf.data(), cbHashObject, NULL, 0, 0))) {
-        wprintf(L"**** Error 0x%x returned by BCryptCreateHash\n", status);
+    if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, scratchBuf.data(), cbHashObject, NULL, 0, 0)))
         abort();
-    }
 
     // compute hash of data
-    if (!NT_SUCCESS(status = BCryptHashData(hHash, (UCHAR*)data.data(), (ULONG)data.size(), 0))) {
-        wprintf(L"**** Error 0x%x returned by BCryptHashData\n", status);
+    if (!NT_SUCCESS(status = BCryptHashData(hHash, (UCHAR*)data.data(), (ULONG)data.size(), 0)))
         abort();
-    }
 
     // get hash value
-    if (!NT_SUCCESS(status = BCryptFinishHash(hHash, hash.data(), (ULONG)hash.size(), 0))) {
-        wprintf(L"**** Error 0x%x returned by BCryptFinishHash\n", status);
+    if (!NT_SUCCESS(status = BCryptFinishHash(hHash, hash.data(), (ULONG)hash.size(), 0)))
         abort();
-    }
 
     BCryptDestroyHash(hHash);
     BCryptCloseAlgorithmProvider(hAlg, 0);
