@@ -21,6 +21,8 @@ struct RsaPublicBlob {
     const BCRYPT_RSAKEY_BLOB* Header() const {
         auto* header = (BCRYPT_RSAKEY_BLOB*)buffer.data();
         assert(header->Magic == BCRYPT_RSAPUBLIC_MAGIC); // 0x31415352  // RSA1
+        assert(!header->cbPrime1 && !header->cbPrime2);
+        assert(buffer.size() == header->cbModulus + header->cbPublicExp + sizeof(BCRYPT_RSAKEY_BLOB));
         return header;
     }
 
@@ -41,8 +43,6 @@ struct RsaPublicBlob {
         const BYTE* ptr = buffer.data() + sizeof(BCRYPT_RSAKEY_BLOB) + header->cbPublicExp;
         std::vector<BYTE> modulus(header->cbModulus, 0); // big-endian
         memcpy(modulus.data(), ptr, header->cbModulus);
-        ptr += header->cbModulus;
-        assert(ptr == buffer.data() + buffer.size()); // reached end of EKpub buffer
         return modulus;
     }
 
