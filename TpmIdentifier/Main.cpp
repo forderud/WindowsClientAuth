@@ -211,8 +211,10 @@ int main() {
         // connect to TPM chip that is exposed through the "Microsoft Platform Crypto Provider"
         NCRYPT_PROV_HANDLE hProv = NULL;
         HRESULT hr = HRESULT_FROM_WIN32(NCryptOpenStorageProvider(&hProv, MS_PLATFORM_CRYPTO_PROVIDER, 0));
-        if (FAILED(hr))
+        if (FAILED(hr)) {
+            printf("ERROR: Unable to connect to TPM chip.\n");
             abort();
+        }
 
         // Retrieve TPM Endorsement Key public key (EKpub) as RSA public key BLOB.
         // This key is unique for every TPM and can identify it. It cannot be changed, except if replacing the TPM chip.
@@ -220,8 +222,10 @@ int main() {
         rsaBlob.buffer.resize(1024, 0);
         DWORD ekPub_len = 0;
         hr = HRESULT_FROM_WIN32(NCryptGetProperty(hProv, NCRYPT_PCP_RSA_EKPUB_PROPERTY, rsaBlob.buffer.data(), (DWORD)rsaBlob.buffer.size(), &ekPub_len, 0)); // "PCP_RSA_EKPUB"
-        if (FAILED(hr))
+        if (FAILED(hr)) {
+            printf("ERROR: Unable to retrieve TPM Endorsement Key public key (EKpub).\n");
             abort();
+        }
         rsaBlob.buffer.resize(ekPub_len);
 
         NCryptFreeObject(hProv);
