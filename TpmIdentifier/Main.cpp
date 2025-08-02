@@ -194,6 +194,7 @@ static uint32_t Crc32Checksum(const std::vector<BYTE>& data) {
     return crc32;
 #else
     // call undocumented RtlComputeCrc32 function in Ntdll.dll
+    // intended as reference to verify correctness of the implementation above
     typedef DWORD (WINAPI* RtlComputeCrc32Fn)(DWORD initial, const BYTE* buffer, UINT buflen);
     HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
     auto RtlComputeCrc32 = (RtlComputeCrc32Fn)GetProcAddress(ntdll, "RtlComputeCrc32");
