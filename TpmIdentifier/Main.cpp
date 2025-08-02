@@ -18,7 +18,7 @@
 struct RsaPublicBlob {
     std::vector<BYTE> buffer; // BCRYPT_RSAKEY_BLOB public key buffer
 
-    BCRYPT_RSAKEY_BLOB* Header() const {
+    const BCRYPT_RSAKEY_BLOB* Header() const {
         auto* header = (BCRYPT_RSAKEY_BLOB*)buffer.data();
         assert(header->Magic == BCRYPT_RSAPUBLIC_MAGIC); // 0x31415352  // RSA1
         return header;
@@ -26,7 +26,7 @@ struct RsaPublicBlob {
 
     /** Return RSA exponent in big-endian format */
     std::vector<BYTE> Exponent() const {
-        BCRYPT_RSAKEY_BLOB* header = Header();
+        const BCRYPT_RSAKEY_BLOB* header = Header();
 
         const BYTE* ptr = buffer.data() + sizeof(BCRYPT_RSAKEY_BLOB);
         std::vector<BYTE> exponent(header->cbPublicExp, 0); // big-endian
@@ -36,7 +36,7 @@ struct RsaPublicBlob {
 
     /** Return RSA modulus in big-endian format */
     std::vector<BYTE> Modulus() const {
-        BCRYPT_RSAKEY_BLOB* header = Header();
+        const BCRYPT_RSAKEY_BLOB* header = Header();
 
         const BYTE* ptr = buffer.data() + sizeof(BCRYPT_RSAKEY_BLOB) + header->cbPublicExp;
         std::vector<BYTE> modulus(header->cbModulus, 0); // big-endian
@@ -112,7 +112,7 @@ struct RsaPublicBlob {
     }
 
     void PrintHeader() const {
-        BCRYPT_RSAKEY_BLOB* header = Header();
+        const BCRYPT_RSAKEY_BLOB* header = Header();
 
         printf("Algorithm: ");
         for (size_t i = 0; i < sizeof(header->Magic); i++) {
