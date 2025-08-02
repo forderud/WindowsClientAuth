@@ -144,12 +144,13 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
         abort();
 
     // get scratch buffer size
-    DWORD cbData = 0, cbHashObject = 0;
-    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (UCHAR*)&cbHashObject, sizeof(cbHashObject), &cbData, 0)))
+    DWORD scratchBufLen = 0, scratchBufLenSize = 0;
+    if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (UCHAR*)&scratchBufLen, sizeof(scratchBufLen), &scratchBufLenSize, 0)))
         abort();
+    assert(scratchBufLenSize == sizeof(scratchBufLen));
 
     // create a hash object
-    std::vector<BYTE> scratchBuf(cbHashObject, 0);
+    std::vector<BYTE> scratchBuf(scratchBufLen, 0);
     BCRYPT_HASH_HANDLE hHash = NULL;
     if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, scratchBuf.data(), (ULONG)scratchBuf.size(), NULL, 0, 0)))
         abort();
