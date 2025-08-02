@@ -71,7 +71,7 @@ struct RsaPublicBlob {
             data.push_back(0x82); // 2 bytes length prefix (MSB set)
             data.push_back(modLen >> 8); // modulus length (big-endian)
             data.push_back(modLen & 0xFF);
-            data.push_back(0x00); // leading byte (don't understand why this is needed)
+            data.push_back(0x00); // leading 0x00 to indicate positive value
             data.insert(data.end(), modulus.begin(), modulus.end());
         }
         {
