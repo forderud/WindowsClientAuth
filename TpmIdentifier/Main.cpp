@@ -210,8 +210,8 @@ int main() {
     {
         // connect to TPM chip that is exposed through the "Microsoft Platform Crypto Provider"
         NCRYPT_PROV_HANDLE hProv = NULL;
-        HRESULT hr = HRESULT_FROM_WIN32(NCryptOpenStorageProvider(&hProv, MS_PLATFORM_CRYPTO_PROVIDER, 0));
-        if (FAILED(hr)) {
+        SECURITY_STATUS ret = NCryptOpenStorageProvider(&hProv, MS_PLATFORM_CRYPTO_PROVIDER, 0);
+        if (ret != ERROR_SUCCESS) {
             printf("ERROR: Unable to connect to TPM chip.\n");
             abort();
         }
@@ -221,8 +221,8 @@ int main() {
         // DOC: https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/ns-bcrypt-bcrypt_rsakey_blob
         rsaBlob.buffer.resize(1024, 0);
         DWORD ekPub_len = 0;
-        hr = HRESULT_FROM_WIN32(NCryptGetProperty(hProv, NCRYPT_PCP_RSA_EKPUB_PROPERTY, rsaBlob.buffer.data(), (DWORD)rsaBlob.buffer.size(), &ekPub_len, 0)); // "PCP_RSA_EKPUB"
-        if (FAILED(hr)) {
+        ret = NCryptGetProperty(hProv, NCRYPT_PCP_RSA_EKPUB_PROPERTY, rsaBlob.buffer.data(), (DWORD)rsaBlob.buffer.size(), &ekPub_len, 0); // "PCP_RSA_EKPUB"
+        if (ret != ERROR_SUCCESS) {
             printf("ERROR: Unable to retrieve TPM Endorsement Key public key (EKpub).\n");
             abort();
         }
