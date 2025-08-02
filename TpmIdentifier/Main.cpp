@@ -16,13 +16,14 @@
 
 /** RSA public key BLOB */
 struct RsaPublicBlob {
-    std::vector<BYTE> buffer; // BCRYPT_RSAKEY_BLOB public key buffer
+    // RSA public key buffer. Shall contain {BCRYPT_RSAKEY_BLOB, PublicExponent, Modulus} in big-endian encoding.
+    std::vector<BYTE> buffer;
 
     const BCRYPT_RSAKEY_BLOB* Header() const {
         auto* header = (BCRYPT_RSAKEY_BLOB*)buffer.data();
         assert(header->Magic == BCRYPT_RSAPUBLIC_MAGIC); // 0x31415352  // RSA1
         assert(!header->cbPrime1 && !header->cbPrime2);
-        assert(buffer.size() == header->cbModulus + header->cbPublicExp + sizeof(BCRYPT_RSAKEY_BLOB));
+        assert(buffer.size() == sizeof(BCRYPT_RSAKEY_BLOB) + header->cbPublicExp + header->cbModulus);
         return header;
     }
 
