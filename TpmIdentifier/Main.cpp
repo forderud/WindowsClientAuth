@@ -147,7 +147,7 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
         abort();
 
     // get scratch buffer size
-    DWORD scratchBufLen = 0, scratchBufLenSize = 0;
+    ULONG scratchBufLen = 0, scratchBufLenSize = 0;
     if (!NT_SUCCESS(status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (UCHAR*)&scratchBufLen, sizeof(scratchBufLen), &scratchBufLenSize, 0)))
         abort();
     assert(scratchBufLenSize == sizeof(scratchBufLen));
