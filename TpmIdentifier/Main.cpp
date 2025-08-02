@@ -56,7 +56,10 @@ struct RsaPublicBlob {
         std::vector<BYTE> data;
 #if 1
         auto modulus = Modulus();
-        uint16_t modLen = (uint16_t)modulus.size() + 1; // typ. 256bytes + 1 byte leading byte
+        uint16_t modLen = (uint16_t)modulus.size(); // typ. 256bytes
+        if (modulus[0] & 0x80)
+            modLen += 1; // need to add leading byte to signal positive value
+
         auto exponent = Exponent();
         uint16_t payloadLen = (4 + modLen) + (2 + (uint16_t)exponent.size()); // typ. 266bytes
 
@@ -71,7 +74,8 @@ struct RsaPublicBlob {
             data.push_back(0x82); // 2 bytes length prefix (MSB set)
             data.push_back(modLen >> 8); // modulus length (big-endian)
             data.push_back(modLen & 0xFF);
-            data.push_back(0x00); // leading 0x00 to indicate positive value
+            if (modulus[0] & 0x80)
+                data.push_back(0x00); // add leading 0x00 to indicate positive value
             data.insert(data.end(), modulus.begin(), modulus.end());
         }
         {
