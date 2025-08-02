@@ -151,7 +151,7 @@ static std::vector<BYTE> Sha256Hash(const std::vector<BYTE>& data) {
     // create a hash object
     std::vector<BYTE> scratchBuf(cbHashObject, 0);
     BCRYPT_HASH_HANDLE hHash = NULL;
-    if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, scratchBuf.data(), cbHashObject, NULL, 0, 0)))
+    if (!NT_SUCCESS(status = BCryptCreateHash(hAlg, &hHash, scratchBuf.data(), (ULONG)scratchBuf.size(), NULL, 0, 0)))
         abort();
 
     // compute hash of data
