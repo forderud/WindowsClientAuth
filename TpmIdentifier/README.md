@@ -21,5 +21,11 @@ PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCrypt
 var data = new byte[1024];
 uint dataLen = 0;
 PInvoke.NCryptGetProperty(handle, "PCP_RSA_EKPUB", data, out dataLen, 0);
-Array.Resize(ref data, (int)dataLen); 
+Array.Resize(ref data, (int)dataLen);
+
+// TODO: Extract RSA modulus and exponent from "data" array
+var rsa = new RSAParameters();
+rsa.Exponent = ...
+rsa.Modulus = ...
+var EKpub = RSA.Create(rsa).ExportRSAPublicKey();
 ```
