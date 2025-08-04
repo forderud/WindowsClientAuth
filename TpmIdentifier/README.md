@@ -24,7 +24,7 @@ using Windows.Win32.Security.Cryptography;
 NCryptFreeObjectSafeHandle handle;
 PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCryptoProvider.Provider, 0);
 
-// Get RSA public key BLOB
+// Get EKpub RSA key BLOB
 var data = new byte[1024];
 uint dataLen = 0;
 PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, data, out dataLen, 0);
