@@ -13,8 +13,10 @@ Retrieve `EKpub` from TPM:
 ```
 // Add "Microsoft.Windows.CsWin32" NuGet package
 // Add "NativeMethods.txt" to project folder with NCryptOpenStorageProvider, NCryptGetProperty & NCRYPT_PCP_RSA_EKPUB_PROPERTY lines to enable PInvoke calls
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Windows.Win32;
+using Windows.Win32.Security.Cryptography;
 
 NCryptFreeObjectSafeHandle handle;
 PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCryptoProvider.Provider, 0);
@@ -24,9 +26,14 @@ uint dataLen = 0;
 PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, data, out dataLen, 0);
 Array.Resize(ref data, (int)dataLen);
 
-// TODO: Extract RSA modulus and exponent from "data" array
+// Extract RSA modulus and exponent from "data" array
+var tmp = GCHandle.Alloc(data, GCHandleType.Pinned);
+var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB));
+tmp.Free();
 var rsa = new RSAParameters();
-rsa.Exponent = ...
-rsa.Modulus = ...
+rsa.Exponent = new byte[header.cbPublicExp];
+Array.Copy(data, Marshal.SizeOf(header), rsa.Exponent, 0, header.cbPublicExp);
+rsa.Modulus = new byte[header.cbModulus];
+Array.Copy(data, Marshal.SizeOf(header) + header.cbPublicExp, rsa.Modulus, 0, header.cbModulus);
 var EKpub = RSA.Create(rsa).ExportRSAPublicKey();
 ```
