@@ -11,8 +11,8 @@ The C++ `TpmIdentifier` project in this folder demonstrates how to compute the S
 ### C# sample code
 Retrieve `EKpub` from TPM:
 ```
-// Add "System.IO.Hashing" & "Microsoft.Windows.CsWin32" NuGet packages.
-// Add "NativeMethods.txt" to project folder with NCryptOpenStorageProvider, NCryptGetProperty & NCRYPT_PCP_RSA_EKPUB_PROPERTY lines to enable PInvoke calls
+// Add "System.IO.Hashing" & "Microsoft.Windows.CsWin32" NuGet packages
+// Add "NativeMethods.txt" to project folder with NCryptOpenStorageProvider, NCryptGetProperty, NCRYPT_PCP_RSA_EKPUB_PROPERTY & BCRYPT_RSAKEY_BLOB lines to enable PInvoke calls
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Windows.Win32;
