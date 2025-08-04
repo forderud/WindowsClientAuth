@@ -12,7 +12,8 @@ The C++ `TpmIdentifier` project in this folder demonstrates how to compute the S
 Retrieve `EKpub` from TPM:
 ```
 // Add "Microsoft.Windows.CsWin32" NuGet package
-// Add "NativeMethods.txt" to project folder with NCryptOpenStorageProvider & NCryptGetProperty lines to enable PInvoke calls
+// Add "NativeMethods.txt" to project folder with NCryptOpenStorageProvider, NCryptGetProperty & NCRYPT_PCP_RSA_EKPUB_PROPERTY lines to enable PInvoke calls
+using System.Security.Cryptography;
 using Windows.Win32;
 
 NCryptFreeObjectSafeHandle handle;
@@ -20,7 +21,7 @@ PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCrypt
 
 var data = new byte[1024];
 uint dataLen = 0;
-PInvoke.NCryptGetProperty(handle, "PCP_RSA_EKPUB", data, out dataLen, 0);
+PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, data, out dataLen, 0);
 Array.Resize(ref data, (int)dataLen);
 
 // TODO: Extract RSA modulus and exponent from "data" array
