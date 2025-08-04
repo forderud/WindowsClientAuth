@@ -18,15 +18,17 @@ using System.Security.Cryptography;
 using Windows.Win32;
 using Windows.Win32.Security.Cryptography;
 
+// Connect to TPM chip
 NCryptFreeObjectSafeHandle handle;
 PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCryptoProvider.Provider, 0);
 
+// Get RSA public key BLOB
 var data = new byte[1024];
 uint dataLen = 0;
 PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, data, out dataLen, 0);
 Array.Resize(ref data, (int)dataLen);
 
-// Extract RSA modulus and exponent from "data" array
+// Extract RSA modulus and exponent
 var tmp = GCHandle.Alloc(data, GCHandleType.Pinned);
 var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB));
 tmp.Free();
