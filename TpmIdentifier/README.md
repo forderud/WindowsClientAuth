@@ -35,16 +35,21 @@ byte[] blob;
     handle.Close();
 }
 
-// Extract RSA modulus and exponent
-var tmp = GCHandle.Alloc(blob, GCHandleType.Pinned);
-var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB))!;
-tmp.Free();
-var rsa = new RSAParameters();
-rsa.Exponent = new byte[header.cbPublicExp];
-Array.Copy(blob, Marshal.SizeOf(header), rsa.Exponent, 0, header.cbPublicExp);
-rsa.Modulus = new byte[header.cbModulus];
-Array.Copy(blob, Marshal.SizeOf(header) + header.cbPublicExp, rsa.Modulus, 0, header.cbModulus);
-var EKpub = RSA.Create(rsa).ExportRSAPublicKey();
+byte[] EKpub;
+{
+    // Extract RSA modulus and exponent
+    var tmp = GCHandle.Alloc(blob, GCHandleType.Pinned);
+    var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB))!;
+    tmp.Free();
+
+    var rsa = new RSAParameters();
+    rsa.Exponent = new byte[header.cbPublicExp];
+    Array.Copy(blob, Marshal.SizeOf(header), rsa.Exponent, 0, header.cbPublicExp);
+    rsa.Modulus = new byte[header.cbModulus];
+    Array.Copy(blob, Marshal.SizeOf(header) + header.cbPublicExp, rsa.Modulus, 0, header.cbModulus);
+
+    EKpub = RSA.Create(rsa).ExportRSAPublicKey();
+}
 
 // Compute EKpub hash & checksum
 var sha256 = SHA256.HashData(EKpub);
