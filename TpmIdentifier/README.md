@@ -25,20 +25,20 @@ NCryptFreeObjectSafeHandle handle;
 PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCryptoProvider.Provider, 0);
 
 // Get EKpub RSA key BLOB
-var data = new byte[1024];
-uint dataLen = 0;
-PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, data, out dataLen, 0);
-Array.Resize(ref data, (int)dataLen);
+var blob = new byte[1024];
+uint blobLen = 0;
+PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, blob, out blobLen, 0);
+Array.Resize(ref blob, (int)blobLen);
 
 // Extract RSA modulus and exponent
-var tmp = GCHandle.Alloc(data, GCHandleType.Pinned);
+var tmp = GCHandle.Alloc(blob, GCHandleType.Pinned);
 var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB))!;
 tmp.Free();
 var rsa = new RSAParameters();
 rsa.Exponent = new byte[header.cbPublicExp];
-Array.Copy(data, Marshal.SizeOf(header), rsa.Exponent, 0, header.cbPublicExp);
+Array.Copy(blob, Marshal.SizeOf(header), rsa.Exponent, 0, header.cbPublicExp);
 rsa.Modulus = new byte[header.cbModulus];
-Array.Copy(data, Marshal.SizeOf(header) + header.cbPublicExp, rsa.Modulus, 0, header.cbModulus);
+Array.Copy(blob, Marshal.SizeOf(header) + header.cbPublicExp, rsa.Modulus, 0, header.cbModulus);
 var EKpub = RSA.Create(rsa).ExportRSAPublicKey();
 
 // Compute EKpub hash & checksum
