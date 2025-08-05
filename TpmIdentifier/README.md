@@ -32,7 +32,7 @@ Array.Resize(ref data, (int)dataLen);
 
 // Extract RSA modulus and exponent
 var tmp = GCHandle.Alloc(data, GCHandleType.Pinned);
-var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB));
+var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB))!;
 tmp.Free();
 var rsa = new RSAParameters();
 rsa.Exponent = new byte[header.cbPublicExp];
