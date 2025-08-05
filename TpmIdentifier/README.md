@@ -20,15 +20,20 @@ using System.Security.Cryptography;
 using Windows.Win32;
 using Windows.Win32.Security.Cryptography;
 
-// Connect to TPM chip
-NCryptFreeObjectSafeHandle handle;
-PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCryptoProvider.Provider, 0);
+byte[] blob;
+{
+    // Connect to TPM chip
+    NCryptFreeObjectSafeHandle handle;
+    PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCryptoProvider.Provider, 0);
 
-// Get EKpub RSA key BLOB
-var blob = new byte[1024];
-uint blobLen = 0;
-PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, blob, out blobLen, 0);
-Array.Resize(ref blob, (int)blobLen);
+    // Get EKpub blob
+    blob = new byte[1024];
+    uint blobLen = 0;
+    PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, blob, out blobLen, 0);
+    Array.Resize(ref blob, (int)blobLen);
+
+    handle.Close();
+}
 
 // Extract RSA modulus and exponent
 var tmp = GCHandle.Alloc(blob, GCHandleType.Pinned);
