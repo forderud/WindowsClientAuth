@@ -55,6 +55,8 @@ RSA keys can be imported to the TPM with `certutil [-user] -csp TPM -p "" -impor
 
 Key storage can be verified with `certutil [-user] -store My`. You'll then get `Provider = Microsoft Platform Crypto Provider` if the private key is actually stored in the TPM.
 
+### TPM for hardware identification
+The [TpmIdentifier](/TpmIdentifier) project demonstrates how the TPM endorsement key (`EKpub`) can be used to uniquely identify a machine.
 
 ## Client authentication
 The `clientAuth` OID (1.3.6.1.5.5.7.3.2) EKU field in the client certificate enables it to be used for client authentication.
