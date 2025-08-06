@@ -5,13 +5,18 @@ All TPM chips contain an [Endorsement Key (EK) that is unique for every TPM and 
 The public-key part of the TPM Endorsement Key (`EKpub`) can thererfore serve as a unique and tamper-proof machine identifier. A more compact secure identifier can be computed by taking the SHA-256 hash of `EKpub`.
 
 ### PowerShell sample
-`(Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash` (require admin privileges).
+Retrieve `EKpub` from TPM:
+```
+(Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash`
+```
+
+This command unfortunately require admin privileges. This is strange, since the underlying Win32 APIs does _not_ require admin privileges.
 
 ### C++ sample
-The C++ `TpmIdentifier` project in this folder demonstrates how to compute the SHA-256 hash of `EKpub` without admin privileges. It also demonstrates how to compute the CRC-32 checksum of `EKpub` if a more compact 32bit machine identifier is needed.
+The C++ `TpmIdentifier` project in this folder demonstrates how to retrieve `EKpub` from TPM and compute the SHA-256 hash of `EKpub` _without_ admin privileges. It also demonstrates how to compute the CRC-32 checksum of `EKpub` if a more compact 32bit machine identifier is needed.
 
 ### C# sample
-Retrieve `EKpub` from TPM:
+Retrieve `EKpub` from TPM _without_ admin privileges:
 ```
 // Add System.IO.Hashing & Microsoft.Windows.CsWin32 NuGet packages
 // Add NativeMethods.txt to project folder with NCryptOpenStorageProvider, NCryptGetProperty, NCRYPT_PCP_RSA_EKPUB_PROPERTY & BCRYPT_RSAKEY_BLOB lines to enable PInvoke calls
