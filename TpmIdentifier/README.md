@@ -25,7 +25,7 @@ using System.Security.Cryptography;
 using Windows.Win32;
 using Windows.Win32.Security.Cryptography;
 
-byte[] blob;
+byte[] blob; // RSA public key blob in BCRYPT_RSAKEY_BLOB format
 {
     // Connect to TPM chip
     NCryptFreeObjectSafeHandle handle;
@@ -40,13 +40,14 @@ byte[] blob;
     handle.Close();
 }
 
-byte[] EKpub;
+byte[] EKpub; // ASN.1 DER encoding of the RSA public key
 {
     // Extract RSA modulus and exponent
     var tmp = GCHandle.Alloc(blob, GCHandleType.Pinned);
     var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB))!;
     tmp.Free();
 
+    // Exponent & Modulus follows the header in the blob (https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/ns-bcrypt-bcrypt_rsakey_blob)
     var rsa = new RSAParameters();
     rsa.Exponent = new byte[header.cbPublicExp];
     Array.Copy(blob, Marshal.SizeOf(header), rsa.Exponent, 0, header.cbPublicExp);
