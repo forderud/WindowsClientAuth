@@ -7,10 +7,10 @@ The public-key part of the TPM Endorsement Key (`EKpub`) can thererfore serve as
 ### PowerShell sample
 `(Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash` (require admin privileges).
 
-### C++ sample code
+### C++ sample
 The C++ `TpmIdentifier` project in this folder demonstrates how to compute the SHA-256 hash of `EKpub` without admin privileges. It also demonstrates how to compute the CRC-32 checksum of `EKpub` if a more compact 32bit machine identifier is needed.
 
-### C# sample code
+### C# sample
 Retrieve `EKpub` from TPM:
 ```
 // Add System.IO.Hashing & Microsoft.Windows.CsWin32 NuGet packages
