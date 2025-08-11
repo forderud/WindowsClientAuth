@@ -20,6 +20,7 @@ Retrieve `EKpub` from TPM _without_ admin privileges:
 ```
 // Add System.IO.Hashing & Microsoft.Windows.CsWin32 NuGet packages
 // Add NativeMethods.txt to project folder with NCryptOpenStorageProvider, NCryptGetProperty, NCRYPT_PCP_RSA_EKPUB_PROPERTY & BCRYPT_RSAKEY_BLOB lines to enable PInvoke calls
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Windows.Win32;
@@ -61,5 +62,6 @@ byte[] EKpub; // ASN.1 DER encoding of the RSA public key
 var sha256 = SHA256.HashData(EKpub);
 Console.WriteLine("SHA-256 of EKpub: " + BitConverter.ToString(sha256));
 var crc32 = System.IO.Hashing.Crc32.Hash(EKpub);
-Console.WriteLine("CRC-32 of EKpub: " + BitConverter.ToString(crc32) + " (bytes reversed)");
+Array.Reverse(crc32); // to big endian
+Console.WriteLine("CRC-32 of EKpub: " + BitConverter.ToString(crc32));
 ```
