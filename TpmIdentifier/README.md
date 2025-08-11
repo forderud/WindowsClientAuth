@@ -25,17 +25,17 @@ using System.Security.Cryptography;
 using Windows.Win32;
 using Windows.Win32.Security.Cryptography;
 
-byte[] blob; // RSA public key blob in BCRYPT_RSAKEY_BLOB format
+byte[] EKblob; // RSA public key blob in BCRYPT_RSAKEY_BLOB format
 {
     // Connect to TPM chip
     NCryptFreeObjectSafeHandle handle;
     PInvoke.NCryptOpenStorageProvider(out handle, CngProvider.MicrosoftPlatformCryptoProvider.Provider, 0);
 
     // Get EKpub blob
-    blob = new byte[1024];
+    EKblob = new byte[1024];
     uint blobLen = 0;
-    PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, blob, out blobLen, 0);
-    Array.Resize(ref blob, (int)blobLen);
+    PInvoke.NCryptGetProperty(handle, PInvoke.NCRYPT_PCP_RSA_EKPUB_PROPERTY, EKblob, out blobLen, 0);
+    Array.Resize(ref EKblob, (int)blobLen);
 
     handle.Close();
 }
@@ -43,16 +43,16 @@ byte[] blob; // RSA public key blob in BCRYPT_RSAKEY_BLOB format
 byte[] EKpub; // ASN.1 DER encoding of the RSA public key
 {
     // Extract RSA modulus and exponent
-    var tmp = GCHandle.Alloc(blob, GCHandleType.Pinned);
+    var tmp = GCHandle.Alloc(EKblob, GCHandleType.Pinned);
     var header = (BCRYPT_RSAKEY_BLOB)Marshal.PtrToStructure(tmp.AddrOfPinnedObject(), typeof(BCRYPT_RSAKEY_BLOB))!;
     tmp.Free();
 
     // Exponent & Modulus follows the header in the blob (https://learn.microsoft.com/en-us/windows/win32/api/bcrypt/ns-bcrypt-bcrypt_rsakey_blob)
     var rsa = new RSAParameters();
     rsa.Exponent = new byte[header.cbPublicExp];
-    Array.Copy(blob, Marshal.SizeOf(header), rsa.Exponent, 0, header.cbPublicExp);
+    Array.Copy(EKblob, Marshal.SizeOf(header), rsa.Exponent, 0, header.cbPublicExp);
     rsa.Modulus = new byte[header.cbModulus];
-    Array.Copy(blob, Marshal.SizeOf(header) + header.cbPublicExp, rsa.Modulus, 0, header.cbModulus);
+    Array.Copy(EKblob, Marshal.SizeOf(header) + header.cbPublicExp, rsa.Modulus, 0, header.cbModulus);
 
     EKpub = RSA.Create(rsa).ExportRSAPublicKey();
 }
