@@ -49,7 +49,7 @@ Run `tpm.msc` to open the "Trusted Platform Module (TPM) Management" snap-in to 
 
 
 ### TPM storage of private keys
-Installed certificates will by default have their private key managed by the SW-based "Microsoft Software Key Storage Provider" when importing non-exportable. It's also possible to store the private key in the TPM chip through "Microsoft Platform Crypto Provider" for enhanced HW-enforced security.
+Installed certificates will by default have their private key managed by the SW-based "_Microsoft Software Key Storage Provider_" when importing non-exportable. It's also possible to store the private key in the TPM chip through "_Microsoft Platform Crypto Provider_" for enhanced HW-enforced security.
 
 RSA keys can be imported to the TPM with `certutil [-user] -csp TPM -p "" -importpfx ClientCert.pfx NoExport`. However, that seem to fail with `NTE_BAD_TYPE` for EC-DSA certificates. It's possible to use [TPMImport](https://github.com/glueckkanja-pki/TPMImport) as work-around with a `TPMImport.exe [-user] -v ClientCert.pfx ""` command.
 
