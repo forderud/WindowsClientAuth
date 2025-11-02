@@ -7,7 +7,7 @@ The public-key part of the TPM Endorsement Key (`EKpub`) can thererfore serve as
 ### PowerShell sample
 Retrieve `EKpub` from TPM:
 ```
-(Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash`
+(Get-TpmEndorsementKeyInfo -Hash "Sha256").PublicKeyHash
 ```
 
 This command unfortunately require admin privileges. This is strange, since the underlying Win32 APIs does _not_ require admin privileges.
