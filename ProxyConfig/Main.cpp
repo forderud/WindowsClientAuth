@@ -11,7 +11,8 @@
 //#define ENABLE_PROXY_CHANGE_NOTIFICATION
 
 
-bool IsWin11OrNewer() {
+/** Values >=22000 mean Windows 11. */
+int WindowsBuildNumber() {
     CRegKey reg;
     LSTATUS res = reg.Open(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", KEY_READ);
     assert(res == ERROR_SUCCESS);
@@ -22,7 +23,7 @@ bool IsWin11OrNewer() {
     assert(res == ERROR_SUCCESS);
 
     int buildNum = _wtoi(buildStr);
-    return buildNum >= 22000;
+    return buildNum;
 }
 
 #ifdef ENABLE_PROXY_CHANGE_NOTIFICATION
@@ -42,7 +43,7 @@ typedef DWORD (*WinHttpRegisterProxyChangeNotification_fn)(ULONGLONG ullFlags, W
 
 
 int wmain(int argc, wchar_t* argv[]) {
-    if (IsWin11OrNewer()) {
+    if (WindowsBuildNumber() >= 22000) {
         wprintf(L"WARNING: You should instead use netsh winhttp set advproxy if running on Win11 or newer.\n");
         wprintf(L"\n");
     }
