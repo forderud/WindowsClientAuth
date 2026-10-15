@@ -90,7 +90,6 @@
   <ItemGroup>
     <ClInclude Include="WinINetConfig.hpp" />
     <ClInclude Include="WinHTTPSettings.hpp" />
-    <ClInclude Include="ProxyStructs.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="module.rc" />

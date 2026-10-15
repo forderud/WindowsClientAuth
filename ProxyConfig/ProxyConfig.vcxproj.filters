@@ -6,7 +6,6 @@
     <ClCompile Include="WinHTTPSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ProxyStructs.hpp" />
     <ClInclude Include="WinINetConfig.hpp" />
     <ClInclude Include="WinHTTPSettings.hpp" />
   </ItemGroup>
