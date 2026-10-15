@@ -9,4 +9,4 @@ namespace wininet {
 
 void PrintProxyPerUser();
 
-int SetProxyPerUser(bool perUser);
+int SetProxyScope(bool perUser);

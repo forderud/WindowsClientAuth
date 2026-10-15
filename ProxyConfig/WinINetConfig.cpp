@@ -214,7 +214,7 @@ void PrintProxyPerUser() {
     }
 }
 
-int SetProxyPerUser(bool perUser) {
+int SetProxyScope(bool perUser) {
     // based on https://www.powershellgallery.com/packages/WinInetProxy/0.1.0/Content/WinInetProxy.psm1
     CRegKey internetSettingsPolicy;
     LSTATUS res = internetSettingsPolicy.Open(HKEY_LOCAL_MACHINE, L"Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");

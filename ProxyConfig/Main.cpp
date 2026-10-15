@@ -104,7 +104,7 @@ int wmain(int argc, wchar_t* argv[]) {
                 perUser = false;
 
             // update proxy scope
-            SetProxyPerUser(perUser);
+            SetProxyScope(perUser);
         } else {
             // display proxy scope
             PrintProxyPerUser();
