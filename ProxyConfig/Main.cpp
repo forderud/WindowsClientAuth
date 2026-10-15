@@ -71,8 +71,8 @@ int wmain(int argc, wchar_t* argv[]) {
 
         {
 #ifdef ENABLE_PROXY_CHANGE_NOTIFICATION
-            // WinHttpRegisterProxyChangeNotification is not yet available on Win10 22H2. Therefore,
-            // load the function pointer manually to avoid startup crash on older Windows versions.
+            // WinHttpRegisterProxyChangeNotification require Windows 11 or newer.
+            // Therefore, load the function pointer manually to avoid startup crash on older Windows versions.
             HMODULE winHttp = LoadLibrary(L"WinHttp.dll");
             assert(winHttp);
             auto winHttpRegisterProxyChangeNotification = (WinHttpRegisterProxyChangeNotification_fn)GetProcAddress(winHttp, "WinHttpRegisterProxyChangeNotification"); // not yet avialable on Win10 22H2
