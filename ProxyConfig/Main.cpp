@@ -75,7 +75,7 @@ int wmain(int argc, wchar_t* argv[]) {
             // Therefore, load the function pointer manually to avoid startup crash on older Windows versions.
             HMODULE winHttp = LoadLibrary(L"WinHttp.dll");
             assert(winHttp);
-            auto winHttpRegisterProxyChangeNotification = (WinHttpRegisterProxyChangeNotification_fn)GetProcAddress(winHttp, "WinHttpRegisterProxyChangeNotification"); // not yet avialable on Win10 22H2
+            auto winHttpRegisterProxyChangeNotification = (WinHttpRegisterProxyChangeNotification_fn)GetProcAddress(winHttp, "WinHttpRegisterProxyChangeNotification"); // fails on Win10 22H2
 
             if (winHttpRegisterProxyChangeNotification) {
                 wprintf(L"Registering proxy change notification handler...\n");
