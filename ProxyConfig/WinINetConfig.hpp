@@ -7,6 +7,6 @@ namespace wininet {
 }
 
 
-void PrintProxyPerUser();
+void PrintProxyScope();
 
 int SetProxyScope(bool perUser);

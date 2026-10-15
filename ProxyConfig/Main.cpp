@@ -107,7 +107,7 @@ int wmain(int argc, wchar_t* argv[]) {
             SetProxyScope(perUser);
         } else {
             // display proxy scope
-            PrintProxyPerUser();
+            PrintProxyScope();
         }
     } else if ((mode == L"autoproxy") && (argc >= 3)) {
         if (!IsUserAnAdmin()) {

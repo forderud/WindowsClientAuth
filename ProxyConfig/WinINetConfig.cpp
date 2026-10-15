@@ -197,7 +197,7 @@ int wininet::UpdateProxySettings(const wchar_t* autoConfigUrl, const wchar_t* pr
 }
 
 
-void PrintProxyPerUser() {
+void PrintProxyScope() {
     CRegKey internetSettingsPolicy;
     LSTATUS res = internetSettingsPolicy.Open(HKEY_LOCAL_MACHINE, L"Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", KEY_READ);
     if (res != ERROR_SUCCESS) {
