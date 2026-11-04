@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include <functional>
 #include <string>
 #include <stdexcept>
 #include <vector>
@@ -53,7 +54,7 @@ public:
         return (RawSMBIOSData*)m_buffer.data();
     }
 
-    typedef void (*StructVisitor)(const SmBiosQuery::Header* header);
+    typedef std::function<void(const SmBiosQuery::Header* header)> StructVisitor;
 
     void Traverse(StructVisitor visitor) const {
         const RawSMBIOSData* Smbios = GetData();
@@ -74,8 +75,8 @@ public:
     }
 
     std::string GetUUID() const {
-        auto getUuid = [](const SmBiosQuery::Header* header) {
-            std::string uuid;
+        std::string uuid;
+        auto getUuid = [&uuid](const SmBiosQuery::Header* header) {
             const auto* p = (const BYTE*)header;
 
             if (header->type == SmBiosQuery::SystemInformation) {
@@ -84,6 +85,7 @@ public:
         };
 
         Traverse(getUuid);
+        return uuid;
     }
 
     void PrintContent() const {
