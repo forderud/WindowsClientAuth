@@ -50,7 +50,7 @@ public:
             throw std::runtime_error("SMBIOS older than 2.6 not supported"); // 2.6 was released in 04 Aug 2008
     }
 
-    /** Print the Universally unique identifier (UUID) for this product. */
+    /** Get the Universally unique identifier (UUID) for this product. */
     std::string GetUUID() const {
         std::string uuid;
         auto getUuid = [&uuid](const Header* header) {
