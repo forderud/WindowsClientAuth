@@ -89,8 +89,8 @@ public:
     }
 
     void PrintContent() const {
-        auto printStruct = [](const SmBiosQuery::Header* header) {
-            static bool fw_printed = false;
+        bool fw_printed = false;
+        auto printStruct = [&fw_printed](const SmBiosQuery::Header* header) {
             const auto* p = (const BYTE*)header;
 
             if (header->type == SmBiosQuery::PlatformFirmwareInformation && !fw_printed) {
