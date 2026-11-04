@@ -134,12 +134,12 @@ private:
         return buffer;
     }
 
-    static const char* GetString(const Header* dm, BYTE string_number) {
+    static const char* GetString(const Header* header, BYTE string_number) {
         if (string_number == 0)
             return nullptr; // no string
 
         // pointer to structure payload
-        char* ptr = (char*)dm + dm->length;
+        char* ptr = (char*)header + header->length;
 
         // iterate over string until reaching the desired string number
         while (string_number > 1 && *ptr) {
