@@ -11,7 +11,7 @@ enum SMBIOS_Type : BYTE {
 };
 
 /** From SMBIOS 6.1.2 Structure header format */
-struct dmi_header {
+struct SMBIOS_Header {
     SMBIOS_Type type;
     BYTE length; // lenght (excluding string-sets)
     WORD handle; // unique struct identifier
@@ -35,7 +35,7 @@ static void dmi_system_uuid(const BYTE* p) {
 }
 
 
-const char* dmi_string(const dmi_header* dm, BYTE s) {
+const char* dmi_string(const SMBIOS_Header* dm, BYTE s) {
     if (s == 0)
         return "Not Specified";
 
@@ -72,7 +72,7 @@ public:
             throw std::runtime_error("GetSystemFirmwareTable RSMB failed");
 
         // sanity check
-        const RawSMBIOSData* Smbios = (RawSMBIOSData*)m_buffer.data();
+        const auto* Smbios = (RawSMBIOSData*)m_buffer.data();
         if (Smbios->Length != m_buffer.size() - 8)
             throw std::runtime_error("Smbios length error");
 
@@ -96,7 +96,7 @@ int main (int argc, char* argv[]) {
 
     bool fw_printed = false;
     for (unsigned int i = 0; i < Smbios->Length; i++) {
-        const dmi_header* h = (dmi_header*)p;
+        const auto* h = (SMBIOS_Header*)p;
 
         if (h->type == PlatformFirmwareInformation && !fw_printed) {
             printf("\nType %02d - [BIOS]\n", h->type);
