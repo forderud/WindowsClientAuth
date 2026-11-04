@@ -76,8 +76,7 @@ const char* dmi_string(const SmBiosQuery::Header* dm, BYTE string_number) {
 
     // iterate over string until reaching the desired string number
     while (string_number > 1 && *ptr) {
-        ptr += strlen(ptr);
-        ptr++;
+        ptr += strlen(ptr) + 1; // add null termination
         string_number--;
     }
     if (!*ptr)
