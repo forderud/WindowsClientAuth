@@ -79,14 +79,7 @@ const char* dmi_string(const SmBiosQuery::Header* dm, BYTE string_number) {
         ptr += strlen(ptr) + 1; // add null termination
         string_number--;
     }
-    if (!*ptr)
-        throw std::runtime_error("string number out of bounds");
 
-    /* ASCII filtering */
-    size_t len = strlen(ptr);
-    for (size_t i = 0; i < len; i++)
-        if (ptr[i] < 32 || ptr[i] == 127)
-            ptr[i] = '.';
     return ptr;
 }
 
