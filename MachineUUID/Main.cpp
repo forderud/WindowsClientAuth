@@ -30,8 +30,6 @@ static void dmi_system_uuid(const BYTE* p, short ver) {
             only0xFF = 0;
     }
 
-
-
     if (only0xFF) {
         printf("Not Present");
         return;
@@ -60,8 +58,7 @@ const char* dmi_string(const dmi_header* dm, BYTE s) {
 
     bp += dm->length;
 
-    while (s > 1 && *bp)
-    {
+    while (s > 1 && *bp) {
         bp += strlen(bp);
         bp++;
         s--;
@@ -76,7 +73,6 @@ const char* dmi_string(const dmi_header* dm, BYTE s) {
             bp[i] = '.';
     return bp;
 }
-
 
 
 int main (int argc, _TCHAR* argv[]) {
@@ -122,7 +118,7 @@ int main (int argc, _TCHAR* argv[]) {
                 printf("\tEC version: %d.%d\n", p[0x16], p[0x17]);
             flag = 0;
         }
-        else if (h->type == 1) {
+        if (h->type == 1) {
             printf("\nType %02d - [System Information]\n", h->type);
             printf("\tManufacturer: %s\n", dmi_string(h, p[0x4]));
             printf("\tProduct Name: %s\n", dmi_string(h, p[0x5]));
@@ -132,8 +128,10 @@ int main (int argc, _TCHAR* argv[]) {
             printf("\tSKU Number: %s\n", dmi_string(h, p[0x19]));
             printf("\tFamily: %s\n", dmi_string(h, p[0x1a]));
         }
+
         p += h->length;
-        while ((*(WORD*)p) != 0) p++;
+        while ((*(WORD*)p) != 0)
+            p++;
         p += 2;
     }
 
