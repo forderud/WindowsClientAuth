@@ -67,17 +67,18 @@ static void dmi_system_uuid(const BYTE* p) {
 }
 
 
-const char* dmi_string(const SmBiosQuery::Header* dm, BYTE s) {
-    if (s == 0)
+const char* dmi_string(const SmBiosQuery::Header* dm, BYTE string_number) {
+    if (string_number == 0)
         return "Not Specified";
 
     char* bp = (char*)dm;
     bp += dm->length;
 
-    while (s > 1 && *bp) {
+    // iterate over string until reaching the desired string number
+    while (string_number > 1 && *bp) {
         bp += strlen(bp);
         bp++;
-        s--;
+        string_number--;
     }
     if (!*bp)
         return "BAD_INDEX";
