@@ -89,8 +89,8 @@ int main (int argc, _TCHAR* argv[]) {
         return 1;
     }
 
-    RawSMBIOSData* Smbios = (RawSMBIOSData*)buf.data();
-    BYTE* p = Smbios->SMBIOSTableData;
+    const RawSMBIOSData* Smbios = (RawSMBIOSData*)buf.data();
+    const BYTE* p = Smbios->SMBIOSTableData;
 
     if (Smbios->Length != buf.size() - 8) {
         printf("Smbios length error\n");
