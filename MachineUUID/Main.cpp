@@ -5,7 +5,7 @@
 #include <vector>
 
 /** Utility class for retrieving SMBIOS parameters. */
-class SmBiosQuery {
+class SMBIOSQuery {
 public:
     /** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
     struct RawSMBIOSData {
@@ -30,7 +30,7 @@ public:
         WORD handle; // unique struct identifier
     };
 
-    SmBiosQuery() {
+    SMBIOSQuery() {
         int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // returns required buffer size
         if (!ret)
             throw std::runtime_error("GetSystemFirmwareTable get size failed");
@@ -54,7 +54,7 @@ public:
         return (RawSMBIOSData*)m_buffer.data();
     }
 
-    typedef std::function<void(const SmBiosQuery::Header* header)> StructVisitor;
+    typedef std::function<void(const SMBIOSQuery::Header* header)> StructVisitor;
 
     void Traverse(StructVisitor visitor) const {
         const RawSMBIOSData* Smbios = GetData();
@@ -62,7 +62,7 @@ public:
 
         bool fw_printed = false;
         while (ptr < Smbios->SMBIOSTableData + Smbios->Length) {
-            const auto* h = (SmBiosQuery::Header*)ptr;
+            const auto* h = (SMBIOSQuery::Header*)ptr;
 
             visitor(h);
 
@@ -76,10 +76,10 @@ public:
 
     std::string GetUUID() const {
         std::string uuid;
-        auto getUuid = [&uuid](const SmBiosQuery::Header* header) {
+        auto getUuid = [&uuid](const SMBIOSQuery::Header* header) {
             const auto* ptr = (const BYTE*)header;
 
-            if (header->type == SmBiosQuery::SystemInformation) {
+            if (header->type == SMBIOSQuery::SystemInformation) {
                 uuid = GetUUID(ptr + 0x8); // UUID offset: 0x8
             }
         };
@@ -90,10 +90,10 @@ public:
 
     void PrintContent() const {
         bool fw_printed = false;
-        auto printStruct = [&fw_printed](const SmBiosQuery::Header* header) {
+        auto printStruct = [&fw_printed](const SMBIOSQuery::Header* header) {
             const auto* ptr = (const BYTE*)header;
 
-            if (header->type == SmBiosQuery::PlatformFirmwareInformation && !fw_printed) {
+            if (header->type == SMBIOSQuery::PlatformFirmwareInformation && !fw_printed) {
                 printf("\nType %02d - [BIOS]\n", header->type);
                 printf("\tBIOS Vendor : %s\n", GetString(header, ptr[0x4])); // Vendor offset: 0x4
                 printf("\tBIOS Version: %s\n", GetString(header, ptr[0x5])); // FW version offset: 0x5
@@ -104,7 +104,7 @@ public:
 
                 fw_printed = true; // only print first entry
             }
-            if (header->type == SmBiosQuery::SystemInformation) {
+            if (header->type == SMBIOSQuery::SystemInformation) {
                 printf("\nType %02d - [System Information]\n", header->type);
                 printf("\tManufacturer: %s\n", GetString(header, ptr[0x4])); // Manufacturer offset: 0x4
                 printf("\tProduct Name: %s\n", GetString(header, ptr[0x5])); // Product name offset: 0x5
@@ -132,7 +132,7 @@ private:
         return buffer;
     }
 
-    static const char* GetString(const SmBiosQuery::Header* dm, BYTE string_number) {
+    static const char* GetString(const SMBIOSQuery::Header* dm, BYTE string_number) {
         if (string_number == 0)
             return nullptr; // no string
 
@@ -153,7 +153,7 @@ private:
 
 
 int main (int argc, char* argv[]) {
-    SmBiosQuery smbios;
+    SMBIOSQuery smbios;
     smbios.PrintContent();
 
     printf("UUID: %s\n", smbios.GetUUID().c_str());
