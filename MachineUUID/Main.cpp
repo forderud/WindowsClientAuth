@@ -20,7 +20,7 @@ struct RawSMBIOSData {
 };
 
 
-static void dmi_system_uuid(const BYTE* p, short ver) {
+static void dmi_system_uuid(const BYTE* p) {
     int only0xFF = 1, only0x00 = 1;
 
     for (int i = 0; i < 16 && (only0x00 || only0xFF); i++) {
@@ -39,13 +39,8 @@ static void dmi_system_uuid(const BYTE* p, short ver) {
         return;
     }
 
-    if (ver >= 0x0206)
-        printf("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
+    printf("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
             p[3], p[2], p[1], p[0], p[5], p[4], p[7], p[6],
-            p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
-    else
-        printf("-%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
-            p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7],
             p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
 }
 
@@ -91,6 +86,9 @@ public:
         const RawSMBIOSData* Smbios = (RawSMBIOSData*)m_buffer.data();
         if (Smbios->Length != m_buffer.size() - 8)
             throw std::runtime_error("Smbios length error");
+
+        if (Smbios->SMBIOSMajorVersion * 0x100 + Smbios->SMBIOSMinorVersion < 0x0206)
+            throw std::runtime_error("SMBIOS older than 2.6 not supported"); // 2.6 was released in 04 Aug 2008
     }
 
     const RawSMBIOSData* GetData() const {
@@ -127,7 +125,7 @@ int main (int argc, char* argv[]) {
             printf("\tProduct Name: %s\n", dmi_string(h, p[0x5]));
             printf("\tVersion: %s\n", dmi_string(h, p[0x6]));
             printf("\tSerial Number: %s\n", dmi_string(h, p[0x7]));
-            printf("\tUUID: "); dmi_system_uuid(p + 0x8, Smbios->SMBIOSMajorVersion * 0x100 + Smbios->SMBIOSMinorVersion);
+            printf("\tUUID: "); dmi_system_uuid(p + 0x8);
             printf("\tSKU Number: %s\n", dmi_string(h, p[0x19]));
             printf("\tFamily: %s\n", dmi_string(h, p[0x1a]));
         }
