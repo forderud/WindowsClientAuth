@@ -75,44 +75,37 @@ public:
     }
 
     void PrintContent() const {
-        const RawSMBIOSData* Smbios = GetData();
-        const BYTE* p = Smbios->SMBIOSTableData;
-
-        bool fw_printed = false;
-        for (unsigned int i = 0; i < Smbios->Length; i++) {
-            const auto* h = (SmBiosQuery::Header*)p;
-
-            if (h->type == SmBiosQuery::PlatformFirmwareInformation && !fw_printed) {
-                printf("\nType %02d - [BIOS]\n", h->type);
-                printf("\tBIOS Vendor : %s\n", GetString(h, p[0x4])); // Vendor offset: 0x4
-                printf("\tBIOS Version: %s\n", GetString(h, p[0x5])); // FW version offset: 0x5
-                printf("\tRelease Date: %s\n", GetString(h, p[0x8])); // FW date offset: 0x8
-
-                if (p[0x16] != 0xff && p[0x17] != 0xff)
-                    printf("\tEC version: %d.%d\n", p[0x16], p[0x17]);
-
-                fw_printed = true; // only print first entry
-            }
-            if (h->type == SmBiosQuery::SystemInformation) {
-                printf("\nType %02d - [System Information]\n", h->type);
-                printf("\tManufacturer: %s\n", GetString(h, p[0x4])); // Manufacturer offset: 0x4
-                printf("\tProduct Name: %s\n", GetString(h, p[0x5])); // Product name offset: 0x5
-                printf("\tVersion: %s\n", GetString(h, p[0x6])); // Version offset: 0x6
-                printf("\tSerial Number: %s\n", GetString(h, p[0x7])); // Serial number offset: 0x7
-                printf("\tUUID: %s\n", GetUUID(p + 0x8).c_str()); // UUID offset: 0x8
-                printf("\tSKU Number: %s\n", GetString(h, p[0x19])); // SKU number offset: 0x19
-                printf("\tFamily: %s\n", GetString(h, p[0x1a])); // Family offset: 0x1a
-            }
-
-            // advance to next struct header
-            p += h->length; // skip over header
-            while (*(p) || *(p + 1)) // advance until reaching two consecutive null characters
-                p++;
-            p += 2;
-        }
+        Traverse(PrintStruct);
     }
 
 private:
+    static void PrintStruct(const SmBiosQuery::Header* header) {
+        const auto* p = (const BYTE*)header;
+
+        static bool fw_printed = false;
+        if (header->type == SmBiosQuery::PlatformFirmwareInformation && !fw_printed) {
+            printf("\nType %02d - [BIOS]\n", header->type);
+            printf("\tBIOS Vendor : %s\n", GetString(header, p[0x4])); // Vendor offset: 0x4
+            printf("\tBIOS Version: %s\n", GetString(header, p[0x5])); // FW version offset: 0x5
+            printf("\tRelease Date: %s\n", GetString(header, p[0x8])); // FW date offset: 0x8
+
+            if (p[0x16] != 0xff && p[0x17] != 0xff)
+                printf("\tEC version: %d.%d\n", p[0x16], p[0x17]);
+
+            fw_printed = true; // only print first entry
+        }
+        if (header->type == SmBiosQuery::SystemInformation) {
+            printf("\nType %02d - [System Information]\n", header->type);
+            printf("\tManufacturer: %s\n", GetString(header, p[0x4])); // Manufacturer offset: 0x4
+            printf("\tProduct Name: %s\n", GetString(header, p[0x5])); // Product name offset: 0x5
+            printf("\tVersion: %s\n", GetString(header, p[0x6])); // Version offset: 0x6
+            printf("\tSerial Number: %s\n", GetString(header, p[0x7])); // Serial number offset: 0x7
+            printf("\tUUID: %s\n", GetUUID(p + 0x8).c_str()); // UUID offset: 0x8
+            printf("\tSKU Number: %s\n", GetString(header, p[0x19])); // SKU number offset: 0x19
+            printf("\tFamily: %s\n", GetString(header, p[0x1a])); // Family offset: 0x1a
+        }
+    }
+
     static std::string GetUUID(const BYTE* p) {
         // print 128bit UUID on little-endian system
         char buffer[37];
