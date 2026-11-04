@@ -88,11 +88,11 @@ int main (int argc, char* argv[]) {
     const RawSMBIOSData* Smbios = smbios.GetData();
     const BYTE* p = Smbios->SMBIOSTableData;
 
-    int flag = 1;
+    bool fw_printed = false;
     for (unsigned int i = 0; i < Smbios->Length; i++) {
         const dmi_header* h = (dmi_header*)p;
 
-        if (h->type == 0 && flag) {
+        if (h->type == 0 && !fw_printed) {
             printf("\nType %02d - [BIOS]\n", h->type);
             printf("\tBIOS Vendor : %s\n", dmi_string(h, p[0x4]));
             printf("\tBIOS Version: %s\n", dmi_string(h, p[0x5]));
@@ -100,7 +100,8 @@ int main (int argc, char* argv[]) {
 
             if (p[0x16] != 0xff && p[0x17] != 0xff)
                 printf("\tEC version: %d.%d\n", p[0x16], p[0x17]);
-            flag = 0;
+            
+            fw_printed = true; // only print first entry
         }
         if (h->type == 1) {
             printf("\nType %02d - [System Information]\n", h->type);
