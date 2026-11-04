@@ -58,7 +58,7 @@ private:
 };
 
 
-static void dmi_system_uuid(const BYTE* p) {
+static void PrintUUID (const BYTE* p) {
     // print 128bit UUID on little-endian system
     printf("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
         p[3], p[2], p[1], p[0], // 32bit Data1
@@ -111,7 +111,7 @@ int main (int argc, char* argv[]) {
             printf("\tProduct Name: %s\n", dmi_string(h, p[0x5])); // Product name offset: 0x5
             printf("\tVersion: %s\n", dmi_string(h, p[0x6])); // Version offset: 0x6
             printf("\tSerial Number: %s\n", dmi_string(h, p[0x7])); // Serial number offset: 0x7
-            printf("\tUUID: "); dmi_system_uuid(p + 0x8); // UUID offset: 0x8
+            printf("\tUUID: "); PrintUUID(p + 0x8); // UUID offset: 0x8
             printf("\tSKU Number: %s\n", dmi_string(h, p[0x19])); // SKU number offset: 0x19
             printf("\tFamily: %s\n", dmi_string(h, p[0x1a])); // Family offset: 0x1a
         }
