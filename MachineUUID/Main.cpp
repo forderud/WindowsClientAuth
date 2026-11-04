@@ -89,7 +89,7 @@ int main (int argc, _TCHAR* argv[]) {
     dmi_header* h = NULL;
     int flag = 1;
 
-    int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0);
+    int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // SMBIOS firmware table
     if (!ret) {
         printf("Function failed!\n");
         return 1;
@@ -98,7 +98,7 @@ int main (int argc, _TCHAR* argv[]) {
     printf("get buffer size is %d\n", ret);
     bufsize = ret;
 
-    ret = GetSystemFirmwareTable('RSMB', 0, buf, bufsize);
+    ret = GetSystemFirmwareTable('RSMB', 0, buf, bufsize); // SMBIOS firmware table
     if (!ret) {
         printf("Function failed!\n");
         return 1;
@@ -112,7 +112,7 @@ int main (int argc, _TCHAR* argv[]) {
         return 1;
     }
 
-    for (int i = 0; i < Smbios->Length; i++) {
+    for (unsigned int i = 0; i < Smbios->Length; i++) {
         h = (dmi_header*)p;
 
         if (h->type == 0 && flag) {
