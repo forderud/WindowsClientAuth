@@ -117,7 +117,7 @@ int main (int argc, char* argv[]) {
 
         // advance to next struct header
         p += h->length; // skip over header
-        while (*(p) || *(p+1)) // skip over string-sets
+        while (*(p) || *(p+1)) // advance until reaching two consecutive null characters
             p++;
         p += 2;
     }
