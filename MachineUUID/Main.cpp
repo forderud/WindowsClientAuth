@@ -3,24 +3,21 @@
 #include <tchar.h>
 
 
-typedef struct _dmi_header
-{
+struct dmi_header {
     BYTE type;
     BYTE length;
     WORD handle;
-}dmi_header;
+};
 
 
-
-typedef struct _RawSMBIOSData
-{
+struct RawSMBIOSData {
     BYTE    Used20CallingMethod;
     BYTE    SMBIOSMajorVersion;
     BYTE    SMBIOSMinorVersion;
     BYTE    DmiRevision;
     DWORD   Length;
     BYTE    SMBIOSTableData[];
-}RawSMBIOSData;
+};
 
 
 static void dmi_system_uuid(const BYTE* p, short ver) {
