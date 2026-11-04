@@ -6,7 +6,6 @@
 
 /** Utility class for retrieving SMBIOS parameters. */
 class SMBIOSQuery {
-public:
     /** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
     struct RawSMBIOSData {
         BYTE  Used20CallingMethod; // observed to be 0
@@ -30,6 +29,7 @@ public:
         WORD handle; // unique struct identifier
     };
 
+public:
     SMBIOSQuery() {
         int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // returns required buffer size
         if (!ret)
@@ -48,30 +48,6 @@ public:
         // fail early on unsupported versions
         if (Smbios->SMBIOSMajorVersion * 0x100 + Smbios->SMBIOSMinorVersion < 0x0206)
             throw std::runtime_error("SMBIOS older than 2.6 not supported"); // 2.6 was released in 04 Aug 2008
-    }
-
-    const RawSMBIOSData* GetData() const {
-        return (RawSMBIOSData*)m_buffer.data();
-    }
-
-    typedef std::function<void(const Header* header)> StructVisitor;
-
-    void Traverse(StructVisitor visitor) const {
-        const RawSMBIOSData* Smbios = GetData();
-        const BYTE* ptr = Smbios->SMBIOSTableData;
-
-        bool fw_printed = false;
-        while (ptr < Smbios->SMBIOSTableData + Smbios->Length) {
-            const auto* h = (Header*)ptr;
-
-            visitor(h);
-
-            // advance to next struct header
-            ptr += h->length; // skip over header
-            while (*(ptr) || *(ptr + 1)) // advance until reaching two consecutive null characters
-                ptr++;
-            ptr += 2;
-        }
     }
 
     /** Print the Universally unique identifier (UUID) for this product. */
@@ -122,6 +98,30 @@ public:
     }
 
 private:
+    const RawSMBIOSData* GetData() const {
+        return (RawSMBIOSData*)m_buffer.data();
+    }
+
+    typedef std::function<void(const Header* header)> StructVisitor;
+
+    void Traverse(StructVisitor visitor) const {
+        const RawSMBIOSData* Smbios = GetData();
+        const BYTE* ptr = Smbios->SMBIOSTableData;
+
+        bool fw_printed = false;
+        while (ptr < Smbios->SMBIOSTableData + Smbios->Length) {
+            const auto* h = (Header*)ptr;
+
+            visitor(h);
+
+            // advance to next struct header
+            ptr += h->length; // skip over header
+            while (*(ptr) || *(ptr + 1)) // advance until reaching two consecutive null characters
+                ptr++;
+            ptr += 2;
+        }
+    }
+
     static std::string GetUUID(const BYTE* p) {
         // print 128bit UUID on little-endian system
         char buffer[37];
