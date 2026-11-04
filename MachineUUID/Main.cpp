@@ -58,9 +58,12 @@ private:
 
 
 static void dmi_system_uuid(const BYTE* p) {
+    // print 128bit UUID on little-endian system
     printf("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
-        p[3], p[2], p[1], p[0], p[5], p[4], p[7], p[6],
-        p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
+        p[3], p[2], p[1], p[0], // 32bit Data1
+        p[5], p[4], // 16bit Data2
+        p[7], p[6], // 16bit Data3
+        p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]); // 8bit Data4[8]
 }
 
 
