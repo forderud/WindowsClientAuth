@@ -36,10 +36,10 @@ static void dmi_system_uuid(const BYTE* p) {
 
 
 const char* dmi_string(const dmi_header* dm, BYTE s) {
-    char* bp = (char*)dm;
-
     if (s == 0)
         return "Not Specified";
+
+    char* bp = (char*)dm;
 
     bp += dm->length;
 
