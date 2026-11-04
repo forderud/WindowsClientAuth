@@ -53,9 +53,9 @@ public:
         return (RawSMBIOSData*)m_buffer.data();
     }
 
-    typedef void (*HeaderVisitor)(const SmBiosQuery::Header* header);
+    typedef void (*StructVisitor)(const SmBiosQuery::Header* header);
 
-    void Traverse(HeaderVisitor visitor) const {
+    void Traverse(StructVisitor visitor) const {
         const RawSMBIOSData* Smbios = GetData();
         const BYTE* p = Smbios->SMBIOSTableData;
 
