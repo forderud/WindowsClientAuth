@@ -1,7 +1,7 @@
 #include <Windows.h>
 #include <string>
 #include <tchar.h>
-
+#include <vector>
 
 struct dmi_header {
     BYTE type;
@@ -76,26 +76,23 @@ const char* dmi_string(const dmi_header* dm, BYTE s) {
 
 
 int main (int argc, _TCHAR* argv[]) {
-    int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // SMBIOS firmware table
+    int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // returns required buffer size
     if (!ret) {
         printf("Function failed!\n");
         return 1;
     }
 
-    printf("get buffer size is %d\n", ret);
-    DWORD bufsize = ret;
-
-    BYTE buf[65536] = {};
-    ret = GetSystemFirmwareTable('RSMB', 0, buf, bufsize); // SMBIOS firmware table
+    std::vector<BYTE> buf(ret);
+    ret = GetSystemFirmwareTable('RSMB', 0, buf.data(), (DWORD)buf.size()); // SMBIOS firmware table
     if (!ret) {
         printf("Function failed!\n");
         return 1;
     }
 
-    RawSMBIOSData* Smbios = (RawSMBIOSData*)buf;
+    RawSMBIOSData* Smbios = (RawSMBIOSData*)buf.data();
     BYTE* p = Smbios->SMBIOSTableData;
 
-    if (Smbios->Length != bufsize - 8) {
+    if (Smbios->Length != buf.size() - 8) {
         printf("Smbios length error\n");
         return 1;
     }
