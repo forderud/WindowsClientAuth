@@ -11,10 +11,10 @@ struct dmi_header {
 };
 
 struct RawSMBIOSData {
-    BYTE    Used20CallingMethod;
-    BYTE    SMBIOSMajorVersion;
-    BYTE    SMBIOSMinorVersion;
-    BYTE    DmiRevision;
+    BYTE    Used20CallingMethod; // observed to be 0
+    BYTE    SMBIOSMajorVersion;  // observed to be 3
+    BYTE    SMBIOSMinorVersion;  // observed to be 3
+    BYTE    DmiRevision;         // observed to be 0
     DWORD   Length;
     BYTE    SMBIOSTableData[];
 };
