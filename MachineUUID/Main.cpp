@@ -6,12 +6,12 @@
 
 /** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
 struct RawSMBIOSData {
-    BYTE    Used20CallingMethod; // observed to be 0
-    BYTE    SMBIOSMajorVersion;  // observed to be 3
-    BYTE    SMBIOSMinorVersion;  // observed to be 3
-    BYTE    DmiRevision;         // observed to be 0
-    DWORD   Length;
-    BYTE    SMBIOSTableData[1 /*Length*/];
+    BYTE  Used20CallingMethod; // observed to be 0
+    BYTE  SMBIOSMajorVersion;  // observed to be 3
+    BYTE  SMBIOSMinorVersion;  // observed to be 3
+    BYTE  DmiRevision;         // observed to be 0
+    DWORD Length;
+    BYTE  SMBIOSTableData[1 /*Length*/];
 };
 
 class SmBiosQuery {
