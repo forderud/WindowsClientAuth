@@ -1,6 +1,8 @@
 #include <Windows.h>
 #include <string>
+#include <stdexcept>
 #include <vector>
+
 
 struct dmi_header {
     BYTE type;
@@ -73,27 +75,37 @@ const char* dmi_string(const dmi_header* dm, BYTE s) {
 }
 
 
+class SmBiosParameters {
+public:
+    SmBiosParameters() {
+        int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // returns required buffer size
+        if (!ret)
+            throw std::runtime_error("GetSystemFirmwareTable get size failed");
+
+        m_buffer.resize(ret);
+        ret = GetSystemFirmwareTable('RSMB', 0, m_buffer.data(), (DWORD)m_buffer.size()); // SMBIOS firmware table
+        if (!ret)
+            throw std::runtime_error("GetSystemFirmwareTable RSMB failed");
+
+        // sanity check
+        const RawSMBIOSData* Smbios = (RawSMBIOSData*)m_buffer.data();
+        if (Smbios->Length != m_buffer.size() - 8)
+            throw std::runtime_error("Smbios length error");
+    }
+
+    const RawSMBIOSData* GetData() const {
+        return (RawSMBIOSData*)m_buffer.data();
+    }
+
+private:
+    std::vector<BYTE> m_buffer;
+};
+
+
 int main (int argc, char* argv[]) {
-    int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // returns required buffer size
-    if (!ret) {
-        printf("Function failed!\n");
-        return 1;
-    }
-
-    std::vector<BYTE> buffer(ret);
-    ret = GetSystemFirmwareTable('RSMB', 0, buffer.data(), (DWORD)buffer.size()); // SMBIOS firmware table
-    if (!ret) {
-        printf("Function failed!\n");
-        return 1;
-    }
-
-    const RawSMBIOSData* Smbios = (RawSMBIOSData*)buffer.data();
+    SmBiosParameters smbios;
+    const RawSMBIOSData* Smbios = smbios.GetData();
     const BYTE* p = Smbios->SMBIOSTableData;
-
-    if (Smbios->Length != buffer.size() - 8) {
-        printf("Smbios length error\n");
-        return 1;
-    }
 
     int flag = 1;
     for (unsigned int i = 0; i < Smbios->Length; i++) {
