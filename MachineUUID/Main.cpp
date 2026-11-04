@@ -58,13 +58,16 @@ private:
 };
 
 
-static void PrintUUID (const BYTE* p) {
+static std::string GetUUID (const BYTE* p) {
     // print 128bit UUID on little-endian system
-    printf("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
+    char buffer[37];
+    snprintf(buffer, sizeof(buffer), "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
         p[3], p[2], p[1], p[0], // 32bit Data1
         p[5], p[4], // 16bit Data2
         p[7], p[6], // 16bit Data3
         p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]); // 8 x 8bit Data4[]
+
+    return buffer;
 }
 
 
@@ -111,7 +114,7 @@ int main (int argc, char* argv[]) {
             printf("\tProduct Name: %s\n", GetString(h, p[0x5])); // Product name offset: 0x5
             printf("\tVersion: %s\n", GetString(h, p[0x6])); // Version offset: 0x6
             printf("\tSerial Number: %s\n", GetString(h, p[0x7])); // Serial number offset: 0x7
-            printf("\tUUID: "); PrintUUID(p + 0x8); // UUID offset: 0x8
+            printf("\tUUID: %s\n", GetUUID(p + 0x8).c_str()); // UUID offset: 0x8
             printf("\tSKU Number: %s\n", GetString(h, p[0x19])); // SKU number offset: 0x19
             printf("\tFamily: %s\n", GetString(h, p[0x1a])); // Family offset: 0x1a
         }
