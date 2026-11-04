@@ -77,28 +77,28 @@ public:
     void PrintContent() const {
         auto printStruct = [](const SmBiosQuery::Header* header) {
             static bool fw_printed = false;
-            const auto* p = (const BYTE*)header;
+            const auto* ptr = (const BYTE*)header;
 
             if (header->type == SmBiosQuery::PlatformFirmwareInformation && !fw_printed) {
                 printf("\nType %02d - [BIOS]\n", header->type);
-                printf("\tBIOS Vendor : %s\n", GetString(header, p[0x4])); // Vendor offset: 0x4
-                printf("\tBIOS Version: %s\n", GetString(header, p[0x5])); // FW version offset: 0x5
-                printf("\tRelease Date: %s\n", GetString(header, p[0x8])); // FW date offset: 0x8
+                printf("\tBIOS Vendor : %s\n", GetString(header, ptr[0x4])); // Vendor offset: 0x4
+                printf("\tBIOS Version: %s\n", GetString(header, ptr[0x5])); // FW version offset: 0x5
+                printf("\tRelease Date: %s\n", GetString(header, ptr[0x8])); // FW date offset: 0x8
 
-                if (p[0x16] != 0xff && p[0x17] != 0xff)
-                    printf("\tEC version: %d.%d\n", p[0x16], p[0x17]);
+                if (ptr[0x16] != 0xff && ptr[0x17] != 0xff)
+                    printf("\tEC version: %d.%d\n", ptr[0x16], ptr[0x17]);
 
                 fw_printed = true; // only print first entry
             }
             if (header->type == SmBiosQuery::SystemInformation) {
                 printf("\nType %02d - [System Information]\n", header->type);
-                printf("\tManufacturer: %s\n", GetString(header, p[0x4])); // Manufacturer offset: 0x4
-                printf("\tProduct Name: %s\n", GetString(header, p[0x5])); // Product name offset: 0x5
-                printf("\tVersion: %s\n", GetString(header, p[0x6])); // Version offset: 0x6
-                printf("\tSerial Number: %s\n", GetString(header, p[0x7])); // Serial number offset: 0x7
-                printf("\tUUID: %s\n", GetUUID(p + 0x8).c_str()); // UUID offset: 0x8
-                printf("\tSKU Number: %s\n", GetString(header, p[0x19])); // SKU number offset: 0x19
-                printf("\tFamily: %s\n", GetString(header, p[0x1a])); // Family offset: 0x1a
+                printf("\tManufacturer: %s\n", GetString(header, ptr[0x4])); // Manufacturer offset: 0x4
+                printf("\tProduct Name: %s\n", GetString(header, ptr[0x5])); // Product name offset: 0x5
+                printf("\tVersion: %s\n", GetString(header, ptr[0x6])); // Version offset: 0x6
+                printf("\tSerial Number: %s\n", GetString(header, ptr[0x7])); // Serial number offset: 0x7
+                printf("\tUUID: %s\n", GetUUID(ptr + 0x8).c_str()); // UUID offset: 0x8
+                printf("\tSKU Number: %s\n", GetString(header, ptr[0x19])); // SKU number offset: 0x19
+                printf("\tFamily: %s\n", GetString(header, ptr[0x1a])); // Family offset: 0x1a
             }
         };
 
@@ -117,7 +117,6 @@ private:
 
         return buffer;
     }
-
 
     static const char* GetString(const SmBiosQuery::Header* dm, BYTE string_number) {
         if (string_number == 0)
