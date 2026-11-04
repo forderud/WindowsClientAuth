@@ -155,5 +155,7 @@ private:
 int main (int argc, char* argv[]) {
     SmBiosQuery smbios;
     smbios.PrintContent();
+
+    printf("UUID: %s\n", smbios.GetUUID().c_str());
     return 0;
 }
