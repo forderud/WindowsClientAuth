@@ -124,7 +124,7 @@ private:
 
     static std::string GetUUID(const BYTE* p) {
         char buffer[37]{}; // 36 characters + null termination
-        snprintf(buffer, sizeof(buffer), "%04X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+        snprintf(buffer, sizeof(buffer), "%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
             *(uint32_t*)p, // 32bit Data1
             *(uint16_t*)(p + 4), // 16bit Data2
             *(uint16_t*)(p + 6), // 16bit Data3
