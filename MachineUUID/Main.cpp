@@ -124,10 +124,10 @@ private:
 
     static std::string GetUUID(const BYTE* p) {
         char buffer[37]{}; // 36 characters + null termination
-        snprintf(buffer, sizeof(buffer), "%04x-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+        snprintf(buffer, sizeof(buffer), "%04x-%04x-%04x-%02X%02X-%02X%02X%02X%02X%02X%02X",
             *(uint32_t*)p, // 32bit Data1
-            p[5], p[4], // 16bit Data2 (little endian encoded)
-            p[7], p[6], // 16bit Data3 (little endian encoded)
+            *(uint16_t*)(p + 4), // 16bit Data2
+            *(uint16_t*)(p + 6), // 16bit Data3
             p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]); // 8 x 8bit Data4[]
         return buffer;
     }
