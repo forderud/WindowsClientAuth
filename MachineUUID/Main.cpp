@@ -37,13 +37,14 @@ public:
         m_buffer.resize(ret);
         ret = GetSystemFirmwareTable('RSMB', 0, m_buffer.data(), (DWORD)m_buffer.size()); // SMBIOS firmware table
         if (!ret)
-            throw std::runtime_error("GetSystemFirmwareTable RSMB failed");
+            throw std::runtime_error("GetSystemFirmwareTable get buffer failed");
 
         // sanity check
         const auto* Smbios = (RawSMBIOSData*)m_buffer.data();
         if (Smbios->Length != m_buffer.size() - 8)
-            throw std::runtime_error("Smbios length error");
+            throw std::runtime_error("SMBIOS incorrect buffer length");
 
+        // fail early on unsupported versions
         if (Smbios->SMBIOSMajorVersion * 0x100 + Smbios->SMBIOSMinorVersion < 0x0206)
             throw std::runtime_error("SMBIOS older than 2.6 not supported"); // 2.6 was released in 04 Aug 2008
     }
