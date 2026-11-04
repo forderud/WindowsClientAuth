@@ -123,12 +123,11 @@ private:
     }
 
     static std::string GetUUID(const BYTE* p) {
-        // print 128bit UUID on little-endian system
         char buffer[37]{}; // 36 characters + null termination
         snprintf(buffer, sizeof(buffer), "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
-            p[3], p[2], p[1], p[0], // 32bit Data1
-            p[5], p[4], // 16bit Data2
-            p[7], p[6], // 16bit Data3
+            p[3], p[2], p[1], p[0], // 32bit Data1 (little endian encoded)
+            p[5], p[4], // 16bit Data2 (little endian encoded)
+            p[7], p[6], // 16bit Data3 (little endian encoded)
             p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]); // 8 x 8bit Data4[]
         return buffer;
     }
