@@ -61,7 +61,7 @@ public:
         const BYTE* ptr = Smbios->SMBIOSTableData;
 
         bool fw_printed = false;
-        for (unsigned int i = 0; i < Smbios->Length; i++) {
+        while (ptr < Smbios->SMBIOSTableData + Smbios->Length) {
             const auto* h = (SmBiosQuery::Header*)ptr;
 
             visitor(h);
