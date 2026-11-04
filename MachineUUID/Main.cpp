@@ -81,7 +81,7 @@ const char* dmi_string(const SmBiosQuery::Header* dm, BYTE string_number) {
         string_number--;
     }
     if (!*ptr)
-        return "BAD_INDEX";
+        throw std::runtime_error("string number out of bounds");
 
     /* ASCII filtering */
     size_t len = strlen(ptr);
