@@ -4,8 +4,14 @@
 #include <vector>
 
 
+/* SMBIOD struct type (values 0-127 are reserved) */
+enum SMBIOS_Type : BYTE {
+    PlatformFirmwareInformation = 0,
+    SystemInformation = 1,
+};
+
 struct dmi_header {
-    BYTE type;
+    SMBIOS_Type type;
     BYTE length;
     WORD handle;
 };
@@ -92,7 +98,7 @@ int main (int argc, char* argv[]) {
     for (unsigned int i = 0; i < Smbios->Length; i++) {
         const dmi_header* h = (dmi_header*)p;
 
-        if (h->type == 0 && !fw_printed) {
+        if (h->type == PlatformFirmwareInformation && !fw_printed) {
             printf("\nType %02d - [BIOS]\n", h->type);
             printf("\tBIOS Vendor : %s\n", dmi_string(h, p[0x4]));
             printf("\tBIOS Version: %s\n", dmi_string(h, p[0x5]));
@@ -103,7 +109,7 @@ int main (int argc, char* argv[]) {
             
             fw_printed = true; // only print first entry
         }
-        if (h->type == 1) {
+        if (h->type == SystemInformation) {
             printf("\nType %02d - [System Information]\n", h->type);
             printf("\tManufacturer: %s\n", dmi_string(h, p[0x4]));
             printf("\tProduct Name: %s\n", dmi_string(h, p[0x5]));
