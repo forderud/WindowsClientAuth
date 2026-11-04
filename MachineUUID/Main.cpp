@@ -23,31 +23,26 @@ typedef struct _RawSMBIOSData
 }RawSMBIOSData;
 
 
-static void dmi_system_uuid(const BYTE* p, short ver)
-{
+static void dmi_system_uuid(const BYTE* p, short ver) {
     int only0xFF = 1, only0x00 = 1;
-    int i;
 
-    for (i = 0; i < 16 && (only0x00 || only0xFF); i++)
-    {
-        if (p[i] != 0x00) only0x00 = 0;
-        if (p[i] != 0xFF) only0xFF = 0;
+    for (int i = 0; i < 16 && (only0x00 || only0xFF); i++) {
+        if (p[i] != 0x00)
+            only0x00 = 0;
+        if (p[i] != 0xFF)
+            only0xFF = 0;
     }
 
 
 
-    if (only0xFF)
-    {
+    if (only0xFF) {
         printf("Not Present");
         return;
     }
-
-    if (only0x00)
-    {
+    if (only0x00) {
         printf("Not Settable");
         return;
     }
-
 
     if (ver >= 0x0206)
         printf("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
