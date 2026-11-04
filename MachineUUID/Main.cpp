@@ -10,6 +10,7 @@ struct dmi_header {
     WORD handle;
 };
 
+/** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
 struct RawSMBIOSData {
     BYTE    Used20CallingMethod; // observed to be 0
     BYTE    SMBIOSMajorVersion;  // observed to be 3
