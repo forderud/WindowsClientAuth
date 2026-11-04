@@ -4,19 +4,6 @@
 #include <vector>
 
 
-/* SMBIOD struct type (values 0-127 are reserved) */
-enum SMBIOS_Type : BYTE {
-    PlatformFirmwareInformation = 0,
-    SystemInformation = 1,
-};
-
-/** From SMBIOS 6.1.2 Structure header format */
-struct SMBIOS_Header {
-    SMBIOS_Type type;
-    BYTE length; // lenght (excluding string-sets)
-    WORD handle; // unique struct identifier
-};
-
 /** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
 struct RawSMBIOSData {
     BYTE    Used20CallingMethod; // observed to be 0
@@ -27,40 +14,21 @@ struct RawSMBIOSData {
     BYTE    SMBIOSTableData[1 /*Length*/];
 };
 
-
-static void dmi_system_uuid(const BYTE* p) {
-    printf("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
-            p[3], p[2], p[1], p[0], p[5], p[4], p[7], p[6],
-            p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
-}
-
-
-const char* dmi_string(const SMBIOS_Header* dm, BYTE s) {
-    if (s == 0)
-        return "Not Specified";
-
-    char* bp = (char*)dm;
-    bp += dm->length;
-
-    while (s > 1 && *bp) {
-        bp += strlen(bp);
-        bp++;
-        s--;
-    }
-    if (!*bp)
-        return "BAD_INDEX";
-
-    /* ASCII filtering */
-    size_t len = strlen(bp);
-    for (size_t i = 0; i < len; i++)
-        if (bp[i] < 32 || bp[i] == 127)
-            bp[i] = '.';
-    return bp;
-}
-
-
 class SmBiosQuery {
 public:
+    /* SMBIOD struct type (values 0-127 are reserved) */
+    enum Type : BYTE {
+        PlatformFirmwareInformation = 0,
+        SystemInformation = 1,
+    };
+
+    /** From SMBIOS 6.1.2 Structure header format */
+    struct Header {
+        Type type;
+        BYTE length; // lenght (excluding string-sets)
+        WORD handle; // unique struct identifier
+    };
+
     SmBiosQuery() {
         int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // returns required buffer size
         if (!ret)
@@ -89,6 +57,37 @@ private:
 };
 
 
+static void dmi_system_uuid(const BYTE* p) {
+    printf("%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n",
+        p[3], p[2], p[1], p[0], p[5], p[4], p[7], p[6],
+        p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
+}
+
+
+const char* dmi_string(const SmBiosQuery::Header* dm, BYTE s) {
+    if (s == 0)
+        return "Not Specified";
+
+    char* bp = (char*)dm;
+    bp += dm->length;
+
+    while (s > 1 && *bp) {
+        bp += strlen(bp);
+        bp++;
+        s--;
+    }
+    if (!*bp)
+        return "BAD_INDEX";
+
+    /* ASCII filtering */
+    size_t len = strlen(bp);
+    for (size_t i = 0; i < len; i++)
+        if (bp[i] < 32 || bp[i] == 127)
+            bp[i] = '.';
+    return bp;
+}
+
+
 int main (int argc, char* argv[]) {
     SmBiosQuery smbios;
     const RawSMBIOSData* Smbios = smbios.GetData();
@@ -96,9 +95,9 @@ int main (int argc, char* argv[]) {
 
     bool fw_printed = false;
     for (unsigned int i = 0; i < Smbios->Length; i++) {
-        const auto* h = (SMBIOS_Header*)p;
+        const auto* h = (SmBiosQuery::Header*)p;
 
-        if (h->type == PlatformFirmwareInformation && !fw_printed) {
+        if (h->type == SmBiosQuery::PlatformFirmwareInformation && !fw_printed) {
             printf("\nType %02d - [BIOS]\n", h->type);
             printf("\tBIOS Vendor : %s\n", dmi_string(h, p[0x4])); // vendor offset 0x4
             printf("\tBIOS Version: %s\n", dmi_string(h, p[0x5])); // FW version offset 0x5
@@ -109,7 +108,7 @@ int main (int argc, char* argv[]) {
             
             fw_printed = true; // only print first entry
         }
-        if (h->type == SystemInformation) {
+        if (h->type == SmBiosQuery::SystemInformation) {
             printf("\nType %02d - [System Information]\n", h->type);
             printf("\tManufacturer: %s\n", dmi_string(h, p[0x4])); // Manufacturer offset: 0x4
             printf("\tProduct Name: %s\n", dmi_string(h, p[0x5])); // Product name offset: 0x5
