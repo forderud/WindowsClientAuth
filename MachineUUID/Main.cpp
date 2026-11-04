@@ -109,7 +109,7 @@ int main (int argc, char* argv[]) {
 
     int flag = 1;
     for (unsigned int i = 0; i < Smbios->Length; i++) {
-        dmi_header* h = (dmi_header*)p;
+        const dmi_header* h = (dmi_header*)p;
 
         if (h->type == 0 && flag) {
             printf("\nType %02d - [BIOS]\n", h->type);
