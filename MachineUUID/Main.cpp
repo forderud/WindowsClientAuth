@@ -62,7 +62,7 @@ public:
 
         bool fw_printed = false;
         while (ptr < Smbios->SMBIOSTableData + Smbios->Length) {
-            const auto* h = (SMBIOSQuery::Header*)ptr;
+            const auto* h = (Header*)ptr;
 
             visitor(h);
 
@@ -76,10 +76,10 @@ public:
 
     std::string GetUUID() const {
         std::string uuid;
-        auto getUuid = [&uuid](const SMBIOSQuery::Header* header) {
+        auto getUuid = [&uuid](const Header* header) {
             const auto* ptr = (const BYTE*)header;
 
-            if (header->type == SMBIOSQuery::SystemInformation) {
+            if (header->type == SystemInformation) {
                 uuid = GetUUID(ptr + 0x8); // UUID offset: 0x8
             }
         };
@@ -90,10 +90,10 @@ public:
 
     void PrintContent() const {
         bool fw_printed = false;
-        auto printStruct = [&fw_printed](const SMBIOSQuery::Header* header) {
+        auto printStruct = [&fw_printed](const Header* header) {
             const auto* ptr = (const BYTE*)header;
 
-            if (header->type == SMBIOSQuery::PlatformFirmwareInformation && !fw_printed) {
+            if (header->type == PlatformFirmwareInformation && !fw_printed) {
                 printf("\nType %02d - [BIOS]\n", header->type);
                 printf("\tBIOS Vendor : %s\n", GetString(header, ptr[0x4])); // Vendor offset: 0x4
                 printf("\tBIOS Version: %s\n", GetString(header, ptr[0x5])); // FW version offset: 0x5
@@ -104,7 +104,7 @@ public:
 
                 fw_printed = true; // only print first entry
             }
-            if (header->type == SMBIOSQuery::SystemInformation) {
+            if (header->type == SystemInformation) {
                 printf("\nType %02d - [System Information]\n", header->type);
                 printf("\tManufacturer: %s\n", GetString(header, ptr[0x4])); // Manufacturer offset: 0x4
                 printf("\tProduct Name: %s\n", GetString(header, ptr[0x5])); // Product name offset: 0x5
@@ -132,7 +132,7 @@ private:
         return buffer;
     }
 
-    static const char* GetString(const SMBIOSQuery::Header* dm, BYTE string_number) {
+    static const char* GetString(const Header* dm, BYTE string_number) {
         if (string_number == 0)
             return nullptr; // no string
 
