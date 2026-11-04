@@ -55,10 +55,8 @@ static void dmi_system_uuid(const BYTE* p, short ver) {
 }
 
 
-const char* dmi_string(const dmi_header* dm, BYTE s)
-{
+const char* dmi_string(const dmi_header* dm, BYTE s) {
     char* bp = (char*)dm;
-    size_t i, len;
 
     if (s == 0)
         return "Not Specified";
@@ -75,8 +73,8 @@ const char* dmi_string(const dmi_header* dm, BYTE s)
         return "BAD_INDEX";
 
     /* ASCII filtering */
-    len = strlen(bp);
-    for (i = 0; i < len; i++)
+    size_t len = strlen(bp);
+    for (size_t i = 0; i < len; i++)
         if (bp[i] < 32 || bp[i] == 127)
             bp[i] = '.';
     return bp;
@@ -84,18 +82,15 @@ const char* dmi_string(const dmi_header* dm, BYTE s)
 
 
 
-int main (int argc, _TCHAR* argv[])
-{
+int main (int argc, _TCHAR* argv[]) {
     DWORD bufsize = 0;
-    BYTE buf[65536] = { 0 };
-    int ret = 0;
+    BYTE buf[65536] = {};
     RawSMBIOSData* Smbios;
     dmi_header* h = NULL;
     int flag = 1;
 
-    ret = GetSystemFirmwareTable('RSMB', 0, 0, 0);
-    if (!ret)
-    {
+    int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0);
+    if (!ret) {
         printf("Function failed!\n");
         return 1;
     }
@@ -104,20 +99,15 @@ int main (int argc, _TCHAR* argv[])
     bufsize = ret;
 
     ret = GetSystemFirmwareTable('RSMB', 0, buf, bufsize);
-
-    if (!ret)
-    {
+    if (!ret) {
         printf("Function failed!\n");
         return 1;
     }
 
-
-
     Smbios = (RawSMBIOSData*)buf;
     BYTE* p = Smbios->SMBIOSTableData;
 
-    if (Smbios->Length != bufsize - 8)
-    {
+    if (Smbios->Length != bufsize - 8) {
         printf("Smbios length error\n");
         return 1;
     }
@@ -135,9 +125,6 @@ int main (int argc, _TCHAR* argv[])
                 printf("\tEC version: %d.%d\n", p[0x16], p[0x17]);
             flag = 0;
         }
-
-
-
         else if (h->type == 1) {
             printf("\nType %02d - [System Information]\n", h->type);
             printf("\tManufacturer: %s\n", dmi_string(h, p[0x4]));
