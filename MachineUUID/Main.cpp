@@ -4,18 +4,18 @@
 #include <vector>
 
 
-/** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
-struct RawSMBIOSData {
-    BYTE  Used20CallingMethod; // observed to be 0
-    BYTE  SMBIOSMajorVersion;  // observed to be 3
-    BYTE  SMBIOSMinorVersion;  // observed to be 3
-    BYTE  DmiRevision;         // observed to be 0
-    DWORD Length;
-    BYTE  SMBIOSTableData[1 /*Length*/];
-};
-
 class SmBiosQuery {
 public:
+    /** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
+    struct RawSMBIOSData {
+        BYTE  Used20CallingMethod; // observed to be 0
+        BYTE  SMBIOSMajorVersion;  // observed to be 3
+        BYTE  SMBIOSMinorVersion;  // observed to be 3
+        BYTE  DmiRevision;         // observed to be 0
+        DWORD Length;
+        BYTE  SMBIOSTableData[1 /*Length*/];
+    };
+
     /* SMBIOD struct type (values 0-127 are reserved) */
     enum Type : BYTE {
         PlatformFirmwareInformation = 0,
@@ -91,6 +91,7 @@ public:
         }
     }
 
+private:
     static std::string GetUUID(const BYTE* p) {
         // print 128bit UUID on little-endian system
         char buffer[37];
@@ -120,7 +121,6 @@ public:
         return ptr;
     }
 
-private:
     std::vector<BYTE> m_buffer;
 };
 
