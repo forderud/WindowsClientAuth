@@ -115,6 +115,7 @@ int main (int argc, char* argv[]) {
             printf("\tFamily: %s\n", dmi_string(h, p[0x1a])); // Family offset: 0x1a
         }
 
+        // advance to next struct header
         p += h->length;
         while ((*(WORD*)p) != 0)
             p++;
