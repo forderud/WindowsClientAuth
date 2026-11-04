@@ -73,6 +73,19 @@ public:
         }
     }
 
+    std::string GetUUID() const {
+        auto getUuid = [](const SmBiosQuery::Header* header) {
+            std::string uuid;
+            const auto* p = (const BYTE*)header;
+
+            if (header->type == SmBiosQuery::SystemInformation) {
+                uuid = GetUUID(p + 0x8); // UUID offset: 0x8
+            }
+        };
+
+        Traverse(getUuid);
+    }
+
     void PrintContent() const {
         auto printStruct = [](const SmBiosQuery::Header* header) {
             static bool fw_printed = false;
