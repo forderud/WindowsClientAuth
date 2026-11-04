@@ -10,10 +10,11 @@ enum SMBIOS_Type : BYTE {
     SystemInformation = 1,
 };
 
+/** From SMBIOS 6.1.2 Structure header format */
 struct dmi_header {
     SMBIOS_Type type;
-    BYTE length;
-    WORD handle;
+    BYTE length; // lenght (excluding string-sets)
+    WORD handle; // unique struct identifier
 };
 
 /** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
