@@ -68,7 +68,7 @@ static void PrintUUID (const BYTE* p) {
 }
 
 
-const char* dmi_string(const SmBiosQuery::Header* dm, BYTE string_number) {
+const char* GetString(const SmBiosQuery::Header* dm, BYTE string_number) {
     if (string_number == 0)
         return "Not Specified";
 
@@ -96,9 +96,9 @@ int main (int argc, char* argv[]) {
 
         if (h->type == SmBiosQuery::PlatformFirmwareInformation && !fw_printed) {
             printf("\nType %02d - [BIOS]\n", h->type);
-            printf("\tBIOS Vendor : %s\n", dmi_string(h, p[0x4])); // Vendor offset: 0x4
-            printf("\tBIOS Version: %s\n", dmi_string(h, p[0x5])); // FW version offset: 0x5
-            printf("\tRelease Date: %s\n", dmi_string(h, p[0x8])); // FW date offset: 0x8
+            printf("\tBIOS Vendor : %s\n", GetString(h, p[0x4])); // Vendor offset: 0x4
+            printf("\tBIOS Version: %s\n", GetString(h, p[0x5])); // FW version offset: 0x5
+            printf("\tRelease Date: %s\n", GetString(h, p[0x8])); // FW date offset: 0x8
 
             if (p[0x16] != 0xff && p[0x17] != 0xff)
                 printf("\tEC version: %d.%d\n", p[0x16], p[0x17]);
@@ -107,13 +107,13 @@ int main (int argc, char* argv[]) {
         }
         if (h->type == SmBiosQuery::SystemInformation) {
             printf("\nType %02d - [System Information]\n", h->type);
-            printf("\tManufacturer: %s\n", dmi_string(h, p[0x4])); // Manufacturer offset: 0x4
-            printf("\tProduct Name: %s\n", dmi_string(h, p[0x5])); // Product name offset: 0x5
-            printf("\tVersion: %s\n", dmi_string(h, p[0x6])); // Version offset: 0x6
-            printf("\tSerial Number: %s\n", dmi_string(h, p[0x7])); // Serial number offset: 0x7
+            printf("\tManufacturer: %s\n", GetString(h, p[0x4])); // Manufacturer offset: 0x4
+            printf("\tProduct Name: %s\n", GetString(h, p[0x5])); // Product name offset: 0x5
+            printf("\tVersion: %s\n", GetString(h, p[0x6])); // Version offset: 0x6
+            printf("\tSerial Number: %s\n", GetString(h, p[0x7])); // Serial number offset: 0x7
             printf("\tUUID: "); PrintUUID(p + 0x8); // UUID offset: 0x8
-            printf("\tSKU Number: %s\n", dmi_string(h, p[0x19])); // SKU number offset: 0x19
-            printf("\tFamily: %s\n", dmi_string(h, p[0x1a])); // Family offset: 0x1a
+            printf("\tSKU Number: %s\n", GetString(h, p[0x19])); // SKU number offset: 0x19
+            printf("\tFamily: %s\n", GetString(h, p[0x1a])); // Family offset: 0x1a
         }
 
         // advance to next struct header
