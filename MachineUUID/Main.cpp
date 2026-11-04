@@ -57,19 +57,19 @@ public:
 
     void Traverse(StructVisitor visitor) const {
         const RawSMBIOSData* Smbios = GetData();
-        const BYTE* p = Smbios->SMBIOSTableData;
+        const BYTE* ptr = Smbios->SMBIOSTableData;
 
         bool fw_printed = false;
         for (unsigned int i = 0; i < Smbios->Length; i++) {
-            const auto* h = (SmBiosQuery::Header*)p;
+            const auto* h = (SmBiosQuery::Header*)ptr;
 
             visitor(h);
 
             // advance to next struct header
-            p += h->length; // skip over header
-            while (*(p) || *(p + 1)) // advance until reaching two consecutive null characters
-                p++;
-            p += 2;
+            ptr += h->length; // skip over header
+            while (*(ptr) || *(ptr + 1)) // advance until reaching two consecutive null characters
+                ptr++;
+            ptr += 2;
         }
 
     }
