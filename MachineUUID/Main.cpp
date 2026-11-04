@@ -1,6 +1,5 @@
 #include <Windows.h>
 #include <string>
-#include <tchar.h>
 #include <vector>
 
 struct dmi_header {
@@ -8,7 +7,6 @@ struct dmi_header {
     BYTE length;
     WORD handle;
 };
-
 
 struct RawSMBIOSData {
     BYTE    Used20CallingMethod;
@@ -75,7 +73,7 @@ const char* dmi_string(const dmi_header* dm, BYTE s) {
 }
 
 
-int main (int argc, _TCHAR* argv[]) {
+int main (int argc, char* argv[]) {
     int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // returns required buffer size
     if (!ret) {
         printf("Function failed!\n");
