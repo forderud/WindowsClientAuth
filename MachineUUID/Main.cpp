@@ -17,7 +17,7 @@ struct RawSMBIOSData {
     BYTE    SMBIOSMinorVersion;  // observed to be 3
     BYTE    DmiRevision;         // observed to be 0
     DWORD   Length;
-    BYTE    SMBIOSTableData[];
+    BYTE    SMBIOSTableData[1 /*Length*/];
 };
 
 
