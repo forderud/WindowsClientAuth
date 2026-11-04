@@ -54,7 +54,7 @@ public:
         return (RawSMBIOSData*)m_buffer.data();
     }
 
-    typedef std::function<void(const SMBIOSQuery::Header* header)> StructVisitor;
+    typedef std::function<void(const Header* header)> StructVisitor;
 
     void Traverse(StructVisitor visitor) const {
         const RawSMBIOSData* Smbios = GetData();
