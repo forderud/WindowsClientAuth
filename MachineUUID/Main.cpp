@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <vector>
 
-
+/** Utility class for retrieving SMBIOS parameters. */
 class SmBiosQuery {
 public:
     /** From https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemfirmwaretable */
