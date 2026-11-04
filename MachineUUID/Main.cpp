@@ -74,6 +74,7 @@ public:
         }
     }
 
+    /** Print the Universally unique identifier (UUID) for this product. */
     std::string GetUUID() const {
         std::string uuid;
         auto getUuid = [&uuid](const Header* header) {
@@ -88,6 +89,7 @@ public:
         return uuid;
     }
 
+    /** Print a subset of the SMBIOS parameters. */
     void PrintContent() const {
         bool fw_printed = false;
         auto printStruct = [&fw_printed](const Header* header) {
