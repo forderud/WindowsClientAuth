@@ -75,9 +75,9 @@ const char* dmi_string(const dmi_header* dm, BYTE s) {
 }
 
 
-class SmBiosParameters {
+class SmBiosQuery {
 public:
-    SmBiosParameters() {
+    SmBiosQuery() {
         int ret = GetSystemFirmwareTable('RSMB', 0, 0, 0); // returns required buffer size
         if (!ret)
             throw std::runtime_error("GetSystemFirmwareTable get size failed");
@@ -103,7 +103,7 @@ private:
 
 
 int main (int argc, char* argv[]) {
-    SmBiosParameters smbios;
+    SmBiosQuery smbios;
     const RawSMBIOSData* Smbios = smbios.GetData();
     const BYTE* p = Smbios->SMBIOSTableData;
 
