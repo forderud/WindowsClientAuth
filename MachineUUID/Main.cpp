@@ -53,6 +53,27 @@ public:
         return (RawSMBIOSData*)m_buffer.data();
     }
 
+    typedef void (*HeaderVisitor)(const SmBiosQuery::Header* header);
+
+    void Traverse(HeaderVisitor visitor) const {
+        const RawSMBIOSData* Smbios = GetData();
+        const BYTE* p = Smbios->SMBIOSTableData;
+
+        bool fw_printed = false;
+        for (unsigned int i = 0; i < Smbios->Length; i++) {
+            const auto* h = (SmBiosQuery::Header*)p;
+
+            visitor(h);
+
+            // advance to next struct header
+            p += h->length; // skip over header
+            while (*(p) || *(p + 1)) // advance until reaching two consecutive null characters
+                p++;
+            p += 2;
+        }
+
+    }
+
     void PrintContent() const {
         const RawSMBIOSData* Smbios = GetData();
         const BYTE* p = Smbios->SMBIOSTableData;
