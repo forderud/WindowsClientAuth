@@ -71,24 +71,24 @@ const char* dmi_string(const SmBiosQuery::Header* dm, BYTE string_number) {
     if (string_number == 0)
         return "Not Specified";
 
-    char* bp = (char*)dm;
-    bp += dm->length;
+    // pointer to structure payload
+    char* ptr = (char*)dm + dm->length;
 
     // iterate over string until reaching the desired string number
-    while (string_number > 1 && *bp) {
-        bp += strlen(bp);
-        bp++;
+    while (string_number > 1 && *ptr) {
+        ptr += strlen(ptr);
+        ptr++;
         string_number--;
     }
-    if (!*bp)
+    if (!*ptr)
         return "BAD_INDEX";
 
     /* ASCII filtering */
-    size_t len = strlen(bp);
+    size_t len = strlen(ptr);
     for (size_t i = 0; i < len; i++)
-        if (bp[i] < 32 || bp[i] == 127)
-            bp[i] = '.';
-    return bp;
+        if (ptr[i] < 32 || ptr[i] == 127)
+            ptr[i] = '.';
+    return ptr;
 }
 
 
