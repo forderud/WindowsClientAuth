@@ -40,7 +40,6 @@ const char* dmi_string(const dmi_header* dm, BYTE s) {
         return "Not Specified";
 
     char* bp = (char*)dm;
-
     bp += dm->length;
 
     while (s > 1 && *bp) {
@@ -101,9 +100,9 @@ int main (int argc, char* argv[]) {
 
         if (h->type == PlatformFirmwareInformation && !fw_printed) {
             printf("\nType %02d - [BIOS]\n", h->type);
-            printf("\tBIOS Vendor : %s\n", dmi_string(h, p[0x4]));
-            printf("\tBIOS Version: %s\n", dmi_string(h, p[0x5]));
-            printf("\tRelease Date: %s\n", dmi_string(h, p[0x8]));
+            printf("\tBIOS Vendor : %s\n", dmi_string(h, p[0x4])); // vendor offset 0x4
+            printf("\tBIOS Version: %s\n", dmi_string(h, p[0x5])); // FW version offset 0x5
+            printf("\tRelease Date: %s\n", dmi_string(h, p[0x8])); // FW date offset 0x8
 
             if (p[0x16] != 0xff && p[0x17] != 0xff)
                 printf("\tEC version: %d.%d\n", p[0x16], p[0x17]);
@@ -112,13 +111,13 @@ int main (int argc, char* argv[]) {
         }
         if (h->type == SystemInformation) {
             printf("\nType %02d - [System Information]\n", h->type);
-            printf("\tManufacturer: %s\n", dmi_string(h, p[0x4]));
-            printf("\tProduct Name: %s\n", dmi_string(h, p[0x5]));
-            printf("\tVersion: %s\n", dmi_string(h, p[0x6]));
-            printf("\tSerial Number: %s\n", dmi_string(h, p[0x7]));
-            printf("\tUUID: "); dmi_system_uuid(p + 0x8);
-            printf("\tSKU Number: %s\n", dmi_string(h, p[0x19]));
-            printf("\tFamily: %s\n", dmi_string(h, p[0x1a]));
+            printf("\tManufacturer: %s\n", dmi_string(h, p[0x4])); // Manufacturer offset: 0x4
+            printf("\tProduct Name: %s\n", dmi_string(h, p[0x5])); // Product name offset: 0x5
+            printf("\tVersion: %s\n", dmi_string(h, p[0x6])); // Version offset: 0x6
+            printf("\tSerial Number: %s\n", dmi_string(h, p[0x7])); // Aerial number offset: 0x7
+            printf("\tUUID: "); dmi_system_uuid(p + 0x8); // UUID offset: 0x8
+            printf("\tSKU Number: %s\n", dmi_string(h, p[0x19])); // SKU number offset: 0x19
+            printf("\tFamily: %s\n", dmi_string(h, p[0x1a])); // Family offset: 0x1a
         }
 
         p += h->length;
