@@ -70,7 +70,7 @@ static void PrintUUID (const BYTE* p) {
 
 const char* GetString(const SmBiosQuery::Header* dm, BYTE string_number) {
     if (string_number == 0)
-        return "Not Specified";
+        return nullptr;
 
     // pointer to structure payload
     char* ptr = (char*)dm + dm->length;
