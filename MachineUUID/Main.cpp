@@ -80,17 +80,17 @@ int main (int argc, char* argv[]) {
         return 1;
     }
 
-    std::vector<BYTE> buf(ret);
-    ret = GetSystemFirmwareTable('RSMB', 0, buf.data(), (DWORD)buf.size()); // SMBIOS firmware table
+    std::vector<BYTE> buffer(ret);
+    ret = GetSystemFirmwareTable('RSMB', 0, buffer.data(), (DWORD)buffer.size()); // SMBIOS firmware table
     if (!ret) {
         printf("Function failed!\n");
         return 1;
     }
 
-    const RawSMBIOSData* Smbios = (RawSMBIOSData*)buf.data();
+    const RawSMBIOSData* Smbios = (RawSMBIOSData*)buffer.data();
     const BYTE* p = Smbios->SMBIOSTableData;
 
-    if (Smbios->Length != buf.size() - 8) {
+    if (Smbios->Length != buffer.size() - 8) {
         printf("Smbios length error\n");
         return 1;
     }
